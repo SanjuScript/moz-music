@@ -6,7 +6,7 @@ A new Flutter project.
 
 This project is a starting point for a Flutter application.
 check out my app !!!
-[Google Play Store](https://play.google.com/store/apps/details?id=in.sanju.music_player)
+[Download from play store ](https://play.google.com/store/apps/details?id=in.sanju.music_player)
 
 A few resources to get you started if this is your first Flutter project:
 
