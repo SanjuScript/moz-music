@@ -23,7 +23,7 @@ class BottomNav extends StatefulWidget {
 class _BottomNavState extends State<BottomNav> {
   int selectedIndex = 0;
   late PageController pageController;
-
+  
   final List<Widget> pages = [
     const HomePage(),
     const FavoriteScreen(),

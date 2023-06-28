@@ -32,7 +32,7 @@ void showPlaylistDeleteDialogue({
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text(
+              child: const Text(
                 'Cancel',
                 style: TextStyle(),
               ),

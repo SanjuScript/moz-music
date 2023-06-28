@@ -10,28 +10,28 @@ class DeleteSongDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(
+          const Text(
             'remove Song',
             style: TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           Text(
             'Are you sure you want to delete "$songTitle" from the playlist?',
             textAlign: TextAlign.center,
             maxLines: 3,
-            style: TextStyle(
+            style: const TextStyle(
               overflow: TextOverflow.ellipsis,
               fontSize: 18.0,
             ),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -39,7 +39,7 @@ class DeleteSongDialog extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop(false); // Cancel
                 },
-                child: Text(
+                child: const Text(
                   'CANCEL',
                   style: TextStyle(
                     fontSize: 16.0,
@@ -49,7 +49,7 @@ class DeleteSongDialog extends StatelessWidget {
               ),
               TextButton(
                 onPressed: onPress,
-                child: Text(
+                child: const Text(
                   'DELETE',
                   style: TextStyle(
                     fontSize: 16.0,

@@ -1,14 +1,12 @@
-// ignore_for_file: deprecated_member_use, unused_import, invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
-import 'package:music_player/WIDGETS/indicators.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
 import 'package:music_player/WIDGETS/dialogues/song_delete_dialogue.dart';
-import 'package:music_player/Widgets/audio_artwork_definer.dart';
 import 'package:music_player/Widgets/song_list_maker.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../../DATABASE/recently_played.dart';
@@ -37,9 +35,7 @@ class _FavoriteScreenState extends State<FavoriteScreen>
           return NowPlaying(songModelList: favoriteList);
         })),
       );
-    } else {
-      print("object");
-    }
+    } 
     GetSongs.player.setAudioSource(GetSongs.createSongList(favoriteList),
         initialIndex: index);
     GetSongs.player.play();
@@ -142,6 +138,13 @@ class _FavoriteScreenState extends State<FavoriteScreen>
                             child: SizedBox(
                               height: MediaQuery.of(context).size.height * 0.10,
                               child: SongListViewerForSections(
+                                
+                                trailingWidget: InkWell(
+                                  onTap: () {
+                                      FavoriteDb.favoriteSongs.notifyListeners();
+                                    FavoriteDb.delete(song.id);
+                                  },
+                                  child: const Icon(FontAwesomeIcons.heartCircleMinus)),
                                   fileSize:
                                       "${fileSizeInMB.toStringAsFixed(2)} Mb",
                                   color: Theme.of(context).cardColor,
@@ -162,7 +165,7 @@ class _FavoriteScreenState extends State<FavoriteScreen>
                                         filePath: filePath,
                                         file: file,
                                         delete: () {
-                                          // showSongDeleteDialogue(context, song);
+                                          showSongDeleteDialogue(context, song);
                                         });
                                   },
                                   title: song.title.toUpperCase(),
@@ -173,8 +176,7 @@ class _FavoriteScreenState extends State<FavoriteScreen>
                                       : "${song.artist}.${song.fileExtension}",
                                   id: song.id,
                                   trailingOnTap: () {
-                                    FavoriteDb.favoriteSongs.notifyListeners();
-                                    FavoriteDb.delete(song.id);
+                                  
                                   },
                                   child: const SizedBox()),
                             ),
@@ -182,7 +184,9 @@ class _FavoriteScreenState extends State<FavoriteScreen>
                         },
                         itemCount: favoriteData.length,
                       ),
+                      
                 icon: Icons.favorite_rounded,
+                
                 iconTap: () {},
               ),
             ));

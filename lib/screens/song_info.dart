@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:music_player/HELPER/get_audio_size_in_mb.dart';
 import 'package:music_player/HELPER/minute_converter.dart';
@@ -81,7 +80,7 @@ class _SongInfoState extends State<SongInfo> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            SizedBox(height: 10,),
+                            const SizedBox(height: 10,),
                             Text(
                               widget.title,
                               textAlign: TextAlign.center,
@@ -154,7 +153,8 @@ class _SongInfoState extends State<SongInfo> {
                             child: Text(
                               texts[index],
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
+                              style:  TextStyle(
+                                color: Theme.of(context).cardColor,
                                 fontFamily: 'coolvetica',
                                 fontSize: 18,
                               ),
@@ -167,7 +167,8 @@ class _SongInfoState extends State<SongInfo> {
                             width: MediaQuery.of(context).size.width * .4,
                             child: Text(
                               songs[index],
-                              style: const TextStyle(
+                              style:  TextStyle(
+                                                  color: Theme.of(context).cardColor,
                                 fontWeight: FontWeight.w100,
                                 fontFamily: 'coolvetica',
                                 fontSize: 18,

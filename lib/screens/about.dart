@@ -12,10 +12,10 @@ class AboutPage extends StatefulWidget {
 class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: AnimCard(
-          const Color(0xffFF6594),
+          Color(0xffFF6594),
           '',
           '',
           '',

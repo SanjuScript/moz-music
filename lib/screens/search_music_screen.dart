@@ -230,7 +230,7 @@ class _SearchPageState extends State<SearchPage>
         ),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: getListView() ?? SizedBox(),
+      body: getListView() ?? const SizedBox(),
     );
   }
 }

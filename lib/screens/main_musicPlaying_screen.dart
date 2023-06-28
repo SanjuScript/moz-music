@@ -577,7 +577,7 @@ class _NowPlayingState extends State<NowPlaying>
                           Widget? child) {
                         return Hive.box<MusicModel>('playlistDB').isEmpty
                             ? Column(children: [
-                                songEmpty(context, "No Playlist Found",(){}),
+                                songEmpty(context, "No Playlist Found",(){},isSetting: false),
                                 IconButton(
                                     onPressed: () {
                                       Navigator.push(

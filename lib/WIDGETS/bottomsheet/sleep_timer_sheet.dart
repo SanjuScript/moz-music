@@ -9,7 +9,7 @@ void sleepTimerBottomModalSheet(BuildContext context) {
       context: context,
       builder: (BuildContext context) {
         return Container(
-            padding: EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 20),
             width: double.infinity,
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -18,6 +18,6 @@ void sleepTimerBottomModalSheet(BuildContext context) {
                 topRight: Radius.circular(30),
               ),
             ),
-            child: SleepTimerForMoz());
+            child: const SleepTimerForMoz());
       });
 }

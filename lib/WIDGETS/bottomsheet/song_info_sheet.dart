@@ -43,7 +43,7 @@ void bottomDetailsSheet({
     context: context,
     builder: (BuildContext context) {
       return Container(
-        padding: EdgeInsets.symmetric(vertical: 20),
+        padding: const EdgeInsets.symmetric(vertical: 20),
         width: double.infinity,
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -101,6 +101,7 @@ void bottomDetailsSheet({
                     onTap: () {
                       if (FavoriteDb.isFavor(song)) {
                         FavoriteDb.delete(song.id);
+                        Navigator.pop(context);
                       } else {
                         FavoriteDb.add(song);
                       }
@@ -126,7 +127,7 @@ void bottomDetailsSheet({
                         icon: Icons.playlist_add_rounded,
                       ),
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               InkWell(
                 onTap: () {
                   Share.shareFiles([filePath]);

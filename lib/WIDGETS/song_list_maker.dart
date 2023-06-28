@@ -76,6 +76,7 @@ class SongListViewerForSections extends StatelessWidget {
   void Function() trailingOnTap;
   bool isBoxshadowYes;
   Widget trailingWidget;
+  ArtworkType artwork;
   SongListViewerForSections(
       {super.key,
       this.radius = 15,
@@ -87,6 +88,7 @@ class SongListViewerForSections extends StatelessWidget {
       required this.onTap,
       required this.icon,
       this.isBoxshadowYes = true,
+      this.artwork =  ArtworkType.AUDIO,
       required this.fileSize,
       this.color = Colors.black45,
       required this.trailingOnTap,
@@ -131,6 +133,7 @@ class SongListViewerForSections extends StatelessWidget {
                     shadowVisibility: false,
                     child: AudioArtworkDefiner(
                       id: id,
+                      type: artwork,
                       isRectangle: true,
                       radius: 5,
                       imgRadius: 5,

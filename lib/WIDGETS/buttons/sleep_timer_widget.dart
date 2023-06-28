@@ -40,12 +40,12 @@ class _SleepTimerForMozState extends State<SleepTimerForMoz> {
           if (selectedDuration == 0) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 behavior: SnackBarBehavior.floating,
-                duration: Duration(milliseconds: 800),
+                duration: const Duration(milliseconds: 800),
                 backgroundColor: Colors.deepPurple[400],
                 dismissDirection: DismissDirection.horizontal,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6)),
-                content: Text("No Timer Selected")));
+                content: const Text("No Timer Selected")));
           }
 
           sleepTimer.startTimer(selectedDuration.toInt());
@@ -66,7 +66,7 @@ class _SleepTimerForMozState extends State<SleepTimerForMoz> {
           sliderValue = 0;
         }
 
-        return Container(
+        return SizedBox(
           height: MediaQuery.of(context).size.height * 0.30,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -77,7 +77,7 @@ class _SleepTimerForMozState extends State<SleepTimerForMoz> {
                 style: TextStyle(
                   fontFamily: 'coolvetica',
                   fontSize: MediaQuery.of(context).size.height * 0.025,
-                  color: Color.fromARGB(255, 132, 132, 132),
+                  color: const Color.fromARGB(255, 132, 132, 132),
                 ),
               ),
               Text(

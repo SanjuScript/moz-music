@@ -21,8 +21,8 @@ void showSpeedDialogue(BuildContext context) {
             fontSize: MediaQuery.of(context).size.height *0.030,
           ),
         ),
-        titlePadding: EdgeInsets.all( 10),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+        titlePadding: const EdgeInsets.all( 10),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -56,7 +56,7 @@ void showSpeedDialogue(BuildContext context) {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text(
+            child: const Text(
               "Close",
               style: TextStyle(
                 fontFamily: 'coolvetica',
@@ -87,7 +87,7 @@ Widget speedSelector(
       },
       style: TextButton.styleFrom(
         shape: RoundedRectangleBorder(
-          side: BorderSide(color: const Color(0xff97A4B7)),
+          side: const BorderSide(color: Color(0xff97A4B7)),
           borderRadius: BorderRadius.circular(10),
         ),
         backgroundColor: buttonColor,
@@ -97,7 +97,7 @@ Widget speedSelector(
         style: TextStyle(
           fontFamily: 'coolvetica',
           fontSize: 14,
-          color: isSelected ? Colors.white : Color.fromARGB(255, 227, 231, 236),
+          color: isSelected ? Colors.white : const Color.fromARGB(255, 227, 231, 236),
         ),
       ),
     ),

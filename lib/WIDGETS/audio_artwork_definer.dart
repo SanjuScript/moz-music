@@ -10,6 +10,7 @@ class AudioArtworkDefiner extends StatefulWidget {
   final double radius;
   final double imgRadius;
   final bool enableAnimation;
+  final ArtworkType type;
 
   const AudioArtworkDefiner({
     Key? key,
@@ -19,6 +20,7 @@ class AudioArtworkDefiner extends StatefulWidget {
     this.isRectangle = false,
     this.radius = 0,
     this.enableAnimation = false,
+    this.type = ArtworkType.AUDIO,
   }) : super(key: key);
 
   @override
@@ -31,7 +33,6 @@ class _AudioArtworkDefinerState extends State<AudioArtworkDefiner>
   late int _currentId;
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
-
   @override
   void initState() {
     super.initState();
@@ -66,7 +67,7 @@ class _AudioArtworkDefinerState extends State<AudioArtworkDefiner>
   void _loadArtwork() {
     _artworkFuture = OnAudioQuery().queryArtwork(
       widget.id,
-      ArtworkType.AUDIO,
+      widget.type,
       format: ArtworkFormat.JPEG,
       size: widget.size,
       quality: 100,
@@ -99,14 +100,13 @@ class _AudioArtworkDefinerState extends State<AudioArtworkDefiner>
   }
 
   Widget _buildArtworkWidget(AsyncSnapshot<Uint8List?> snapshot) {
-    if (snapshot.data != null && snapshot.data!.isNotEmpty ) {
+    if (snapshot.data != null && snapshot.data!.isNotEmpty) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(widget.imgRadius),
         clipBehavior: Clip.antiAlias,
         child: Image.memory(
           snapshot.data!,
           gaplessPlayback: true,
-       
           fit: BoxFit.cover,
           filterQuality: FilterQuality.high,
           errorBuilder: (context, exception, stackTrace) {

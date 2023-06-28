@@ -106,7 +106,7 @@ class TopAppBar extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.only(left: 15, right: 5),
                 child: Icon(
-                  icon == Icons.favorite_rounded
+                  icon == Icons.favorite_rounded || icon == Icons.album
                       ? Icons.play_circle_rounded
                       : icon == Icons.music_note_rounded
                           ? Icons.play_circle_fill_rounded

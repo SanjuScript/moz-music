@@ -1,25 +1,34 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:music_player/HELPER/toast.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-
 import '../../COLORS/colors.dart';
 
-void deleteSong(SongModel songModel) {
-  String filePath = songModel.data;
-  File file = File(filePath);
+// Future<void> deleteSong(SongModel songModel) async {
+// String filePath = songModel.data;
 
-  if (file.existsSync()) {
-    try {
-      file.deleteSync();
-      print('File deleted successfully.');
-    } catch (e) {
-      print('Error deleting file: $e');
-    }
-  } else {
-    print('File does not exist at the specified path: $filePath');
-  }
-}
+// try {
+//   MediaStore mediaStore = MediaStore();
+//   MediaStore.appFolder = "/data/data/com.myapp/files";
+//   MediaStore().
+//   bool deleted = await mediaStore.deleteFile(
+//     fileName: filePath,
+//     dirType: DirType.audio,
+//     dirName: DirName.music,
+//     relativePath: '',
+//   );
+
+//   if (deleted) {
+//     File file = File(filePath);
+//     await file.delete();
+//     print('File deleted successfully.');
+//   } else {
+//     print('Error deleting file.');
+//   }
+// } catch (e) {
+//   print('Error deleting file: $e');
+// }
+// }
 
 void showSongDeleteDialogue(BuildContext context, SongModel song) {
   showDialog(
@@ -39,7 +48,8 @@ void showSongDeleteDialogue(BuildContext context, SongModel song) {
             ),
             TextButton(
               onPressed: () {
-                deleteSong(song);
+                // deleteSong(song);
+                customToast("Error File path", context);
                 Navigator.pop(context);
               },
               child: const Text(

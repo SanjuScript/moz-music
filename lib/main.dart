@@ -3,15 +3,21 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:flutter/services.dart';
 import 'package:music_player/Model/music_model.dart';
+import 'package:music_player/PROVIDER/album_song_list_provider.dart';
+import 'package:music_player/PROVIDER/artist_provider.dart';
+import 'package:music_player/PROVIDER/artist_song_provider.dart';
 import 'package:music_player/PROVIDER/miniplayer_provider.dart';
 import 'package:music_player/PROVIDER/now_playing_provider.dart';
 import 'package:music_player/PROVIDER/sleep_timer_provider.dart';
 import 'package:music_player/PROVIDER/theme_class_provider.dart';
+import 'package:music_player/SCREENS/playlist/playlist_screen.dart';
 import 'package:music_player/screens/const_splashScreen.dart';
+import 'package:music_player/screens/playlist/playlistSong_display_screen.dart';
 import 'package:music_player/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'COLORS/colors.dart';
+import 'PROVIDER/album_provider.dart';
 
 int? isViewed;
 Future<void> main() async {
@@ -27,7 +33,7 @@ Future<void> main() async {
   await Hive.openBox<MusicModel>('playlistDB');
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Color.fromRGBO(0, 0, 0, 0),
-      statusBarIconBrightness:  Brightness.light));
+      statusBarIconBrightness: Brightness.light));
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   SharedPreferences.getInstance().then((prefs) async {
@@ -56,6 +62,16 @@ Future<void> main() async {
       ChangeNotifierProvider(
         create: ((context) => NowPlayingProvider()),
       ),
+      ChangeNotifierProvider(
+        create: (context) => AlbumProvider(),
+      ),
+       ChangeNotifierProvider(
+        create: (context) => ArtistSongListProvider(),
+      ),
+        ChangeNotifierProvider(
+        create: (context) => ArtistProvider(),
+      ),
+      ChangeNotifierProvider(create: (context) => SongListProvider()),
     ], child: const MyApp()));
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   });
@@ -71,6 +87,9 @@ class MyApp extends StatelessWidget {
       home: isViewed != 0 ? const OneTimeSplashScreen() : const SplashScreen(),
       theme: themeProvider.gettheme(),
       debugShowCheckedModeBanner: false,
+      routes: {
+        '/playlistsong': (context) => const PlaylistSongDisplayScreen(),
+      },
     );
   }
 }

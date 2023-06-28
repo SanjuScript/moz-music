@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 Widget circleProgress(BuildContext context) {
@@ -11,18 +10,18 @@ Widget circleProgress(BuildContext context) {
   );
 }
 
-Widget songEmpty(BuildContext context, String text, void Function() then) {
+Widget songEmpty(BuildContext context, String text, void Function() then,{bool isSetting = true}) {
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        TextButton(
+       isSetting ? TextButton(
             onPressed: () {
               openAppSettings().whenComplete(() {
                 then();
               });
             },
-            child: Text("open settings")),
+            child: const Text("open settings")) : const SizedBox(),
         Text(
           text,
           textAlign: TextAlign.center,

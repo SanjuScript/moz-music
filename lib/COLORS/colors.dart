@@ -11,6 +11,7 @@ final lightThemeMode = ThemeData(
     hintColor: Colors.white,
     highlightColor: const Color.fromARGB(255, 179, 178, 178),
     canvasColor: Colors.green,
+    hoverColor: Colors.white,
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.grey[300],
     ));
@@ -25,7 +26,7 @@ final darkThemeMode = ThemeData(
     cardColor: const Color.fromARGB(255, 228, 229, 229),
     hintColor: const Color.fromARGB(255, 46, 53, 53),
     highlightColor: const Color.fromARGB(255, 47, 62, 83),
-    
+    hoverColor: Colors.black,
     dialogTheme: const DialogTheme(
       backgroundColor: Color(0xFF1F1F1F),
       titleTextStyle: TextStyle(

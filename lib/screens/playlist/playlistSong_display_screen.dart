@@ -17,10 +17,9 @@ import '../../CONTROLLER/song_controllers.dart';
 import '../main_musicPlaying_screen.dart';
 
 class PlaylistSongDisplayScreen extends StatefulWidget {
-  const PlaylistSongDisplayScreen(
-      {super.key, required this.playlist, required this.folderindex});
-  final MusicModel playlist;
-  final int folderindex;
+  const PlaylistSongDisplayScreen({
+    super.key,
+  });
 
   @override
   State<PlaylistSongDisplayScreen> createState() =>
@@ -49,6 +48,10 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final Map<String, dynamic> arguments =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final MusicModel playlist = arguments['playlist'];
+    final int folderindex = arguments['folderindex'];
     // PlayListDB.getAllPlaylist();
     return ValueListenableBuilder(
         valueListenable: Hive.box<MusicModel>(
@@ -56,7 +59,7 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
         ).listenable(),
         builder: (BuildContext context, Box<MusicModel> value, Widget? child) {
           playlistsong = listPlaylist(
-            value.values.toList()[widget.folderindex].songId,
+            value.values.toList()[folderindex].songId,
           );
 
           if (playlistsong.isEmpty) {
@@ -83,7 +86,7 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                       Navigator.push(
                           context,
                           ScaletransitionForAddbutton(PlaylistSongListScreen(
-                              playlist: widget.playlist)));
+                              playlist: playlist)));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -172,14 +175,14 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                                 context,
                                 ScaletransitionForAddbutton(
                                     PlaylistSongListScreen(
-                                        playlist: widget.playlist)));
+                                        playlist: playlist)));
                           } else {
                             showPlaylistDeleteDialogue(
                                 context: context,
                                 text1:
-                                    "Remove all song from ${widget.playlist.name}",
+                                    "Remove all song from ${playlist.name}",
                                 onPress: () {
-                                  widget.playlist.deleteAll();
+                                  playlist.deleteAll();
                                   Navigator.pop(context);
                                 });
                           }
@@ -257,7 +260,7 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                       Column(
                         children: [
                           Text(
-                            widget.playlist.name,
+                           playlist.name,
                             style: TextStyle(
                               letterSpacing: 1,
                               fontFamily: "appollo",
@@ -323,7 +326,8 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                                       GetSongs.createSongList(newlist),
                                       initialIndex: index);
                                   GetSongs.player.play();
-                                  RecentlyPlayedDB.addRecentlyPlayed(playlistsong[index].id);
+                                  RecentlyPlayedDB.addRecentlyPlayed(
+                                      playlistsong[index].id);
                                   // Add a completion listener to the audio player
                                   GetSongs.player.playerStateStream
                                       .listen((playerState) {
@@ -346,7 +350,7 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                                       return DeleteSongDialog(
                                         songTitle: playlistsong[index].title,
                                         onPress: () {
-                                          widget.playlist.deleteData(
+                                     playlist.deleteData(
                                             playlistsong[index].id,
                                           );
                                           Navigator.pop(context);
@@ -357,7 +361,7 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                                 },
                                 icon: Icons.delete,
                                 title: playlistsong[index].title,
-                                child: SizedBox()),
+                                child: const SizedBox()),
                           ),
                         );
                       }),

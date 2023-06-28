@@ -15,13 +15,13 @@ class SortOptionBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20), topRight: Radius.circular(20)),
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
       child: Scrollbar(
         interactive: true,
-        radius: Radius.circular(20),
+        radius: const Radius.circular(20),
         thickness: 10,
         child: ListView.builder(
           itemCount: SortOption.values.length,

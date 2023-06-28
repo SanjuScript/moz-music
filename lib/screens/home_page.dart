@@ -1,10 +1,13 @@
 // ignore_for_file: unrelated_type_equality_checks
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
 import 'package:music_player/WIDGETS/drawer_widget.dart';
+import 'package:music_player/WIDGETS/song_sections.dart';
+import 'package:music_player/screens/album/album_list.dart';
 import 'package:music_player/screens/search_music_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -14,7 +17,6 @@ import '../CONTROLLER/song_controllers.dart';
 import '../HELPER/sort_enum.dart';
 import '../WIDGETS/buttons/sort_menu_button.dart';
 import '../WIDGETS/indicators.dart';
-import '../WIDGETS/permission.dart';
 import '../WIDGETS/song_list_maker.dart';
 import 'dart:async';
 
@@ -32,55 +34,40 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
 
-  Future<void> saveSortOption(SortOption value) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setInt('sortOption', value.index);
-  }
 
-  Future<SortOption> getSortOption() async {
-    final prefs = await SharedPreferences.getInstance();
-    final index = prefs.getInt('sortOption');
-    return SortOption.values[index ?? 0];
-  }
-
-  SortOption _sortOption = SortOption.adate;
   var scaffoldKey = GlobalKey<ScaffoldState>();
-
+  Future<List<SongModel>>? _songsFuture;
   void setSortOption(SortOption sortOption) {
     setState(() {
-      _sortOption = sortOption;
+      defaultSort = sortOption;
     });
     saveSortOption(sortOption);
-  }
-
-  void requestPermission(BuildContext context) async {
-    final status = await Permission.manageExternalStorage.status;
-    if (status.isDenied) {
-      await Permission.manageExternalStorage.request();
-    }
-
-    final storageStatus = await Permission.storage.status;
-    if (storageStatus.isDenied) {
-      await Permission.storage.request();
-    }
-
-    setState(() {
-      _songsFuture = querySongs(_sortOption);
-    });
   }
 
   void toggleValue(SortOption? value) {
     if (value != null) {
       setState(() {
-        _sortOption = value;
+        defaultSort = value;
       });
       saveSortOption(value);
     }
   }
 
+  bool permissionGranted = false;
+  Future<void> _chechPermissions() async {
+    final permStatus = Permission.storage.request();
+    if (await permStatus.isDenied) {
+      Permission.storage.request();
+    }
+    setState(() {
+      permissionGranted = true;
+      _songsFuture = querySongs(defaultSort);
+    });
+  }
+
   final OnAudioQuery _audioQuery = OnAudioQuery();
   Future<List<SongModel>> querySongs(SortOption sortOption) async {
-    final sortType = _getSortType(sortOption);
+    final sortType = getSortType(sortOption);
     const status = PermissionStatus.granted;
     if (!status.isGranted) {
       return Future.error('Permission Not Granted');
@@ -108,82 +95,26 @@ class _HomePageState extends State<HomePage>
     return filteredSongs;
   }
 
-  SongSortType _getSortType(SortOption sortOption) {
-    switch (sortOption) {
-      case SortOption.atitle:
-        return SongSortType.TITLE;
-      case SortOption.aartist:
-        return SongSortType.ARTIST;
-      case SortOption.aduration:
-        return SongSortType.DURATION;
-      case SortOption.adate:
-        return SongSortType.DATE_ADDED;
-      case SortOption.afileSize:
-        return SongSortType.SIZE;
-      default:
-        return SongSortType.DATE_ADDED;
-    }
-  }
-
-  List<SongModel> sortSongs(List<SongModel> songs, SortOption sortOption) {
-    switch (sortOption) {
-      case SortOption.atitle:
-        songs.sort((a, b) => a.title.compareTo(b.title));
-        break;
-      case SortOption.ztitle:
-        songs.sort((a, b) => b.title.compareTo(a.title));
-        break;
-      case SortOption.aartist:
-        songs
-            .sort((a, b) => a.artist.toString().compareTo(b.artist.toString()));
-        break;
-      case SortOption.zartist:
-        songs
-            .sort((a, b) => b.artist.toString().compareTo(a.artist.toString()));
-        break;
-      case SortOption.aduration:
-        songs.sort((a, b) => a.duration!.compareTo(b.duration!));
-        break;
-      case SortOption.zduaration:
-        songs.sort((a, b) => b.duration!.compareTo(a.duration!));
-        break;
-      case SortOption.adate:
-        songs.sort((a, b) => b.dateAdded!.compareTo(a.dateAdded!));
-        break;
-      case SortOption.zdate:
-        songs.sort((a, b) => a.dateAdded!.compareTo(b.dateAdded!));
-        break;
-      case SortOption.afileSize:
-        songs.sort((a, b) => b.size.compareTo(a.size));
-        break;
-      case SortOption.zfileSize:
-        songs.sort((a, b) => a.size.compareTo(b.size));
-        break;
-    }
-    return songs;
-  }
-
   Future<void> _handleRefresh() async {
     // Simulate a delay for fetching new data
-    await Future.delayed(const Duration(seconds: 2));
-
-    setState(() {});
+    setState(() {
+      _songsFuture = querySongs(defaultSort);
+    });
   }
 
-  Future<List<SongModel>>? _songsFuture;
   @override
   void initState() {
     super.initState();
-    requestPermission(context);
+    _chechPermissions();
     getSortOption().then((SortOption value) {
       setState(() {
-        _sortOption = value;
+        defaultSort = value;
       });
     });
-    _sortOption = SortOption.adate;
+    defaultSort = SortOption.adate;
     const status = PermissionStatus.granted;
     if (status.isGranted) {
-      _songsFuture = querySongs(_sortOption);
+      _songsFuture = querySongs(defaultSort);
     }
   }
 
@@ -192,169 +123,224 @@ class _HomePageState extends State<HomePage>
     super.build(context); // Make sure to call super.build(context)
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-
-    return Scaffold(
-        key: scaffoldKey,
-        drawer: drawerWidget(context: context, scaffoldKey: scaffoldKey),
-        extendBody: true,
-        extendBodyBehindAppBar: true,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        body: SafeArea(
-            child: NestedScrollView(
-                headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                      SliverAppBar(
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
-                        systemOverlayStyle: SystemUiOverlayStyle(
-                          statusBarColor:
+    if (permissionGranted) {
+      return Scaffold(
+          key: scaffoldKey,
+          drawer: drawerWidget(context: context, scaffoldKey: scaffoldKey),
+          extendBody: true,
+          extendBodyBehindAppBar: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          body: SafeArea(
+              child: NestedScrollView(
+                  headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                        SliverAppBar(
+                          backgroundColor:
                               Theme.of(context).scaffoldBackgroundColor,
-                          systemNavigationBarColor:
+                          systemOverlayStyle: SystemUiOverlayStyle(
+                            statusBarColor:
+                                Theme.of(context).scaffoldBackgroundColor,
+                            systemNavigationBarColor:
+                                Theme.of(context).scaffoldBackgroundColor,
+                          ),
+                          centerTitle: true,
+                          shadowColor:
                               Theme.of(context).scaffoldBackgroundColor,
-                        ),
-                        centerTitle: true,
-                        shadowColor: Theme.of(context).scaffoldBackgroundColor,
-                        elevation: 1,
-                        expandedHeight:
-                            MediaQuery.of(context).size.height * 0.17,
-                        flexibleSpace: FlexibleSpaceBar(
-                          title: Padding(
-                            padding: EdgeInsets.only(
-                              left: 0,
-                              top: MediaQuery.of(context).size.height * 0.01,
-                              right: MediaQuery.of(context).size.width * 0.07,
-                            ),
-                            child: Text(
-                              "Moz MUSIC",
-                              style: TextStyle(
-                                fontFamily: 'optica',
-                                fontWeight: FontWeight.w500,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.06,
-                                color: Theme.of(context).cardColor,
-                                letterSpacing: .1,
+                          elevation: 1,
+                          expandedHeight:
+                              MediaQuery.of(context).size.height * 0.17,
+                          flexibleSpace: FlexibleSpaceBar(
+                            title: Padding(
+                              padding: EdgeInsets.only(
+                                left: 0,
+                                top: MediaQuery.of(context).size.height * 0.01,
+                                right: MediaQuery.of(context).size.width * 0.07,
                               ),
-                            ),
-                          ),
-                        ),
-                        leading: InkWell(
-                          onTap: () {
-                            scaffoldKey.currentState?.openDrawer();
-                          },
-                          child: Icon(
-                            Icons.menu,
-                            color: Theme.of(context).cardColor,
-                          ),
-                        ),
-                        actions: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                SearchAnimationNavigation(const SearchPage()),
-                              );
-                            },
-                            icon: Transform.scale(
-                              scale: MediaQuery.of(context).size.width * 0.003,
-                              child: Icon(
-                                Icons.search,
-                                color: Theme.of(context).cardColor,
-                              ),
-                            ),
-                            splashColor: Colors.transparent,
-                          ),
-                          IconButton(
-                              onPressed: () {
-                                showModalBottomSheet<void>(
-                                  context: context,
-                                  builder: (context) {
-                                    return SortOptionBottomSheet(
-                                        selectedOption: _sortOption,
-                                        onSelected: toggleValue);
-                                  },
-                                );
-                              },
-                              icon: Icon(
-                                Icons.more_vert,
-                                color: Theme.of(context).cardColor,
-                              ))
-                        ],
-                        pinned: true,
-                      ),
-                    ],
-                body: RefreshIndicator(
-                  color: Colors.white,
-                  backgroundColor: Colors.deepPurple[400],
-                  displacement: 80.0,
-                  onRefresh: _handleRefresh,
-                  child: FutureBuilder<List<SongModel>>(
-                    future: _songsFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return circleProgress(context);
-                      } else if (snapshot.data!.isEmpty) {
-                        return songEmpty(context, "NO Songs Found", () {
-                          setState(() {
-                            _songsFuture = querySongs(_sortOption);
-                          });
-                        });
-                      } else if (snapshot.hasError) {
-                        return songEmpty(
-                            context, "Error occurred: ${snapshot.error}",(){});
-                      } else {
-                        startSong = snapshot.data!;
-                        GetSongs.songscopy = snapshot.data!;
-
-                        if (!FavoriteDb.isInitialized) {
-                          FavoriteDb.intialize(snapshot.data!);
-                        }
-                        // if (!RecentlyPlayedDB.isInitialized) {
-                        //   RecentlyPlayedDB.intialize(snapshot.data!);
-                        // }
-                      }
-
-                      final sortedSongs =
-                          sortSongs(snapshot.data!, _sortOption);
-                      return AnimationLimiter(
-                        child: ListView.builder(
-                          physics: const BouncingScrollPhysics(
-                              parent: AlwaysScrollableScrollPhysics()),
-                          itemBuilder: (context, index) {
-                            return AnimationConfiguration.staggeredList(
-                              position: index,
-                              delay: const Duration(milliseconds: 100),
-                              child: SlideAnimation(
-                                duration: const Duration(milliseconds: 2500),
-                                curve: Curves.fastLinearToSlowEaseIn,
-                                horizontalOffset: 30,
-                                verticalOffset: 300.0,
-                                child: FlipAnimation(
-                                  duration: const Duration(milliseconds: 3000),
-                                  curve: Curves.fastLinearToSlowEaseIn,
-                                  flipAxis: FlipAxis.y,
-                                  child: songDisplay(
-                                    context,
-                                    id: sortedSongs[index].id,
-                                    title: sortedSongs[index].title,
-                                    artist:
-                                        sortedSongs[index].artist.toString(),
-                                    exten: sortedSongs[index].fileExtension,
-                                    duration:
-                                        sortedSongs[index].duration.toString(),
-                                    inittialIndex: index,
-                                    genre: sortedSongs[index].genre.toString(),
-                                    composer:
-                                        sortedSongs[index].composer.toString(),
-                                    songs: sortedSongs,
-                                  ),
+                              child: Text(
+                                "Moz MUSIC",
+                                style: TextStyle(
+                                  fontFamily: 'optica',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.06,
+                                  color: Theme.of(context).cardColor,
+                                  letterSpacing: .1,
                                 ),
                               ),
-                            );
-                          },
-                          itemCount: startSong.length,
+                            ),
+                          ),
+                          leading: InkWell(
+                            onTap: () {
+                              scaffoldKey.currentState?.openDrawer();
+                            },
+                            child: Icon(
+                              Icons.menu,
+                              color: Theme.of(context).cardColor,
+                            ),
+                          ),
+                          actions: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  SearchAnimationNavigation(const SearchPage()),
+                                );
+                              },
+                              icon: Transform.scale(
+                                scale:
+                                    MediaQuery.of(context).size.width * 0.003,
+                                child: Icon(
+                                  Icons.search,
+                                  color: Theme.of(context).cardColor,
+                                ),
+                              ),
+                              splashColor: Colors.transparent,
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  showModalBottomSheet<void>(
+                                    context: context,
+                                    builder: (context) {
+                                      return SortOptionBottomSheet(
+                                          selectedOption: defaultSort,
+                                          onSelected: toggleValue);
+                                    },
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.more_vert,
+                                  color: Theme.of(context).cardColor,
+                                ))
+                          ],
+                          pinned: true,
                         ),
-                      );
-                    },
+                      ],
+                  body: RefreshIndicator(
+                    color: Colors.white,
+                    backgroundColor: Colors.deepPurple[400],
+                    displacement: 80.0,
+                    onRefresh: _handleRefresh,
+                    child: FutureBuilder<List<SongModel>>(
+                      future: _songsFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return circleProgress(context);
+                        } else if (snapshot.data!.isEmpty) {
+                          return songEmpty(context, "NO Songs Found", () {
+                            setState(() {
+                              _songsFuture = querySongs(defaultSort);
+                            });
+                          });
+                        } else if (snapshot.hasError) {
+                          return songEmpty(
+                              context, "Error occurred: ${snapshot.error}", () {
+                            setState(() {});
+                          });
+                        } else {
+                          startSong = snapshot.data!;
+                          GetSongs.songscopy = snapshot.data!;
+
+                          if (!FavoriteDb.isInitialized) {
+                            FavoriteDb.intialize(snapshot.data!);
+                          }
+                          // if (!RecentlyPlayedDB.isInitialized) {
+                          //   RecentlyPlayedDB.intialize(snapshot.data!);
+                          // }
+                        }
+
+                        final sortedSongs =
+                            sortSongs(snapshot.data!, defaultSort);
+                        return AnimationLimiter(
+                          child: Stack(children: [
+                            ListView.builder(
+                              padding: EdgeInsets.symmetric(vertical: 30),
+                              physics: const BouncingScrollPhysics(
+                                  parent: AlwaysScrollableScrollPhysics()),
+                              itemBuilder: (context, index) {
+                                return AnimationConfiguration.staggeredList(
+                                  position: index,
+                                  delay: const Duration(milliseconds: 100),
+                                  child: SlideAnimation(
+                                    duration:
+                                        const Duration(milliseconds: 2500),
+                                    curve: Curves.fastLinearToSlowEaseIn,
+                                    horizontalOffset: 30,
+                                    verticalOffset: 300.0,
+                                    child: FlipAnimation(
+                                      duration:
+                                          const Duration(milliseconds: 3000),
+                                      curve: Curves.fastLinearToSlowEaseIn,
+                                      flipAxis: FlipAxis.y,
+                                      child: songDisplay(
+                                        context,
+                                        id: sortedSongs[index].id,
+                                        title: sortedSongs[index].title,
+                                        artist: sortedSongs[index]
+                                            .artist
+                                            .toString(),
+                                        exten: sortedSongs[index].fileExtension,
+                                        duration: sortedSongs[index]
+                                            .duration
+                                            .toString(),
+                                        inittialIndex: index,
+                                        genre:
+                                            sortedSongs[index].genre.toString(),
+                                        composer: sortedSongs[index]
+                                            .composer
+                                            .toString(),
+                                        songs: sortedSongs,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              itemCount: startSong.length,
+                            ),
+                          SongSections()
+                          ]),
+                        );
+                      },
+                    ),
+                  ))));
+    } else {
+      return Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Permission Denied !!",
+                style: TextStyle(
+                  fontFamily: 'coolvetica',
+                  color: Theme.of(context).cardColor,
+                  fontSize: MediaQuery.of(context).size.height * 0.030,
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              TextButton(
+                style: TextButton.styleFrom(backgroundColor: Colors.grey),
+                onPressed: () async {
+                  bool opened = await openAppSettings();
+                  if (opened) {
+                    _chechPermissions();
+                  }
+                },
+                child: Text(
+                  "Open Settings",
+                  style: TextStyle(
+                    fontFamily: 'coolvetica',
+                    color: Theme.of(context).cardColor,
+                    fontSize: MediaQuery.of(context).size.height * 0.030,
                   ),
-                ))));
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    }
   }
 }

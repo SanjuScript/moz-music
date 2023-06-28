@@ -145,17 +145,21 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                                   });
                             },
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: ((BuildContext context) {
-                                    return PlaylistSongDisplayScreen(
-                                      playlist: data,
-                                      folderindex: index,
-                                    );
-                                  }),
-                                ),
-                              );
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: ((BuildContext context) {
+                              //       return PlaylistSongDisplayScreen(
+                              //         playlist: data,
+                              //         folderindex: index,
+                              //       );
+                              //     }),
+                              //   ),
+                              // );
+                              Navigator.pushNamed(context, '/playlistsong',arguments: {
+                                'playlist': data,
+                                'folderindex': index
+                              });
                             },
                           ),
                         );
