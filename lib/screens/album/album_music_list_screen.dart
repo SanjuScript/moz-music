@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:music_player/HELPER/artist_helper.dart';
+import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
@@ -8,10 +10,10 @@ import '../../DATABASE/recently_played.dart';
 import '../../PROVIDER/album_song_list_provider.dart';
 import '../../WIDGETS/song_list_maker.dart';
 import '../favoritepage/favorite_button.dart';
-import '../main_musicPlaying_screen.dart';
 
 class AlbumMusicListing extends StatefulWidget {
-  const AlbumMusicListing({Key? key, required this.albumModel}) : super(key: key);
+  const AlbumMusicListing({Key? key, required this.albumModel})
+      : super(key: key);
   final AlbumModel albumModel;
 
   @override
@@ -19,10 +21,11 @@ class AlbumMusicListing extends StatefulWidget {
 }
 
 class _AlbumMusicListingState extends State<AlbumMusicListing> {
- @override
+  @override
   void initState() {
     super.initState();
-    Provider.of<SongListProvider>(context, listen: false).fetchSongs(widget.albumModel.id);
+    Provider.of<SongListProvider>(context, listen: false)
+        .fetchSongs(widget.albumModel.id);
   }
 
   @override
@@ -109,9 +112,11 @@ class _AlbumMusicListingState extends State<AlbumMusicListing> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 5, right: 5),
+                                padding:
+                                    const EdgeInsets.only(left: 5, right: 5),
                                 child: SizedBox(
-                                  width: MediaQuery.of(context).size.width * 0.60,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.60,
                                   child: Text(
                                     widget.albumModel.artist == "<unknown>"
                                         ? "${songs.length} Songs"
@@ -145,31 +150,39 @@ class _AlbumMusicListingState extends State<AlbumMusicListing> {
                               fileSize: '',
                               id: songs[index].id,
                               onLongpress: () {},
-                              subtitle: songs[index].artist.toString() == '<unknown>'
-                                  ? 'Unknown Artist' "." + songs[index].fileExtension.toString()
-                                  : "${songs[index].artist}.${songs[index].fileExtension}",
+                              subtitle: artistHelper(
+                                  songs[index].artist.toString(),
+                                  songs[index].fileExtension),
                               onTap: () {
                                 List<SongModel> newlist = [...songs];
                                 GetSongs.player.stop();
-                                GetSongs.player.setAudioSource(GetSongs.createSongList(newlist), initialIndex: index);
+                                GetSongs.player.setAudioSource(
+                                    GetSongs.createSongList(newlist),
+                                    initialIndex: index);
                                 GetSongs.player.play();
-                                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
                                   return NowPlaying(
                                     songModelList: GetSongs.playingSongs,
                                   );
                                 }));
-                                RecentlyPlayedDB.addRecentlyPlayed(songs[index].id);
-                                GetSongs.player.playerStateStream.listen((playerState) {
-                                  if (playerState.processingState == ProcessingState.completed) {
-                                    if (GetSongs.player.currentIndex == songs.length - 1) {
-                                      GetSongs.player.seek(Duration.zero, index: 0);
+                                RecentlyPlayedDB.addRecentlyPlayed(
+                                    songs[index].id);
+                                GetSongs.player.playerStateStream
+                                    .listen((playerState) {
+                                  if (playerState.processingState ==
+                                      ProcessingState.completed) {
+                                    if (GetSongs.player.currentIndex ==
+                                        songs.length - 1) {
+                                      GetSongs.player
+                                          .seek(Duration.zero, index: 0);
                                     }
                                   }
                                 });
                               },
-                              trailingWidget: FavoriteButton(songFavorite: songs[index]),
-                              trailingOnTap: () {
-                              },
+                              trailingWidget:
+                                  FavoriteButton(songFavorite: songs[index]),
+                              trailingOnTap: () {},
                               icon: Icons.delete,
                               title: songs[index].title,
                               child: const SizedBox(),

@@ -1,7 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:music_player/screens/song_info.dart';
+import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -34,6 +33,8 @@ void bottomDetailsSheet({
   required File file,
   required void Function() onTap,
   required int id,
+  void Function()? remove,
+  bool enableRemoveButon = false,
   bool isPlaylistShown = false,
   required void Function() delete,
 }) async {
@@ -59,9 +60,7 @@ void bottomDetailsSheet({
               // Bottom sheet content
               moreListSheet(
                 context: context,
-                text: artist.toString() == '<unknown>'
-                    ? 'unknown artist'
-                    : artist.toString(),
+                text: artistHelper(artist, 'null'),
                 icon: Icons.person_rounded,
               ),
               moreListSheet(
@@ -77,15 +76,14 @@ void bottomDetailsSheet({
 
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SongInfo(
-                                title: title,
-                                artist: artist,
-                                id: id,
-                                songs: song,
-                              )));
+               
+                
+                  Navigator.pushNamed(context, '/songInfo', arguments: {
+                    'title': title,
+                    'artist': artist,
+                    'id': id,
+                    'songs': song
+                  });
                 },
                 child: moreListSheet(
                   context: context,
@@ -118,6 +116,15 @@ void bottomDetailsSheet({
                   );
                 },
               ),
+              enableRemoveButon ?  InkWell(
+                      onTap: enableRemoveButon ? remove : null,
+                      child: moreListSheet(
+                        context: context,
+                        text: 'Remove from list',
+                        icon: Icons.remove_circle_outline_sharp,
+                      ),
+                    )
+                  : const SizedBox(),
               isPlaylistShown
                   ? InkWell(
                       onTap: onTap,

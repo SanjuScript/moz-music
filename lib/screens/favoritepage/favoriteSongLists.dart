@@ -1,20 +1,20 @@
 // ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
-import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
+import 'package:music_player/HELPER/artist_helper.dart';
+import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
 import 'package:music_player/WIDGETS/dialogues/song_delete_dialogue.dart';
 import 'package:music_player/Widgets/song_list_maker.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../../DATABASE/recently_played.dart';
 import '../../HELPER/get_audio_size_in_mb.dart';
 import '../../WIDGETS/bottomsheet/song_info_sheet.dart';
+import '../../WIDGETS/dialogues/playlist_delete_dialogue.dart';
 import '../../Widgets/appbar.dart';
 import '../../CONTROLLER/song_controllers.dart';
-import '../main_musicPlaying_screen.dart';
 
 class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({Key? key}) : super(key: key);
@@ -170,10 +170,7 @@ class _FavoriteScreenState extends State<FavoriteScreen>
                                   },
                                   title: song.title.toUpperCase(),
                                   icon: FontAwesomeIcons.heartCircleCheck,
-                                  subtitle: song.artist.toString() ==
-                                          '<unknown>'
-                                      ? 'Unknown Artist.${song.fileExtension.toString()}'
-                                      : "${song.artist}.${song.fileExtension}",
+                                  subtitle: artistHelper(song.artist.toString(), song.fileExtension),
                                   id: song.id,
                                   trailingOnTap: () {
                                   

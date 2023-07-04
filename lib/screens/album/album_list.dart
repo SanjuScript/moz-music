@@ -5,7 +5,7 @@ import 'package:music_player/PROVIDER/album_provider.dart';
 import 'package:music_player/WIDGETS/indicators.dart';
 import 'package:music_player/WIDGETS/nuemorphic_button.dart';
 import 'package:music_player/Widgets/audio_artwork_definer.dart';
-import 'package:music_player/screens/album/album_music_list_screen.dart';
+import 'package:music_player/SCREENS/album/album_music_list_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';

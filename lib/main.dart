@@ -6,14 +6,19 @@ import 'package:music_player/Model/music_model.dart';
 import 'package:music_player/PROVIDER/album_song_list_provider.dart';
 import 'package:music_player/PROVIDER/artist_provider.dart';
 import 'package:music_player/PROVIDER/artist_song_provider.dart';
+import 'package:music_player/PROVIDER/homepage_provider.dart';
 import 'package:music_player/PROVIDER/miniplayer_provider.dart';
 import 'package:music_player/PROVIDER/now_playing_provider.dart';
+import 'package:music_player/PROVIDER/search_screen_provider.dart';
 import 'package:music_player/PROVIDER/sleep_timer_provider.dart';
 import 'package:music_player/PROVIDER/theme_class_provider.dart';
-import 'package:music_player/SCREENS/playlist/playlist_screen.dart';
-import 'package:music_player/screens/const_splashScreen.dart';
-import 'package:music_player/screens/playlist/playlistSong_display_screen.dart';
-import 'package:music_player/screens/splash_screen.dart';
+import 'package:music_player/SCREENS/about.dart';
+import 'package:music_player/SCREENS/const_splashScreen.dart';
+import 'package:music_player/SCREENS/playlist/playList_song_listpage.dart';
+import 'package:music_player/SCREENS/playlist/playlistSong_display_screen.dart';
+import 'package:music_player/SCREENS/privacy_policy.dart';
+import 'package:music_player/SCREENS/song_info.dart';
+import 'package:music_player/SCREENS/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'COLORS/colors.dart';
@@ -65,11 +70,17 @@ Future<void> main() async {
       ChangeNotifierProvider(
         create: (context) => AlbumProvider(),
       ),
-       ChangeNotifierProvider(
+      ChangeNotifierProvider(
         create: (context) => ArtistSongListProvider(),
       ),
-        ChangeNotifierProvider(
+      ChangeNotifierProvider(
         create: (context) => ArtistProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => HomePageSongProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => SearchScreenProvider(),
       ),
       ChangeNotifierProvider(create: (context) => SongListProvider()),
     ], child: const MyApp()));
@@ -89,6 +100,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/playlistsong': (context) => const PlaylistSongDisplayScreen(),
+        '/songInfo': (context) => const SongInfo(),
+        '/playlistSongList': (context) => const PlayListSongListScreen(),
+        '/about': (context) => const AboutPage(),
+        '/privacyPage': (context) => const PrivacyPolicyPage(),
       },
     );
   }

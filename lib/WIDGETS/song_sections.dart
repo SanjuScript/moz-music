@@ -1,11 +1,8 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:music_player/ANIMATION/fade_animation.dart';
-import 'package:music_player/screens/artists/artists_page.dart';
-
-import '../ANIMATION/slide_animation.dart';
-import '../screens/album/album_list.dart';
+import 'package:music_player/SCREENS/artists/artists_page.dart';
+import '../SCREENS/album/album_list.dart';
 
 List<String> texts = [
   "Songs",
@@ -34,7 +31,7 @@ class _SongSectionsState extends State<SongSections>
       child: ListView.builder(
         physics: const BouncingScrollPhysics(),
         shrinkWrap: true,
-        itemCount: 3,
+        itemCount: texts.length,
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 10),
         itemBuilder: (context, index) {
@@ -51,7 +48,7 @@ class _SongSectionsState extends State<SongSections>
                 _navigate(context: context, child: const AlbumList());
               } else if (index == 2) {
                 _navigate(context: context, child: const ArtistList());
-              }
+              } 
             },
             child: Container(
               margin: const EdgeInsets.only(left: 10),
@@ -77,7 +74,7 @@ class _SongSectionsState extends State<SongSections>
                     child: Center(
                       child: Text(
                         texts[index],
-                        maxLines: 2,
+                        maxLines: 1,
                         style: TextStyle(
                           letterSpacing: 1,
                           fontFamily: "beauti",

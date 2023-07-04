@@ -8,11 +8,14 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/DATABASE/recently_played.dart';
 import 'package:music_player/CONTROLLER/song_controllers.dart';
+import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:music_player/PROVIDER/now_playing_provider.dart';
+import 'package:music_player/PROVIDER/theme_class_provider.dart';
 import 'package:music_player/WIDGETS/dialogues/song_delete_dialogue.dart';
 import 'package:music_player/screens/favoritepage/favorite_music_playing.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
+import '../COLORS/colors.dart';
 import '../Model/music_model.dart';
 import '../WIDGETS/bottomsheet/song_info_sheet.dart';
 import '../WIDGETS/buttons/icon_buttons.dart';
@@ -72,7 +75,7 @@ class _NowPlayingState extends State<NowPlaying>
 
     String filePath = widget
         .songModelList[Provider.of<NowPlayingProvider>(context).currentIndex]
-        .data; 
+        .data;
     File file = File(filePath);
 
     // double fileSizeInMB = getFileSizeInMB(file);
@@ -98,7 +101,6 @@ class _NowPlayingState extends State<NowPlaying>
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       //Back Arrow Here
-
                       iconConatiner(
                           InkWell(
                               overlayColor:
@@ -112,9 +114,6 @@ class _NowPlayingState extends State<NowPlaying>
                                 color: const Color(0xff97A4B7),
                               )),
                           context),
-
-                      //PLaying Song Text Here
-
                       Text(
                         "PLAYING NOW",
                         textAlign: TextAlign.center,
@@ -123,15 +122,13 @@ class _NowPlayingState extends State<NowPlaying>
                             fontWeight: FontWeight.bold,
                             color: const Color(0xff97A4B7)),
                       ),
-
-                      //Menu Button here
-
                       iconConatiner(Consumer<NowPlayingProvider>(
                         builder: (context, value, child) {
                           return IconButton(
                               onPressed: () {
                                 bottomDetailsSheet(
-                                  id:widget.songModelList[value.currentIndex].id ,
+                                  id: widget
+                                      .songModelList[value.currentIndex].id,
                                   context: context,
                                   artist: widget
                                       .songModelList[value.currentIndex].artist
@@ -178,9 +175,6 @@ class _NowPlayingState extends State<NowPlaying>
                     ],
                   ),
                 ),
-
-                //Query Artwork here
-
                 Container(
                     margin: const EdgeInsets.symmetric(vertical: 10.0),
                     padding: const EdgeInsets.all(7),
@@ -240,15 +234,9 @@ class _NowPlayingState extends State<NowPlaying>
                         );
                       },
                     )),
-
-                //Space
-
                 SizedBox(
                   height: ht * 0.02,
                 ),
-
-                // Music Name Here
-
                 SizedBox(
                   height: ht * 0.04,
                   width: wt * 0.6,
@@ -264,24 +252,18 @@ class _NowPlayingState extends State<NowPlaying>
                         color: const Color(0xff97A4B7)),
                   ),
                 ),
-
-                //Space
-
                 SizedBox(
                   height: ht * 0.01,
                 ),
-
-                //Artist Name here
-
                 SizedBox(
                   width: wt * 0.7,
                   height: ht * 0.02,
                   child: Text(
-                    widget.songModelList[nowPlayingProvider.currentIndex]
-                                .artist ==
-                            '<unknown>'
-                        ? "No Artist ".toUpperCase()
-                        : "${widget.songModelList[nowPlayingProvider.currentIndex].artist}",
+                    artistHelper(
+                        widget.songModelList[nowPlayingProvider.currentIndex]
+                            .artist
+                            .toString(),
+                        'null'),
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     style: TextStyle(
@@ -294,7 +276,6 @@ class _NowPlayingState extends State<NowPlaying>
                 ),
 
                 // Progress Bar Here
-
                 Padding(
                   padding: EdgeInsets.only(
                     top: ht * 0.03,
@@ -306,7 +287,6 @@ class _NowPlayingState extends State<NowPlaying>
                     width: wt * 0.9,
                     height: ht * 0.02,
                     child: Nuemorphic(
-                    
                       padding: const EdgeInsets.only(top: 4, left: 5, right: 5),
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
                       child: Consumer<NowPlayingProvider>(
@@ -520,121 +500,158 @@ class _NowPlayingState extends State<NowPlaying>
     );
   }
 
-  showPlaylistdialog(context) {
-    showModalBottomSheet<void>(
-        backgroundColor: Colors.transparent,
-        isDismissible: true,
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            constraints: const BoxConstraints(minHeight: 200),
-            width: double.infinity,
-            decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30))),
-            child: ScrollConfiguration(
-              behavior: const ScrollBehavior().copyWith(overscroll: false),
-              child: SingleChildScrollView(
-                controller: ScrollController(),
+  showPlaylistdialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Theme(
+          data: darkThemeMode.copyWith(
+            dialogTheme: Theme.of(context).dialogTheme,
+          ),
+          child: Theme(
+            data: darkThemeMode.copyWith(
+                dialogTheme: Theme.of(context).dialogTheme),
+            child: Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const SizedBox(
-                      height: 20,
+                    Text(
+                      "Playlists",
+                      style: TextStyle(
+                        fontFamily: 'coolvetica',
+                        fontSize: 20,
+                        color: Theme.of(context).cardColor,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const SizedBox(),
-                        Text(
-                          "Playlists",
-                          style: TextStyle(
-                              fontFamily: 'coolvetica',
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.025,
-                              letterSpacing: 1.5,
-                              overflow: TextOverflow.ellipsis,
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).cardColor),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              SearchAnimationNavigation(const PlaylistScreen()),
-                            );
-                          },
-                          child: const Icon(Icons.playlist_add_circle_outlined),
-                        )
-                      ],
-                    ),
-                    const Divider(),
+                    const SizedBox(height: 16),
+                    Divider(),
+                    const SizedBox(height: 8),
                     ValueListenableBuilder(
                       valueListenable:
                           Hive.box<MusicModel>('playlistDB').listenable(),
                       builder: (BuildContext context, Box<MusicModel> value,
                           Widget? child) {
-                        return Hive.box<MusicModel>('playlistDB').isEmpty
-                            ? Column(children: [
-                                songEmpty(context, "No Playlist Found",(){},isSetting: false),
-                                IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        SearchAnimationNavigation(
-                                            const PlaylistScreen()),
-                                      );
-                                    },
-                                    icon: const Icon(
-                                      Icons.add_circle,
-                                      color: Colors.green,
-                                    ))
-                              ])
-                            : Consumer<NowPlayingProvider>(
-                                builder: (context, nowValue, child) {
-                                  return ListView.builder(
-                                    controller: ScrollController(),
-                                    shrinkWrap: true,
-                                    itemCount: value.length,
-                                    itemBuilder: (context, index) {
-                                      final data = value.values.toList()[index];
-
-                                      return playListadded(
-                                          data: index.toString().contains('0')
-                                              ? "first addded"
-                                              : index.toString(),
-                                          context: context,
-                                          playlistName: data.name.toUpperCase(),
-                                          delete: () {
-                                            value.deleteAt(index);
-                                            Navigator.pop(context);
-                                          },
-                                          deleteText:
-                                              "Delete Playlist ${data.name}",
-                                          ontap: () {
-                                            addSongToPlaylist(
-                                                context,
-                                                widget.songModelList[
-                                                    nowValue.currentIndex],
-                                                data,
-                                                nowValue.currentIndex);
-                                          },
-                                          isDoes: data.isValueIn(widget
-                                              .songModelList[
-                                                  nowValue.currentIndex]
-                                              .id));
-                                    },
+                        if (Hive.box<MusicModel>('playlistDB').isEmpty) {
+                          return Column(
+                            children: [
+                              songEmpty(context, "No Playlist Found", () {},
+                                  isSetting: false),
+                              const SizedBox(height: 16),
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    SearchAnimationNavigation(
+                                        const PlaylistScreen()),
                                   );
                                 },
+                                icon: const Icon(
+                                  Icons.add_circle,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Consumer<NowPlayingProvider>(
+                            builder: (context, nowValue, child) {
+                              final itemCount = value.length;
+                              return SizedBox(
+                                height: itemCount > 8
+                                    ? 320
+                                    : null, // Set a specific height if itemCount > 8
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  children: [
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: itemCount,
+                                      itemBuilder: (context, index) {
+                                        final data =
+                                            value.values.toList()[index];
+                                        return Dismissible(
+                                          key: Key(data
+                                              .name), // Use a unique key for each playlist
+                                          direction:
+                                              DismissDirection.startToEnd,
+                                          background: Container(
+                                            alignment: Alignment.centerLeft,
+                                            color: Colors.red,
+                                            child: const Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 16),
+                                              child: Icon(
+                                                Icons.delete,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          onDismissed: (direction) {
+                                            value.deleteAt(index);
+                                          },
+                                          child: ListTile(
+                                            title: Text(
+                                              data.name.toUpperCase(),
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                color:
+                                                    Provider.of<ThemeProvider>(
+                                                                    context)
+                                                                .gettheme() ==
+                                                            darkThemeMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                              ),
+                                            ),
+                                            trailing: IconButton(
+                                              icon: data.isValueIn(widget
+                                                      .songModelList[
+                                                          nowValue.currentIndex]
+                                                      .id)
+                                                  ? const Icon(Icons.done)
+                                                  : const Icon(
+                                                      Icons.add_circle),
+                                              onPressed: () {
+                                                addSongToPlaylist(
+                                                  context,
+                                                  widget.songModelList[
+                                                      nowValue.currentIndex],
+                                                  data,
+                                                  nowValue.currentIndex,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
                               );
+                            },
+                          );
+                        }
                       },
-                    )
+                    ),
                   ],
                 ),
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

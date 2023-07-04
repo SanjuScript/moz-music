@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:music_player/PROVIDER/artist_provider.dart';
-import 'package:music_player/screens/artists/artist_song_listing.dart';
+import 'package:music_player/SCREENS/artists/artist_song_listing.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 

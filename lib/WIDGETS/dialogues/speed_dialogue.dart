@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 import '../../CONTROLLER/song_controllers.dart';
-
 void showSpeedDialogue(BuildContext context) {
   double selectedSpeed = GetSongs.player.playing ? GetSongs.player.speed : 1.0;
 
@@ -69,7 +68,7 @@ void showSpeedDialogue(BuildContext context) {
       );
     }),
   );
-}
+} 
 
 Widget speedSelector(
     BuildContext context, String speedLabel, double speedValue, bool isSelected) {

@@ -27,10 +27,7 @@ class _SettingsState extends State<Settings> {
               overlayColor: MaterialStateProperty.all(Colors.transparent),
               splashColor: Colors.transparent,
               onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return  const AboutPage();
-                }));
+                Navigator.pushNamed(context, '/about');
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -62,10 +59,7 @@ class _SettingsState extends State<Settings> {
                   overlayColor: MaterialStateProperty.all(Colors.transparent),
                   splashColor: Colors.transparent,
                   onTap: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return const PrivacyPolicyPage();
-                    }));
+                     Navigator.pushNamed(context, '/privacyPage');
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

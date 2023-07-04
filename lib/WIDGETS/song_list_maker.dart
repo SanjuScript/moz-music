@@ -1,13 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:music_player/HELPER/artist_helper.dart';
+import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
 import 'package:music_player/WIDGETS/dialogues/song_delete_dialogue.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../CONTROLLER/song_controllers.dart';
 import '../DATABASE/recently_played.dart';
-import '../HELPER/toast.dart';
 import '../screens/favoritepage/favorite_button.dart';
-import '../screens/home_page.dart';
-import '../screens/main_musicPlaying_screen.dart';
 import 'bottomsheet/song_info_sheet.dart';
 import 'nuemorphic_button.dart';
 import 'audio_artwork_definer.dart';
@@ -88,7 +87,7 @@ class SongListViewerForSections extends StatelessWidget {
       required this.onTap,
       required this.icon,
       this.isBoxshadowYes = true,
-      this.artwork =  ArtworkType.AUDIO,
+      this.artwork = ArtworkType.AUDIO,
       required this.fileSize,
       this.color = Colors.black45,
       required this.trailingOnTap,
@@ -208,23 +207,20 @@ class SongListViewerForSections extends StatelessWidget {
 }
 
 Widget songDisplay(BuildContext context,
-    {required int id,
-    required String title,
-    required String artist,
-    required String exten,
-    required String duration,
-    required int inittialIndex,
-    required String genre,
-    required String composer,
-    required List<SongModel> songs}) {
-  String filePath = songs[inittialIndex].data;
-  File file = File(filePath);
+    {required SongModel song,
+    required List<SongModel> songs,
+    bool isTrailingChange = false,
+    bool disableOnTap = false,
+    Widget? trailing,
+    void Function()? remove,
+    required int index}) {
+  // String filePath = song.data;
+  // File file = File(filePath);
 
-  // double fileSizeInMB = getFileSizeInMB(file);
 // log('File Path: $filePath');
 // log('File Size: $fileSizeInMB MB');
   return SongListViewer(
-    margin: const EdgeInsets.only(left: 10, right: 10, bottom: 0, top: 5),
+    margin: const EdgeInsets.only(left: 5, right: 5, bottom: 0, top: 5),
     color: Theme.of(context).scaffoldBackgroundColor,
     shadowVisibility: false,
     borderradius: const BorderRadius.all(Radius.circular(20)),
@@ -239,7 +235,7 @@ Widget songDisplay(BuildContext context,
                 padding: const EdgeInsets.all(2),
                 borderRadius: BorderRadius.circular(100),
                 child: AudioArtworkDefiner(
-                  id: id,
+                  id: song.id,
                   isRectangle: false,
                 ),
               ),
@@ -252,7 +248,7 @@ Widget songDisplay(BuildContext context,
           ),
           child: Text(
             // item.data![index].title.toUpperCase(),
-            title,
+            song.title,
             maxLines: 1,
             style: TextStyle(
               fontWeight: FontWeight.w500,
@@ -266,19 +262,21 @@ Widget songDisplay(BuildContext context,
         onLongPress: () {
           bottomDetailsSheet(
             delete: () {
-              print(filePath);
-              showSongDeleteDialogue(context, songs[inittialIndex]);
+              // print(filePath);
+              showSongDeleteDialogue(context, song);
             },
             context: context,
-            artist: artist,
-            title: title,
-            composer: composer,
-            genre: genre,
-            song: songs[inittialIndex],
-            filePath: filePath,
-            file: file,
+            enableRemoveButon: true,
+            remove: remove,
+            artist: song.artist.toString(),
+            title: song.title,
+            composer: song.composer.toString(),
+            genre: song.genre.toString(),
+            song: song,
+            filePath: song.data,
+            file: File(song.data),
             onTap: () {},
-            id: songs[inittialIndex].id,
+            id: song.id,
           );
         },
         selectedTileColor: Theme.of(context).scaffoldBackgroundColor,
@@ -290,7 +288,7 @@ Widget songDisplay(BuildContext context,
             left: MediaQuery.of(context).size.width * 0.06,
           ),
           child: Text(
-            artist == '<unknown>' ? "Unknown Artist.$exten" : "$artist.$exten",
+            artistHelper(song.artist.toString(), song.fileExtension),
             maxLines: 1,
             style: TextStyle(
                 fontSize: MediaQuery.of(context).size.width * 0.038,
@@ -299,29 +297,28 @@ Widget songDisplay(BuildContext context,
                 color: Theme.of(context).cardColor),
           ),
         ),
-        onTap: () {
-          if (file.existsSync()) {
-            if (GetSongs.player.playing != true) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => NowPlaying(
-                            songModelList: songs,
-                          )));
-            }
-            //   print("object");
-            // }
-            GetSongs.player.setAudioSource(GetSongs.createSongList(songs),
-                //item.data
-                initialIndex: inittialIndex);
-            //index
-            RecentlyPlayedDB.addRecentlyPlayed(songs[inittialIndex].id);
+        onTap: disableOnTap
+            ? null
+            : () {
+                if (GetSongs.player.playing != true) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NowPlaying(
+                                songModelList: songs,
+                              )));
+                }
+                //   print("object");
+                // }
+                GetSongs.player.setAudioSource(GetSongs.createSongList(songs),
+                    //item.data
+                    initialIndex: index);
+                //index
+                RecentlyPlayedDB.addRecentlyPlayed(song.id);
 
-            GetSongs.player.play();
-          } else {
-            customToast("The song file does not exist anymore", context);
-          }
-        },
-        trailing: FavoriteButton(songFavorite: startSong[inittialIndex])),
+                GetSongs.player.play();
+              },
+        trailing:
+            isTrailingChange ? trailing : FavoriteButton(songFavorite: song)),
   );
 }

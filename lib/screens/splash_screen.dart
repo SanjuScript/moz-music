@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:music_player/screens/const_splashScreen.dart';
+import 'package:music_player/SCREENS/const_splashScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../ANIMATION/page_animation.dart';
@@ -62,11 +62,9 @@ class _OneTimeSplashScreenState extends State<OneTimeSplashScreen>
     });
   }
   _storeOnboardInfo() async {
-    print("Shared pref called");
     int isViewed = 0;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('onBoard', isViewed);
-    print(prefs.getInt('onBoard'));
   }
   @override
   void dispose() {

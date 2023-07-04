@@ -1,9 +1,9 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member
 import 'package:flutter/material.dart';
-import 'package:music_player/screens/playlist/playlist_screen.dart';
+import 'package:music_player/SCREENS/playlist/playlist_screen.dart';
 import 'package:music_player/PROVIDER/sleep_timer_provider.dart';
-import 'package:music_player/screens/recently_played.dart';
-import 'package:music_player/screens/setting.dart';
+import 'package:music_player/SCREENS/recently_played.dart';
+import 'package:music_player/SCREENS/setting.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import '../DATABASE/favorite_db.dart';

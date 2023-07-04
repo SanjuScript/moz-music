@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:music_player/main.dart';
-import 'package:music_player/screens/bottom_navigation_bar.dart';
-
+import 'package:music_player/SCREENS/bottom_navigation_bar.dart';
 import '../ANIMATION/fade_animation.dart';
 
 class SplashScreen extends StatefulWidget {

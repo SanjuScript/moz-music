@@ -1,10 +1,9 @@
 // ignore_for_file: deprecated_member_use, invalid_use_of_protected_member
-
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:music_player/DATABASE/playlistDb.dart';
+import 'package:music_player/WIDGETS/dialogues/playlist_creation_dialogue.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
-import 'package:music_player/screens/playlist/playlistSong_display_screen.dart';
 import '../../HELPER/toast.dart';
 import '../../Model/music_model.dart';
 import '../../Widgets/appbar.dart';
@@ -135,6 +134,10 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                             onLongPress: () {
                               showPlaylistDeleteDialogue(
                                   context: context,
+                                  isPlaylistPage: true,
+                                  rename: () {
+                                    editPlaylist(context, index,data);
+                                  },
                                   text1:
                                       "Delete Playlist ${data.name.toUpperCase()}",
                                   onPress: () {
@@ -145,21 +148,11 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                                   });
                             },
                             onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: ((BuildContext context) {
-                              //       return PlaylistSongDisplayScreen(
-                              //         playlist: data,
-                              //         folderindex: index,
-                              //       );
-                              //     }),
-                              //   ),
-                              // );
-                              Navigator.pushNamed(context, '/playlistsong',arguments: {
-                                'playlist': data,
-                                'folderindex': index
-                              });
+                              Navigator.pushNamed(context, '/playlistsong',
+                                  arguments: {
+                                    'playlist': data,
+                                    'folderindex': index
+                                  });
                             },
                           ),
                         );
@@ -167,108 +160,44 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                       itemCount: musicList.length),
               icon: Icons.playlist_add_rounded,
               iconTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Dialog(
-                      elevation: 5,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(20.0),
-                        height: MediaQuery.of(context).size.height * 0.22,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Create New Playlist',
-                              style: TextStyle(
-                                color: Theme.of(context).cardColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                            Form(
-                              key: _formKey,
-                              child: TextFormField(
-                                autofocus: true,
-                                style: TextStyle(
-                                  color: Theme.of(context).cardColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                controller: nameController,
-                                decoration: InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      width: 2,
-                                      color: Theme.of(context).cardColor,
-                                    ),
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      width: 1,
-                                      color: Theme.of(context).cardColor,
-                                    ),
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                  hintText: 'Enter playlist name',
-                                  hintStyle: TextStyle(
-                                    color: Theme.of(context)
-                                        .cardColor
-                                        .withOpacity(0.6),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Please enter playlist name";
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: Icon(
-                                    Icons.close,
-                                    color: Theme.of(context).cardColor,
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      whenButtonClicked();
-                                    }
-                                  },
-                                  icon: Icon(
-                                    Icons.done,
-                                    color: Theme.of(context).cardColor,
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
+                showPlaylistCreationDialogue(
+                    mainText: 'Create New Playlist',
+                    context: context,
+                    formKey: _formKey,
+                    nameController: nameController,
+                    hint: 'Enter playlist name',
+                    donePress: () {
+                      if (_formKey.currentState!.validate()) {
+                        whenButtonClicked();
+                      }
+                    },
+                    validator: "Please enter playlist name");
               },
             ),
           ),
         );
       }),
     );
+  }
+
+  void editPlaylist(BuildContext context, int index,MusicModel data) {
+    final TextEditingController newTextEditor = TextEditingController();
+    return showPlaylistCreationDialogue(
+        context: context,
+        mainText: 'Rename Playlist ${data.name}',
+        formKey: _formKey,
+        hint: 'Enter new name',
+        donePress: () async {
+          if (_formKey.currentState!.validate()) {
+            final newName = newTextEditor.text.trim();
+            await PlayListDB.renamePlaylist(index, newName);
+            newTextEditor.clear();
+            Navigator.pop(context);
+              Navigator.pop(context);
+          }
+        },
+        validator: "Please enter playlist name",
+        nameController: newTextEditor);
   }
 
   Future<void> whenButtonClicked() async {

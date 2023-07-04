@@ -9,4 +9,14 @@ class ToMinutes {
     dataaa += seconds.toString();
     return dataaa;
   }
+
+  static double doubleParseToMinuteSeconds(int ms) {
+    Duration duration = Duration(milliseconds: ms);
+    int minutes = duration.inMinutes;
+    int seconds = (duration.inSeconds) - (minutes * 60);
+    double result = minutes + (seconds / 60);
+    return result;
+  }
+
+
 }

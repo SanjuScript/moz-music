@@ -14,7 +14,7 @@ enum SortOption {
   zfileSize
 }
 
-  SortOption defaultSort = SortOption.adate;
+  // SortOption defaultSort = SortOption.adate;
   SongSortType getSortType(SortOption sortOption) {
     switch (sortOption) {
       case SortOption.atitle:

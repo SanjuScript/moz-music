@@ -31,37 +31,64 @@ import '../../COLORS/colors.dart';
 // }
 
 void showSongDeleteDialogue(BuildContext context, SongModel song) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return Theme(
-        data: darkThemeMode.copyWith(
-          dialogTheme: Theme.of(context).dialogTheme,
-        ),
-        child: AlertDialog(
-          title: const Text('Delete Song'),
-          content: const Text('Are you sure you want to delete this song?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                // deleteSong(song);
-                customToast("Error File path", context);
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Delete',
-                style: TextStyle(
-                  color: Colors.red,
+  Navigator.push(
+    context,
+    PageRouteBuilder(
+      opaque: false,
+      pageBuilder: (BuildContext context, _, __) {
+        return AnimatedBuilder(
+          animation: ModalRoute.of(context)!.animation!,
+          builder: (BuildContext context, Widget? child) {
+            final double animationValue = ModalRoute.of(context)!.animation!.value;
+            return Transform.scale(
+              scale: Tween<double>(begin: 0.0, end: 1.0).animate(
+                CurvedAnimation(
+                  parent: ModalRoute.of(context)!.animation!,
+                  curve: Curves.elasticOut,
+                ),
+              ).value,
+              child: Opacity(
+                opacity: animationValue,
+                child: Theme(
+                  data: darkThemeMode.copyWith(
+                    dialogTheme: Theme.of(context).dialogTheme,
+                  ),
+                  child: AlertDialog(
+                    title: const Text('Delete Song'),
+                    content: const Text('Are you sure you want to delete this song?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // deleteSong(song);
+                          customToast("Error File path", context);
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          'Delete',
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-      );
-    },
+            );
+          },
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 500),
+      transitionsBuilder: (BuildContext context, Animation<double> animation, _, Widget? child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    ),
   );
 }

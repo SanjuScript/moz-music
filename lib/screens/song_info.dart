@@ -6,17 +6,9 @@ import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class SongInfo extends StatefulWidget {
-  final String title;
-  final String artist;
-  final int id;
-  final SongModel songs;
-
-  const SongInfo(
-      {super.key,
-      required this.artist,
-      required this.id,
-      required this.title,
-      required this.songs});
+  const SongInfo({
+    super.key,
+  });
 
   @override
   State<SongInfo> createState() => _SongInfoState();
@@ -35,6 +27,13 @@ class _SongInfoState extends State<SongInfo> {
   );
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> arguments =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final String title = arguments['title'];
+    final String artist = arguments['artist'];
+    final int id = arguments['id'];
+    final SongModel songData = arguments['songs'];
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -65,7 +64,7 @@ class _SongInfoState extends State<SongInfo> {
                     height: MediaQuery.of(context).size.height * .12,
                     width: MediaQuery.of(context).size.width * 0.27,
                     child: AudioArtworkDefiner(
-                      id: widget.id,
+                      id: id,
                       imgRadius: 15,
                     ),
                   ),
@@ -80,9 +79,11 @@ class _SongInfoState extends State<SongInfo> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            const SizedBox(height: 10,),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             Text(
-                              widget.title,
+                              title,
                               textAlign: TextAlign.center,
                               maxLines: 2,
                               style: TextStyle(
@@ -94,9 +95,9 @@ class _SongInfoState extends State<SongInfo> {
                             ),
                             const Divider(),
                             Text(
-                              widget.artist == "<unknown>"
+                              artist == "<unknown>"
                                   ? "UNKNOWN"
-                                  : widget.artist,
+                                  : artist,
                               maxLines: 2,
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -106,7 +107,6 @@ class _SongInfoState extends State<SongInfo> {
                                   fontWeight: FontWeight.w500,
                                   color: Theme.of(context).cardColor),
                             ),
-                            
                           ],
                         ),
                       ),
@@ -126,16 +126,16 @@ class _SongInfoState extends State<SongInfo> {
                   shrinkWrap: true,
                   itemCount: texts.length,
                   itemBuilder: (context, index) {
-                    File file = File(widget.songs.data);
+                    File file = File(songData.data);
                     double fileSize = getFileSizeInMB(file);
                     List<String> songs = [
-                      "${ToMinutes.stringParseToMinuteSeconds(widget.songs.duration!)} Minutes",
-                      widget.songs.fileExtension,
-                      widget.songs.genre.toString() == "null"
+                      "${ToMinutes.stringParseToMinuteSeconds(songData.duration!)} Minutes",
+                      songData.fileExtension,
+                      songData.genre.toString() == "null"
                           ? "NO GENRE"
-                          : widget.songs.genre.toString(),
+                          : songData.genre.toString(),
                       "${fileSize.toStringAsFixed(1)} MB",
-                      widget.songs.data
+                      songData.data
                     ];
                     return Container(
                       height: MediaQuery.of(context).size.width * 0.20,
@@ -153,7 +153,7 @@ class _SongInfoState extends State<SongInfo> {
                             child: Text(
                               texts[index],
                               textAlign: TextAlign.center,
-                              style:  TextStyle(
+                              style: TextStyle(
                                 color: Theme.of(context).cardColor,
                                 fontFamily: 'coolvetica',
                                 fontSize: 18,
@@ -167,8 +167,8 @@ class _SongInfoState extends State<SongInfo> {
                             width: MediaQuery.of(context).size.width * .4,
                             child: Text(
                               songs[index],
-                              style:  TextStyle(
-                                                  color: Theme.of(context).cardColor,
+                              style: TextStyle(
+                                color: Theme.of(context).cardColor,
                                 fontWeight: FontWeight.w100,
                                 fontFamily: 'coolvetica',
                                 fontSize: 18,

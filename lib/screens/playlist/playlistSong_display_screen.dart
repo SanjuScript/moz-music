@@ -1,20 +1,19 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:music_player/Model/music_model.dart';
+import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
+import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
-import 'package:music_player/screens/playlist/playList_song_listpage.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../../DATABASE/playlistDb.dart';
 import '../../DATABASE/recently_played.dart';
 import '../../WIDGETS/dialogues/playlist_remove_dialogue.dart';
 import '../../Widgets/song_list_maker.dart';
-import '../../ANIMATION/scale_animation.dart';
 import '../../CONTROLLER/song_controllers.dart';
-import '../main_musicPlaying_screen.dart';
 
 class PlaylistSongDisplayScreen extends StatefulWidget {
   const PlaylistSongDisplayScreen({
@@ -83,10 +82,8 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          ScaletransitionForAddbutton(PlaylistSongListScreen(
-                              playlist: playlist)));
+                      Navigator.pushNamed(context, '/playlistSongList',
+                          arguments: {'playlistt': playlist});
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -171,16 +168,12 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                         ],
                         onSelected: (value) {
                           if (value == "addsong") {
-                            Navigator.push(
-                                context,
-                                ScaletransitionForAddbutton(
-                                    PlaylistSongListScreen(
-                                        playlist: playlist)));
+                            Navigator.pushNamed(context, '/playlistSongList',
+                                arguments: {'playlistt': playlist});
                           } else {
                             showPlaylistDeleteDialogue(
                                 context: context,
-                                text1:
-                                    "Remove all song from ${playlist.name}",
+                                text1: "Remove all song from ${playlist.name}",
                                 onPress: () {
                                   playlist.deleteAll();
                                   Navigator.pop(context);
@@ -199,68 +192,18 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                       const SizedBox(
                         width: 15,
                       ),
-                      FutureBuilder<Uint8List?>(
-                          future: OnAudioQuery().queryArtwork(
-                            playlistsong.first.id,
-                            ArtworkType.AUDIO,
-                            format: ArtworkFormat.JPEG,
-                            size: 250,
-                            quality: 100,
-                          ),
-                          builder: (context, snapshot) {
-                            if (snapshot.data != null &&
-                                snapshot.data!.isNotEmpty) {
-                              return Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.09,
-                                width:
-                                    MediaQuery.of(context).size.height * 0.09,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    clipBehavior: Clip.antiAlias,
-                                    child: Image.memory(
-                                      snapshot.data!,
-                                      gaplessPlayback: true,
-                                      repeat: ImageRepeat.repeat,
-                                      fit: BoxFit.cover,
-                                      filterQuality: FilterQuality.high,
-                                      errorBuilder:
-                                          (context, exception, stackTrace) {
-                                        return const Icon(
-                                          Icons.image_not_supported,
-                                          size: 50,
-                                        );
-                                      },
-                                    )),
-                              );
-                            }
-                            return Container(
-                              height: MediaQuery.of(context).size.height * 0.09,
-                              width: MediaQuery.of(context).size.height * 0.09,
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                gradient: LinearGradient(colors: [
-                                  Theme.of(context).primaryColorDark,
-                                  Theme.of(context).primaryColorLight,
-                                ]),
-                              ),
-                              child: Center(
-                                  child: Icon(
-                                FontAwesomeIcons.music,
-                                size: 15,
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                              )),
-                            );
-                          }),
+                      Container(
+                          height: MediaQuery.of(context).size.height * 0.09,
+                          width: MediaQuery.of(context).size.height * 0.09,
+                          margin: const EdgeInsets.symmetric(horizontal: 15),
+                          child: AudioArtworkDefiner(
+                            id: playlistsong.first.id,
+                            imgRadius: 15,
+                          )),
                       Column(
                         children: [
                           Text(
-                           playlist.name,
+                            playlist.name,
                             style: TextStyle(
                               letterSpacing: 1,
                               fontFamily: "appollo",
@@ -299,15 +242,9 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                                 fileSize: '',
                                 id: playlistsong[index].id,
                                 onLongpress: () {},
-                                subtitle: playlistsong[index]
-                                            .artist
-                                            .toString() ==
-                                        '<unknown>'
-                                    ? 'Unknown Artist' "." +
-                                        playlistsong[index]
-                                            .fileExtension
-                                            .toString()
-                                    : "${playlistsong[index].artist}.${playlistsong[index].fileExtension}",
+                                subtitle: artistHelper(
+                                    playlistsong[index].artist.toString(),
+                                    playlistsong[index].fileExtension),
                                 onTap: () {
                                   if (GetSongs.player.playing != true) {
                                     Navigator.push(context,
@@ -350,7 +287,7 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                                       return DeleteSongDialog(
                                         songTitle: playlistsong[index].title,
                                         onPress: () {
-                                     playlist.deleteData(
+                                          playlist.deleteData(
                                             playlistsong[index].id,
                                           );
                                           Navigator.pop(context);

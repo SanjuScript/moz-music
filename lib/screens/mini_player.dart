@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player/PROVIDER/miniplayer_provider.dart';
+import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
 import 'package:music_player/WIDGETS/nuemorphic_button.dart';
 import 'package:music_player/Widgets/audio_artwork_definer.dart';
-import 'package:music_player/screens/main_musicPlaying_screen.dart';
 import 'package:provider/provider.dart';
 import '../DATABASE/recently_played.dart';
 import '../ANIMATION/up_animation.dart';
@@ -12,6 +12,7 @@ import '../CONTROLLER/song_controllers.dart';
 // ignore: depend_on_referenced_packages
 import 'package:rxdart/rxdart.dart';
 import '../HELPER/duration.dart';
+
 
 class MiniPlayer extends StatelessWidget {
   const MiniPlayer({Key? key}) : super(key: key);

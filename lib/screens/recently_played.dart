@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
@@ -7,11 +6,13 @@ import 'package:music_player/DATABASE/recently_played.dart';
 import 'package:music_player/WIDGETS/bottomsheet/song_info_sheet.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
 import 'package:music_player/WIDGETS/dialogues/song_delete_dialogue.dart';
+import 'package:music_player/screens/main_music_playing_screen.dart.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import '../HELPER/get_audio_size_in_mb.dart';
 import '../Widgets/appbar.dart';
 import '../Widgets/song_list_maker.dart';
 import '../CONTROLLER/song_controllers.dart';
-import 'main_musicPlaying_screen.dart';
+
 
 class RecentlyPlayed extends StatefulWidget {
   const RecentlyPlayed({super.key});
@@ -68,7 +69,7 @@ class _RecentlyPlayedState extends State<RecentlyPlayed>
                         ? Center(
                             heightFactor: 30,
                             child: Text(
-                              'NO FAVORITES YET',
+                              'No Recently played Yet',
                               style: TextStyle(
                                 letterSpacing: 2,
                                 fontFamily: "appollo",
@@ -82,13 +83,6 @@ class _RecentlyPlayedState extends State<RecentlyPlayed>
                             physics: const BouncingScrollPhysics(),
                             itemCount: recentSong.length,
                             itemBuilder: (context, index) {
-                              double getFileSizeInMB(File file) {
-                                int fileSizeInBytes = file.lengthSync();
-                                double fileSizeInKB = fileSizeInBytes / 1024;
-                                double fileSizeInMB = fileSizeInKB / 1024;
-                                return fileSizeInMB;
-                              }
-
                               String filePath = recentSong[index].data;
                               File file = File(filePath);
                               double fileSizeInMB = getFileSizeInMB(file);

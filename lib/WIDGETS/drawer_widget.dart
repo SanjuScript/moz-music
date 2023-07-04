@@ -3,10 +3,10 @@ import 'package:music_player/Widgets/buttons/theme_button_widget.dart';
 import '../ANIMATION/slide_animation.dart';
 import '../SCREENS/playlist/playlist_screen.dart';
 import '../screens/about.dart';
-import '../screens/favoritepage/favoriteSongLists.dart';
-import '../screens/privacy_policy.dart';
-import '../screens/search_music_screen.dart';
-import '../screens/setting.dart';
+import '../SCREENS/favoritepage/favoriteSongLists.dart';
+import '../SCREENS/privacy_policy.dart';
+import '../SCREENS/search_music_screen.dart';
+import '../SCREENS/setting.dart';
 import 'bottomsheet/sleep_timer_sheet.dart';
 
 Widget drawerWidget(

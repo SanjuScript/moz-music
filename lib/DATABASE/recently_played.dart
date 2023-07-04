@@ -1,9 +1,9 @@
-// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:music_player/screens/home_page.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+
+import '../CONTROLLER/song_controllers.dart';
 
 class RecentlyPlayedDB {
   static ValueNotifier<List<SongModel>> recentlyplayedSongNotifier =
@@ -63,10 +63,9 @@ class RecentlyPlayedDB {
 
     for (int i = startIndex; i < recentSongItems.length; i++) {
       final songId = recentSongItems[i];
-      final song = startSong.firstWhere(
+      final song = GetSongs.songscopy.firstWhere(
         (element) => element.id == songId,
-        orElse: () =>
-            SongModel(songId), // Return a default instance of SongModel
+        orElse: () => SongModel(songId), // Return a default instance of SongModel
       );
 
       recentlyplayedSongNotifier.value.add(song);
