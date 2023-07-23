@@ -11,6 +11,7 @@ import 'package:music_player/CONTROLLER/song_controllers.dart';
 import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:music_player/PROVIDER/now_playing_provider.dart';
 import 'package:music_player/PROVIDER/theme_class_provider.dart';
+import 'package:music_player/WIDGETS/buttons/theme_button_widget.dart';
 import 'package:music_player/WIDGETS/dialogues/song_delete_dialogue.dart';
 import 'package:music_player/screens/favoritepage/favorite_music_playing.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -23,7 +24,6 @@ import '../WIDGETS/buttons/next_prevoius_button.dart';
 import '../WIDGETS/indicators.dart';
 import '../WIDGETS/dialogues/speed_dialogue.dart';
 import '../WIDGETS/nuemorphic_button.dart';
-import '../WIDGETS/playlist_card.dart';
 import '../Widgets/audio_artwork_definer.dart';
 import '../ANIMATION/slide_animation.dart';
 import 'playlist/playlist_screen.dart';
@@ -101,18 +101,57 @@ class _NowPlayingState extends State<NowPlaying>
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       //Back Arrow Here
-                      iconConatiner(
-                          InkWell(
-                              overlayColor:
-                                  MaterialStateProperty.all(Colors.transparent),
-                              onTap: () {
-                                nowPlayingProviderFalse.backButtonHere(context);
-                              },
-                              child: Icon(
-                                FontAwesomeIcons.arrowLeft,
-                                size: wt * 0.05,
-                                color: const Color(0xff97A4B7),
-                              )),
+                      iconConatinerr(
+                          Consumer<NowPlayingProvider>(
+                           builder: (context, value, child) {
+                              return IconButton(
+                                      onPressed: () {
+                                        bottomDetailsSheet(
+                                          id: widget
+                                              .songModelList[value.currentIndex].id,
+                                          context: context,
+                                          artist: widget
+                                              .songModelList[value.currentIndex].artist
+                                              .toString(),
+                                          title: widget
+                                              .songModelList[value.currentIndex].title,
+                                          composer: widget
+                                              .songModelList[value.currentIndex]
+                                              .composer
+                                              .toString(),
+                                          genre: widget
+                                              .songModelList[value.currentIndex].genre
+                                              .toString(),
+                                          song:
+                                              widget.songModelList[value.currentIndex],
+                                          filePath: filePath,
+                                          file: file,
+                                          isPlaylistShown: true,
+                                          onTap: () {
+                                            showPlaylistdialog(context);
+                                          },
+                                          delete: () async {
+                                            showSongDeleteDialogue(
+                                                context,
+                                                widget
+                                                    .songModelList[value.currentIndex]);
+                                            widget.songModelList.removeAt(widget
+                                                .songModelList[value.currentIndex].id);
+                                            if (GetSongs.player.hasNext) {
+                                              await GetSongs.player.seekToNext();
+                                              await GetSongs.player.play();
+                                            } else if (GetSongs.player.hasPrevious) {
+                                              await GetSongs.player.play();
+                                            }
+                                          },
+                                        );
+                                      },
+                                      icon: const Icon(
+                                        Icons.more_vert_rounded,
+                                        color: Color(0xff97A4B7),
+                                      ));
+                            }
+                          ),
                           context),
                       Text(
                         "PLAYING NOW",
@@ -122,56 +161,9 @@ class _NowPlayingState extends State<NowPlaying>
                             fontWeight: FontWeight.bold,
                             color: const Color(0xff97A4B7)),
                       ),
-                      iconConatiner(Consumer<NowPlayingProvider>(
-                        builder: (context, value, child) {
-                          return IconButton(
-                              onPressed: () {
-                                bottomDetailsSheet(
-                                  id: widget
-                                      .songModelList[value.currentIndex].id,
-                                  context: context,
-                                  artist: widget
-                                      .songModelList[value.currentIndex].artist
-                                      .toString(),
-                                  title: widget
-                                      .songModelList[value.currentIndex].title,
-                                  composer: widget
-                                      .songModelList[value.currentIndex]
-                                      .composer
-                                      .toString(),
-                                  genre: widget
-                                      .songModelList[value.currentIndex].genre
-                                      .toString(),
-                                  song:
-                                      widget.songModelList[value.currentIndex],
-                                  filePath: filePath,
-                                  file: file,
-                                  isPlaylistShown: true,
-                                  onTap: () {
-                                    showPlaylistdialog(context);
-                                  },
-                                  delete: () async {
-                                    showSongDeleteDialogue(
-                                        context,
-                                        widget
-                                            .songModelList[value.currentIndex]);
-                                    widget.songModelList.removeAt(widget
-                                        .songModelList[value.currentIndex].id);
-                                    if (GetSongs.player.hasNext) {
-                                      await GetSongs.player.seekToNext();
-                                      await GetSongs.player.play();
-                                    } else if (GetSongs.player.hasPrevious) {
-                                      await GetSongs.player.play();
-                                    }
-                                  },
-                                );
-                              },
-                              icon: const Icon(
-                                Icons.more_vert_rounded,
-                                color: Color(0xff97A4B7),
-                              ));
-                        },
-                      ), context)
+                      iconConatiner(
+                        onMore:Provider.of<ThemeProvider>(context).gettheme() == lightThemeMode ,
+                        ChangeThemeButtonWidget(visiblity: true,), context)
                     ],
                   ),
                 ),
@@ -609,7 +601,7 @@ class _NowPlayingState extends State<NowPlaying>
                                                 color:
                                                     Provider.of<ThemeProvider>(
                                                                     context)
-                                                                .gettheme() ==
+                                                                ==
                                                             darkThemeMode
                                                         ? Colors.white
                                                         : Colors.black,

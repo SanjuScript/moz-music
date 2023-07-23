@@ -39,6 +39,8 @@ class _PlayListSongListScreenState extends State<PlayListSongListScreen>
     void playlistCheck(SongModel data) {
       if (!playlist.isValueIn(data.id)) {
         playlist.add(data.id);
+      } else {
+        playlist.deleteData(data.id);
       }
     }
 
@@ -49,7 +51,7 @@ class _PlayListSongListScreenState extends State<PlayListSongListScreen>
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
         itemBuilder: (context, index) {
           return songDisplay(context,
-          disableOnTap: true,
+              disableOnTap: true,
               isTrailingChange: true,
               song: foundSongs[index],
               songs: foundSongs,
@@ -116,6 +118,7 @@ class _PlayListSongListScreenState extends State<PlayListSongListScreen>
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Consumer<SearchScreenProvider>(
         builder: (context, provider, _) {
+      
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 700),
             child: getListView() ?? const SizedBox(),

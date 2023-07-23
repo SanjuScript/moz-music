@@ -232,6 +232,7 @@ Widget songDisplay(BuildContext context,
             padding: const EdgeInsets.only(left: 7),
             child: CircleAvatar(
               child: Nuemorphic(
+                
                 padding: const EdgeInsets.all(2),
                 borderRadius: BorderRadius.circular(100),
                 child: AudioArtworkDefiner(
@@ -267,7 +268,10 @@ Widget songDisplay(BuildContext context,
             },
             context: context,
             enableRemoveButon: true,
+            
             remove: remove,
+           
+          
             artist: song.artist.toString(),
             title: song.title,
             composer: song.composer.toString(),

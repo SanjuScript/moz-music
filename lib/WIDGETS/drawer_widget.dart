@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/Widgets/buttons/theme_button_widget.dart';
+import 'package:provider/provider.dart';
 import '../ANIMATION/slide_animation.dart';
+import '../COLORS/colors.dart';
+import '../PROVIDER/theme_class_provider.dart';
 import '../SCREENS/playlist/playlist_screen.dart';
 import '../screens/about.dart';
 import '../SCREENS/favoritepage/favoriteSongLists.dart';
@@ -8,6 +11,7 @@ import '../SCREENS/privacy_policy.dart';
 import '../SCREENS/search_music_screen.dart';
 import '../SCREENS/setting.dart';
 import 'bottomsheet/sleep_timer_sheet.dart';
+import 'buttons/icon_buttons.dart';
 
 Widget drawerWidget(
     {required BuildContext context,
@@ -100,6 +104,16 @@ Widget drawerWidget(
   );
 }
 
+Widget themeSetter({
+  required BuildContext context,
+}) {
+  return Container(
+    height: 100,
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20), color: Colors.red),
+  );
+}
+
 Widget listDrawerItems(
     {required BuildContext context,
     required IconData leadingIcon,
@@ -117,7 +131,13 @@ Widget listDrawerItems(
       text,
       style: TextStyle(color: Theme.of(context).cardColor),
     ),
-    trailing: isTrailingVisible ? const ChangeThemeButtonWidget() : trailingIcon,
+    trailing: isTrailingVisible
+        ? iconConatiner(
+            onMore: Provider.of<ThemeProvider>(context).gettheme() ==
+                lightThemeMode,
+            const ChangeThemeButtonWidget(),
+            context)
+        : trailingIcon,
   );
 }
 

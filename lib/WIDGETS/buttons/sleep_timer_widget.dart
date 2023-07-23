@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/PROVIDER/sleep_timer_provider.dart';
+import 'package:music_player/Widgets/nuemorphic_button.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -94,25 +95,32 @@ class _SleepTimerForMozState extends State<SleepTimerForMoz> {
                   fontSize: MediaQuery.of(context).size.height * 0.030,
                 ),
               ),
-              Slider(
-                inactiveColor: Theme.of(context).cardColor,
-                value: sliderValue,
-                min: 0,
-                max: 90,
-                onChanged: (value) {
-                  setState(() {
-                    sliderValue = value;
-                    selectedDuration = value;
-                    saveSelectedDuration(value);
-                  });
-                },
-                onChangeEnd: (value) {
-                  setState(() {
-                    selectedDuration = value;
-                    saveSelectedDuration(value);
-                  });
-                },
-                label: selectedDuration.toStringAsFixed(0),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.04,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: Nuemorphic(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Slider(
+                    inactiveColor: Theme.of(context).cardColor,
+                    value: sliderValue,
+                    min: 0,
+                    max: 90,
+                    onChanged: (value) {
+                      setState(() {
+                        sliderValue = value;
+                        selectedDuration = value;
+                        saveSelectedDuration(value);
+                      });
+                    },
+                    onChangeEnd: (value) {
+                      setState(() {
+                        selectedDuration = value;
+                        saveSelectedDuration(value);
+                      });
+                    },
+                    label: selectedDuration.toStringAsFixed(0),
+                  ),
+                ),
               ),
               TextButton(
                 style: TextButton.styleFrom(

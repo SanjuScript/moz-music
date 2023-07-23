@@ -25,6 +25,8 @@ import 'COLORS/colors.dart';
 import 'PROVIDER/album_provider.dart';
 
 int? isViewed;
+
+Color dynamicShadowColor = const Color.fromARGB(255, 6, 8, 10);
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -43,6 +45,8 @@ Future<void> main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   SharedPreferences.getInstance().then((prefs) async {
     var darkModeON = prefs.getBool('darkMode') ?? true;
+    dynamicShadowColor = Color(prefs.getInt('shadowColorValue') ??
+        const Color.fromARGB(255, 2, 212, 65).value);
     await JustAudioBackground.init(
         androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
         androidNotificationChannelName: 'Audio playback',

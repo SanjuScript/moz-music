@@ -13,7 +13,9 @@ class HomePageSongProvider extends ChangeNotifier {
   SortOption _defaultSort = SortOption.adate;
   Set<int> _removedSongs = {};
 
+
   Set<int> get removedSongs => _removedSongs;
+
 
   bool get permissionGranted => _permissionGranted;
   Future<List<SongModel>>? get songsFuture => _songsFuture;
@@ -21,15 +23,20 @@ class HomePageSongProvider extends ChangeNotifier {
   List<SongModel> get songs => homePageSongs;
 
   final OnAudioQuery _audioQuery = OnAudioQuery();
+
+
+
   void removeSong(SongModel song) {
     homePageSongs.remove(song);
     _removedSongs.add(song.id);
     saveRemovedSongs(); // Save the updated removed songs
-    notifyListeners(); // Notify listeners of the state change
+    notifyListeners();
   }
 
   void removeSongs(List<SongModel> songs) {
     homePageSongs.removeWhere((song) => songs.contains(song));
+    _removedSongs.addAll(songs.map((song) => song.id));
+    saveRemovedSongs(); // Save the updated removed songs
     notifyListeners();
   }
 
@@ -46,12 +53,13 @@ class HomePageSongProvider extends ChangeNotifier {
     }
   }
 
-void resetRemovedSongs() {
-  _removedSongs.clear();
-  _songsFuture = querySongs(_defaultSort);
-  notifyListeners();
-}
-
+  void resetRemovedSongs() async {
+    _removedSongs.clear();
+    await saveRemovedSongs(); // Save the cleared removed songs
+    _songsFuture =
+        querySongs(); // Update homePageSongs with filtered songs
+    notifyListeners();
+  }
 
   Future<void> saveRemovedSongs() async {
     final prefs = await SharedPreferences.getInstance();
@@ -61,14 +69,16 @@ void resetRemovedSongs() {
     );
   }
 
+
+
   Future<void> loadRemovedSongs() async {
     final prefs = await SharedPreferences.getInstance();
     final removedSongIds = prefs.getStringList('removed_songs') ?? [];
     _removedSongs = removedSongIds.map(int.parse).toSet();
   }
 
-  Future<List<SongModel>> querySongs(SortOption sortOption) async {
-    final sortType = getSortType(sortOption);
+  Future<List<SongModel>> querySongs() async {
+    final sortType = getSortType(defaultSort);
     final status = await Permission.storage.status;
     if (!status.isGranted) {
       throw Exception('Permission Not Granted');
@@ -102,7 +112,7 @@ void resetRemovedSongs() {
 
   Future<void> handleRefresh() async {
     await Future.delayed(const Duration(seconds: 1));
-    _songsFuture = querySongs(_defaultSort);
+    _songsFuture = querySongs();
     notifyListeners(); // Notify listeners of the state change
   }
 
@@ -114,14 +124,17 @@ void resetRemovedSongs() {
 
     // Update the permissionGranted flag and call querySongs
     _permissionGranted = true;
-    _songsFuture = querySongs(defaultSort);
+    _songsFuture = querySongs();
     notifyListeners(); // Notify listeners of the state change
   }
 
   HomePageSongProvider() {
     // Call loadRemovedSongs asynchronously using a microtask
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      loadRemovedSongs();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await loadRemovedSongs();
+      _songsFuture = querySongs(
+          ); // Call querySongs after loading removed songs
+      notifyListeners();
     });
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:share_plus/share_plus.dart';
@@ -34,8 +35,10 @@ void bottomDetailsSheet({
   required void Function() onTap,
   required int id,
   void Function()? remove,
+
   bool enableRemoveButon = false,
   bool isPlaylistShown = false,
+
   required void Function() delete,
 }) async {
   await showModalBottomSheet<void>(
@@ -47,7 +50,7 @@ void bottomDetailsSheet({
         padding: const EdgeInsets.symmetric(vertical: 20),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
+          color: Theme.of(context).scaffoldBackgroundColor.withBlue(10).withGreen(5),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(30),
             topRight: Radius.circular(30),
@@ -91,31 +94,7 @@ void bottomDetailsSheet({
                   icon: Icons.info_outline,
                 ),
               ),
-              ValueListenableBuilder(
-                valueListenable: FavoriteDb.favoriteSongs,
-                builder: (BuildContext ctx, List<SongModel> favoriteData,
-                    Widget? child) {
-                  return InkWell(
-                    onTap: () {
-                      if (FavoriteDb.isFavor(song)) {
-                        FavoriteDb.delete(song.id);
-                        Navigator.pop(context);
-                      } else {
-                        FavoriteDb.add(song);
-                      }
-                      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                      FavoriteDb.favoriteSongs.notifyListeners();
-                    },
-                    child: moreListSheet(
-                      context: context,
-                      text: 'Add to favorites',
-                      icon: FavoriteDb.isFavor(song)
-                          ? Icons.favorite_rounded
-                          : Icons.favorite_border_rounded,
-                    ),
-                  );
-                },
-              ),
+            
               enableRemoveButon ?  InkWell(
                       onTap: enableRemoveButon ? remove : null,
                       child: moreListSheet(
@@ -144,6 +123,32 @@ void bottomDetailsSheet({
                   text: 'Share song file',
                   icon: Icons.share_rounded,
                 ),
+              ),
+             
+                ValueListenableBuilder(
+                valueListenable: FavoriteDb.favoriteSongs,
+                builder: (BuildContext ctx, List<SongModel> favoriteData,
+                    Widget? child) {
+                  return InkWell(
+                    onTap: () {
+                      if (FavoriteDb.isFavor(song)) {
+                        FavoriteDb.delete(song.id);
+                        Navigator.pop(context);
+                      } else {
+                        FavoriteDb.add(song);
+                      }
+                      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                      FavoriteDb.favoriteSongs.notifyListeners();
+                    },
+                    child: moreListSheet(
+                      context: context,
+                      text: 'Add to favorites',
+                      icon: FavoriteDb.isFavor(song)
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
+                    ),
+                  );
+                },
               ),
               InkWell(
                 onTap: delete,

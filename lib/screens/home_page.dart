@@ -31,6 +31,7 @@ class _HomePageState extends State<HomePage>
   bool get wantKeepAlive => true;
 
   var scaffoldKey = GlobalKey<ScaffoldState>();
+  // List<SongModel> selectedSongs = [];
 
   @override
   void initState() {
@@ -118,7 +119,12 @@ class _HomePageState extends State<HomePage>
                     splashColor: Colors.transparent,
                   ),
                   PopupMenuButton<String>(
-                    icon: Icon(Icons.more_vert_rounded,color: Theme.of(context).cardColor,),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                    icon: Icon(
+                      Icons.more_vert_rounded,
+                      color: Theme.of(context).cardColor,
+                    ),
                     color: Theme.of(context).scaffoldBackgroundColor,
                     onSelected: (value) {
                       if (value == 'sort') {
@@ -139,19 +145,34 @@ class _HomePageState extends State<HomePage>
                     },
                     itemBuilder: (BuildContext context) =>
                         <PopupMenuEntry<String>>[
-                       PopupMenuItem<String>(
+                      PopupMenuItem<String>(
                         value: 'sort',
                         child: ListTile(
-                          leading: Icon(Icons.sort,color: Theme.of(context).cardColor,),
-                          title: Text('Sort',style: TextStyle(color: Theme.of(context).cardColor,),),
+                          leading: Icon(
+                            Icons.sort,
+                            color: Theme.of(context).cardColor,
+                          ),
+                          title: Text(
+                            'Sort',
+                            style: TextStyle(
+                              color: Theme.of(context).cardColor,
+                            ),
+                          ),
                         ),
                       ),
-                       PopupMenuItem<String>(
+                      PopupMenuItem<String>(
                         value: 'reset',
                         child: ListTile(
-                          leading: Icon(Icons.restart_alt_outlined, color: Theme.of(context).cardColor,),
-                        
-                          title: Text('Restore songs ',style: TextStyle(color: Theme.of(context).cardColor,),),
+                          leading: Icon(
+                            Icons.restart_alt_outlined,
+                            color: Theme.of(context).cardColor,
+                          ),
+                          title: Text(
+                            'Reset song ',
+                            style: TextStyle(
+                              color: Theme.of(context).cardColor,
+                            ),
+                          ),
                         ),
                       ),
                     ],

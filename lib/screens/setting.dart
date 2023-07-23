@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/CONTROLLER/song_controllers.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
-import 'package:music_player/screens/about.dart';
-import 'package:music_player/screens/privacy_policy.dart';
 import '../DATABASE/playlistDb.dart';
 
 class Settings extends StatefulWidget {
