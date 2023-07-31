@@ -35,14 +35,12 @@ void bottomDetailsSheet({
   required void Function() onTap,
   required int id,
   void Function()? remove,
-
   bool enableRemoveButon = false,
   bool isPlaylistShown = false,
-
   required void Function() delete,
 }) async {
   await showModalBottomSheet<void>(
-    backgroundColor: Colors.transparent,
+   backgroundColor: Theme.of(context).splashColor,
     isDismissible: true,
     context: context,
     builder: (BuildContext context) {
@@ -50,7 +48,7 @@ void bottomDetailsSheet({
         padding: const EdgeInsets.symmetric(vertical: 20),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor.withBlue(10).withGreen(5),
+          color:Theme.of(context).splashColor,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(30),
             topRight: Radius.circular(30),
@@ -150,14 +148,14 @@ void bottomDetailsSheet({
                   );
                 },
               ),
-              InkWell(
-                onTap: delete,
-                child: moreListSheet(
-                  context: context,
-                  text: 'Delete',
-                  icon: Icons.delete_rounded,
-                ),
-              ),
+              // InkWell(
+              //   onTap: delete,
+              //   child: moreListSheet(
+              //     context: context,
+              //     text: 'Delete',
+              //     icon: Icons.delete_rounded,
+              //   ),
+              // ),
             ],
           ),
         ),

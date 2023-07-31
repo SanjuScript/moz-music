@@ -17,7 +17,7 @@ class SortOptionBottomSheet extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: Theme.of(context).splashColor,
       ),
       child: Scrollbar(
         interactive: true,

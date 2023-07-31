@@ -96,12 +96,13 @@ class _SleepTimerForMozState extends State<SleepTimerForMoz> {
                 ),
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.04,
+                height: MediaQuery.of(context).size.height * 0.03,
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: Nuemorphic(
+                  shadowColorVisiblity: true,
                   borderRadius: BorderRadius.circular(15),
                   child: Slider(
-                    inactiveColor: Theme.of(context).cardColor,
+                    inactiveColor: Theme.of(context).shadowColor,
                     value: sliderValue,
                     min: 0,
                     max: 90,

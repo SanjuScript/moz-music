@@ -70,7 +70,7 @@ class TopAppBar extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)),
                     tooltip: "Clear All",
-                    color: Theme.of(context).scaffoldBackgroundColor,
+                    color: Theme.of(context).splashColor,
                     icon: Icon(
                       Icons.more_vert,
                       color: Theme.of(context).cardColor,

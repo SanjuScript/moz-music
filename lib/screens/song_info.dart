@@ -76,38 +76,40 @@ class _SongInfoState extends State<SongInfo> {
                             borderRadius: BorderRadius.circular(15)),
                         height: MediaQuery.of(context).size.height * .12,
                         width: MediaQuery.of(context).size.width * 0.60,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              title,
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                              style: TextStyle(
-                                  fontFamily: 'beauti',
-                                  letterSpacing: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.w500,
-                                  color: Theme.of(context).cardColor),
-                            ),
-                            const Divider(),
-                            Text(
-                              artist == "<unknown>"
-                                  ? "UNKNOWN"
-                                  : artist,
-                              maxLines: 2,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontFamily: 'beauti',
-                                  letterSpacing: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.w500,
-                                  color: Theme.of(context).cardColor),
-                            ),
-                          ],
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                title,
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                style: TextStyle(
+                                    fontFamily: 'beauti',
+                                    letterSpacing: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontWeight: FontWeight.w500,
+                                    color: Theme.of(context).cardColor),
+                              ),
+                              const Divider(),
+                              Text(
+                                artist == "<unknown>"
+                                    ? "UNKNOWN"
+                                    : artist,
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontFamily: 'beauti',
+                                    letterSpacing: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontWeight: FontWeight.w500,
+                                    color: Theme.of(context).cardColor),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],

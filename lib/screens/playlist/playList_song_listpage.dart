@@ -78,24 +78,64 @@ class _PlayListSongListScreenState extends State<PlayListSongListScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: AppBar(
+      // appBar: AppBar(
+      //   automaticallyImplyLeading: false,
+      //   toolbarHeight: MediaQuery.of(context).size.height * 0.08,
+      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      //   elevation: 1,
+      //   title: SizedBox(
+      //     width: MediaQuery.of(context).size.width * 0.88,
+      //     child: TextField(
+      //       autofocus: true,
+      //       style: const TextStyle(fontWeight: FontWeight.bold),
+      //       decoration: InputDecoration(
+      //         contentPadding: EdgeInsets.only(
+      //             left: MediaQuery.of(context).size.width * 0.1),
+      //         filled: true,
+      //         fillColor:   Theme.of(context).colorScheme.inversePrimary.withOpacity(.3),
+      //         border: OutlineInputBorder(
+      //             borderRadius: BorderRadius.circular(
+      //               20),
+      //             borderSide: BorderSide.none),
+      //         hintText: 'Artists, songs, or albums',
+      //         hintStyle: TextStyle(
+      //           color: Theme.of(context).cardColor,
+      //         ),
+      //         prefixIcon: Icon(
+      //           Icons.search,
+      //           color: Theme.of(context).cardColor,
+      //         ),
+      //       ),
+            // onChanged: (value) {
+            //   setState(() {
+            //     shouldAutofocus = false;
+            //   });
+            //   searchProvider.filterSongs(value);
+            // },
+      //     ),
+      //   ),
+      // ),
+      appBar:  AppBar(
         automaticallyImplyLeading: false,
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 1,
         title: SizedBox(
           width: MediaQuery.of(context).size.width * 0.88,
           child: TextField(
             autofocus: shouldAutofocus,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style:  TextStyle(fontWeight: FontWeight.bold,color: Theme.of(context).cardColor),
+            
             decoration: InputDecoration(
+              
+  
               contentPadding: EdgeInsets.only(
                   left: MediaQuery.of(context).size.width * 0.1),
               filled: true,
-              fillColor: Theme.of(context).highlightColor,
+              fillColor:
+                  Theme.of(context).colorScheme.inversePrimary.withOpacity(.3),
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                      MediaQuery.of(context).size.width * 0.07),
+                  borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide.none),
               hintText: 'Artists, songs, or albums',
               hintStyle: TextStyle(
@@ -118,7 +158,6 @@ class _PlayListSongListScreenState extends State<PlayListSongListScreen>
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Consumer<SearchScreenProvider>(
         builder: (context, provider, _) {
-      
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 700),
             child: getListView() ?? const SizedBox(),

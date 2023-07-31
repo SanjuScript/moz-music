@@ -22,7 +22,7 @@ void showSpeedDialogue(BuildContext context) {
         ),
         titlePadding: const EdgeInsets.all( 10),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Theme.of(context).splashColor,
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

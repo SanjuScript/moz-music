@@ -30,7 +30,7 @@ class _SearchPageState extends State<SearchPage>
     if (foundSongs.isNotEmpty) {
       return ListView.builder(
         physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.0010),
         itemBuilder: (context, index) {
           return songDisplay(
             context,
@@ -42,7 +42,11 @@ class _SearchPageState extends State<SearchPage>
         itemCount: foundSongs.length,
       );
     } else {
-      return Center(child: const Text.rich(TextSpan(text: "NO SEARCH FOUND")));
+      return const Center(
+        child: Text.rich(
+          TextSpan(text: "NO SEARCH FOUND"),
+        ),
+      );
     }
   }
 
@@ -53,21 +57,23 @@ class _SearchPageState extends State<SearchPage>
       appBar: AppBar(
         automaticallyImplyLeading: false,
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 1,
         title: SizedBox(
           width: MediaQuery.of(context).size.width * 0.88,
           child: TextField(
             autofocus: shouldAutofocus,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).cardColor),
             decoration: InputDecoration(
               contentPadding: EdgeInsets.only(
                   left: MediaQuery.of(context).size.width * 0.1),
               filled: true,
-              fillColor: Theme.of(context).highlightColor,
+              fillColor:
+                  Theme.of(context).colorScheme.inversePrimary.withOpacity(.3),
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                      MediaQuery.of(context).size.width * 0.07),
+                  borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide.none),
               hintText: 'Artists, songs, or albums',
               hintStyle: TextStyle(

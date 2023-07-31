@@ -119,16 +119,18 @@ class _HomePageState extends State<HomePage>
                     splashColor: Colors.transparent,
                   ),
                   PopupMenuButton<String>(
+                    
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)),
                     icon: Icon(
                       Icons.more_vert_rounded,
                       color: Theme.of(context).cardColor,
                     ),
-                    color: Theme.of(context).scaffoldBackgroundColor,
+                    color: Theme.of(context).splashColor,
                     onSelected: (value) {
                       if (value == 'sort') {
                         showModalBottomSheet<void>(
+                          backgroundColor: Theme.of(context).splashColor,
                           context: context,
                           builder: (context) {
                             return SortOptionBottomSheet(

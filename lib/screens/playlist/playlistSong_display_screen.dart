@@ -104,209 +104,210 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
             );
           } else {
             return Scaffold(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor, // S
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor, // S
 
-              body: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(children: [
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      IconButton(
-                          splashColor: Colors.transparent,
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            Icons.arrow_back_rounded,
-                            size: 23,
-                            color: Theme.of(context).cardColor,
-                          )),
-                      const Spacer(),
-                      PopupMenuButton<String>(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        tooltip: "Clear All",
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        icon: Icon(
-                          Icons.more_vert,
-                          color: Theme.of(context).cardColor,
+                body: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(children: [
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          width: 15,
                         ),
-                        itemBuilder: (context) => [
-                          PopupMenuItem<String>(
-                            value: 'addsong',
-                            child: Text(
-                              "Add Song",
-                              style: TextStyle(
-                                letterSpacing: 1,
-                                fontFamily: "appollo",
-                                fontSize: 15,
-                                color: Theme.of(context).cardColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          PopupMenuItem<String>(
-                            value: 'clearall',
-                            child: Text(
-                              "Clear All",
-                              style: TextStyle(
-                                letterSpacing: 1,
-                                fontFamily: "appollo",
-                                fontSize: 15,
-                                color: Theme.of(context).cardColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                        onSelected: (value) {
-                          if (value == "addsong") {
-                            Navigator.pushNamed(context, '/playlistSongList',
-                                arguments: {'playlistt': playlist});
-                          } else {
-                            showPlaylistDeleteDialogue(
-                                context: context,
-                                text1: "Remove all song from ${playlist.name}",
-                                onPress: () {
-                                  playlist.deleteAll();
-                                  Navigator.pop(context);
-                                });
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      Container(
-                          height: MediaQuery.of(context).size.height * 0.09,
-                          width: MediaQuery.of(context).size.height * 0.09,
-                          margin: const EdgeInsets.symmetric(horizontal: 15),
-                          child: AudioArtworkDefiner(
-                            id: playlistsong.first.id,
-                            imgRadius: 15,
-                          )),
-                      Column(
-                        children: [
-                          Text(
-                            playlist.name,
-                            style: TextStyle(
-                              letterSpacing: 1,
-                              fontFamily: "appollo",
-                              fontSize: 23,
+                        IconButton(
+                            splashColor: Colors.transparent,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(
+                              Icons.arrow_back_rounded,
+                              size: 23,
                               color: Theme.of(context).cardColor,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            )),
+                        const Spacer(),
+                        PopupMenuButton<String>(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          tooltip: "Clear All",
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          icon: Icon(
+                            Icons.more_vert,
+                            color: Theme.of(context).cardColor,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 5, right: 5),
-                            child: Text(
-                              "${playlistsong.length} Songs",
-                              style: const TextStyle(
+                          itemBuilder: (context) => [
+                            PopupMenuItem<String>(
+                              value: 'addsong',
+                              child: Text(
+                                "Add Song",
+                                style: TextStyle(
+                                  letterSpacing: 1,
+                                  fontFamily: "appollo",
+                                  fontSize: 15,
+                                  color: Theme.of(context).cardColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            PopupMenuItem<String>(
+                              value: 'clearall',
+                              child: Text(
+                                "Clear All",
+                                style: TextStyle(
+                                  letterSpacing: 1,
+                                  fontFamily: "appollo",
+                                  fontSize: 15,
+                                  color: Theme.of(context).cardColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                          onSelected: (value) {
+                            if (value == "addsong") {
+                              Navigator.pushNamed(context, '/playlistSongList',
+                                  arguments: {'playlistt': playlist});
+                            } else {
+                              showPlaylistDeleteDialogue(
+                                  context: context,
+                                  text1:
+                                      "Remove all song from ${playlist.name}",
+                                  onPress: () {
+                                    playlist.deleteAll();
+                                    Navigator.pop(context);
+                                  });
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Container(
+                            height: MediaQuery.of(context).size.height * 0.09,
+                            width: MediaQuery.of(context).size.height * 0.09,
+                            margin: const EdgeInsets.symmetric(horizontal: 15),
+                            child: AudioArtworkDefiner(
+                              id: playlistsong.first.id,
+                              imgRadius: 15,
+                            )),
+                        Column(
+                          children: [
+                            Text(
+                              playlist.name,
+                              style: TextStyle(
                                 letterSpacing: 1,
                                 fontFamily: "appollo",
-                                fontSize: 10,
-                                color: Colors.grey,
+                                fontSize: 23,
+                                color: Theme.of(context).cardColor,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  ListView.builder(
-                      shrinkWrap: true,
-                      itemBuilder: ((context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.10,
-                            child: SongListViewerForSections(
-                                isWidget: true,
-                                color: Theme.of(context).cardColor,
-                                fileSize: '',
-                                id: playlistsong[index].id,
-                                onLongpress: () {},
-                                subtitle: artistHelper(
-                                    playlistsong[index].artist.toString(),
-                                    playlistsong[index].fileExtension),
-                                onTap: () {
-                                  if (GetSongs.player.playing != true) {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: ((context) {
-                                      return NowPlaying(
-                                        songModelList: GetSongs.playingSongs,
-                                      );
-                                    })));
-                                  } else {
-                                    print("object");
-                                  }
-
-                                  List<SongModel> newlist = [...playlistsong];
-                                  GetSongs.player.stop();
-                                  GetSongs.player.setAudioSource(
-                                      GetSongs.createSongList(newlist),
-                                      initialIndex: index);
-                                  GetSongs.player.play();
-                                  RecentlyPlayedDB.addRecentlyPlayed(
-                                      playlistsong[index].id);
-                                  // Add a completion listener to the audio player
-                                  GetSongs.player.playerStateStream
-                                      .listen((playerState) {
-                                    if (playerState.processingState ==
-                                        ProcessingState.completed) {
-                                      // Check if the current song is the last song in the playlist
-                                      if (GetSongs.player.currentIndex ==
-                                          playlistsong.length - 1) {
-                                        // Rewind the playlist to the starting index
-                                        GetSongs.player
-                                            .seek(Duration.zero, index: 0);
-                                      }
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5, right: 5),
+                              child: Text(
+                                "${playlistsong.length} Songs",
+                                style: const TextStyle(
+                                  letterSpacing: 1,
+                                  fontFamily: "appollo",
+                                  fontSize: 10,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        itemBuilder: ((context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.10,
+                              child: SongListViewerForSections(
+                                  isWidget: true,
+                                  color: Theme.of(context).cardColor,
+                                  fileSize: '',
+                                  id: playlistsong[index].id,
+                                  onLongpress: () {},
+                                  subtitle: artistHelper(
+                                      playlistsong[index].artist.toString(),
+                                      playlistsong[index].fileExtension),
+                                  onTap: () {
+                                    if (GetSongs.player.playing != true) {
+                                      Navigator.push(context, MaterialPageRoute(
+                                          builder: ((context) {
+                                        return NowPlaying(
+                                          songModelList: GetSongs.playingSongs,
+                                        );
+                                      })));
+                                    } else {
+                                      print("object");
                                     }
-                                  });
-                                },
-                                trailingOnTap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return DeleteSongDialog(
-                                        songTitle: playlistsong[index].title,
-                                        onPress: () {
-                                          playlist.deleteData(
-                                            playlistsong[index].id,
-                                          );
-                                          Navigator.pop(context);
-                                        },
-                                      );
-                                    },
-                                  );
-                                },
-                                icon: Icons.delete,
-                                title: playlistsong[index].title,
-                                child: const SizedBox()),
-                          ),
-                        );
-                      }),
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: playlistsong.length),
-                ]),
-              ),
-            );
+
+                                    List<SongModel> newlist = [...playlistsong];
+                                    GetSongs.player.stop();
+                                    GetSongs.player.setAudioSource(
+                                        GetSongs.createSongList(newlist),
+                                        initialIndex: index);
+                                    GetSongs.player.play();
+                                    RecentlyPlayedDB.addRecentlyPlayed(
+                                        playlistsong[index].id);
+                                    // Add a completion listener to the audio player
+                                    GetSongs.player.playerStateStream
+                                        .listen((playerState) {
+                                      if (playerState.processingState ==
+                                          ProcessingState.completed) {
+                                        // Check if the current song is the last song in the playlist
+                                        if (GetSongs.player.currentIndex ==
+                                            playlistsong.length - 1) {
+                                          // Rewind the playlist to the starting index
+                                          GetSongs.player
+                                              .seek(Duration.zero, index: 0);
+                                        }
+                                      }
+                                    });
+                                  },
+                                  trailingOnTap: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return DeleteSongDialog(
+                                          songTitle: playlistsong[index].title,
+                                          onPress: () {
+                                            playlist.deleteData(
+                                              playlistsong[index].id,
+                                            );
+                                            Navigator.pop(context);
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
+                                  icon: Icons.delete,
+                                  title: playlistsong[index].title,
+                                  child: const SizedBox()),
+                            ),
+                          );
+                        }),
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: playlistsong.length),
+                  ]),
+                ),
+           );
           }
         });
   }

@@ -85,12 +85,18 @@ class _ChangeThemeButtonWidgetState extends State<ChangeThemeButtonWidget> {
                       title: Text('Pick a shadow color'),
                       content: SingleChildScrollView(
                         child: ColorPicker(
+                          hexInputBar: true,
+                          labelTextStyle: const TextStyle(
+                            color:Colors.white
+                          ),
+                         
                           pickerColor: dynamicShadowColor,
                           onColorChanged: (Color color) {
                             setState(() {
                               dynamicShadowColor = color;
                             });
                           },
+                          // ignore: deprecated_member_use
                           showLabel: true,
                           pickerAreaHeightPercent: 0.8,
                         ),

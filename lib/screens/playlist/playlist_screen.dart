@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:music_player/DATABASE/playlistDb.dart';
+import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_creation_dialogue.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
-import '../../HELPER/toast.dart';
 import '../../Model/music_model.dart';
 import '../../Widgets/appbar.dart';
 import '../../Widgets/song_list_maker.dart';
@@ -24,8 +24,25 @@ class _PlaylistScreenState extends State<PlaylistScreen>
   final ScrollController _scrollController = ScrollController();
   void deletePlaylistsOntap() {
     PlayListDB.deleteAllPlaylist();
+    Navigator.pop(context);
     // ignore: invalid_use_of_visible_for_testing_member
     PlayListDB.playlistnotifier.notifyListeners();
+  }
+
+  Widget _showText(String text, {FontWeight fontWeight = FontWeight.w400}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Text(
+        text,
+        style: TextStyle(
+            fontFamily: 'coolvetica',
+            fontSize: MediaQuery.of(context).size.height * 0.020,
+            letterSpacing: 1.5,
+            overflow: TextOverflow.ellipsis,
+            fontWeight: fontWeight,
+            color: Theme.of(context).cardColor),
+      ),
+    );
   }
 
   @override
@@ -33,7 +50,7 @@ class _PlaylistScreenState extends State<PlaylistScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    FocusManager.instance.primaryFocus?.unfocus();
+    // FocusManager.instance.primaryFocus?.unfocus();
     return ValueListenableBuilder(
       valueListenable: Hive.box<MusicModel>('playlistDB').listenable(),
       builder:
@@ -71,7 +88,7 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                         ),
                       ),
                     )
-                  : ListView.builder(
+                  : GridView.builder(
                       controller: _scrollController,
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
@@ -79,85 +96,101 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                           MediaQuery.of(context).size.width * 0.001),
                       itemBuilder: ((BuildContext context, int index) {
                         final data = musicList.values.toList()[index];
-                        return SongListViewer(
-                          margin: const EdgeInsets.only(
-                              left: 10, right: 10, bottom: 2, top: 10),
-                          borderradius:
-                              const BorderRadius.all(Radius.circular(25)),
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          child: ListTile(
-                            leading: Transform.scale(
-                              scale: MediaQuery.of(context).size.width * 0.0035,
-                              child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.20,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.20,
-                                  decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Theme.of(context).shadowColor,
-                                          blurRadius: 1,
-                                          offset: const Offset(2, 2),
+                        return InkWell(
+                          overlayColor: MaterialStatePropertyAll(
+                              Theme.of(context).shadowColor.withOpacity(.2)),
+                          onLongPress: () {
+                            showPlaylistDeleteDialogue(
+                                context: context,
+                                isPlaylistPage: true,
+                                rename: () {
+                                  editPlaylist(context, index, data);
+                                },
+                                text1:
+                                    "Delete Playlist ${data.name.toUpperCase()}",
+                                onPress: () {
+                                  musicList.deleteAt(index);
+                                  Navigator.pop(context);
+                                });
+                          },
+                          onTap: () {
+                            Navigator.pushNamed(context, '/playlistsong',
+                                arguments: {
+                                  'playlist': data,
+                                  'folderindex': index
+                                });
+                          },
+                          child: data.songId.isEmpty
+                              ? SongListViewer(
+                                  margin: const EdgeInsets.only(
+                                      left: 10, right: 10, bottom: 10, top: 10),
+                                  borderradius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  color:
+                                      Theme.of(context).scaffoldBackgroundColor,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.playlist_add_circle_rounded,
+                                        color: Theme.of(context).cardColor,
+                                        size: 26,
+                                      ),
+                                      _showText(data.name),
+                                      _showText("Add song")
+                                    ],
+                                  ),
+                                )
+                              : SongListViewer(
+                                  margin: const EdgeInsets.only(
+                                      left: 10, right: 10, bottom: 10, top: 10),
+                                  borderradius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  color:
+                                      Theme.of(context).scaffoldBackgroundColor,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: SizedBox(
+                                          height: MediaQuery.sizeOf(context)
+                                                  .height *
+                                              0.18,
+                                          //  width: MediaQuery.sizeOf(context).width * 0.23,
+                                          child: AudioArtworkDefiner(
+                                              size: 500,
+                                              imgRadius: 6,
+                                              id: data.songId.last),
                                         ),
-                                        BoxShadow(
-                                          color: Theme.of(context).dividerColor,
-                                          blurRadius: 1,
-                                          offset: const Offset(-2, -2),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: Text(
+                                          "${data.songId.length.toString()} songs",
+                                          style: TextStyle(
+                                              fontFamily: 'coolvetica',
+                                              letterSpacing: 1,
+                                              fontSize: 11,
+                                              overflow: TextOverflow.ellipsis,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Theme.of(context).cardColor),
                                         ),
-                                      ],
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                      shape: BoxShape.circle),
-                                  child: Icon(
-                                    Icons.playlist_play_rounded,
-                                    color: Theme.of(context).cardColor,
-                                  )),
-                            ),
-                            title: Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.089,
-                              ),
-                              child: Text(
-                                data.name.toUpperCase(),
-                                style: TextStyle(
-                                    fontFamily: 'coolvetica',
-                                    fontSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.025,
-                                    letterSpacing: 1.5,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontWeight: FontWeight.w500,
-                                    color: Theme.of(context).cardColor),
-                              ),
-                            ),
-                            onLongPress: () {
-                              showPlaylistDeleteDialogue(
-                                  context: context,
-                                  isPlaylistPage: true,
-                                  rename: () {
-                                    editPlaylist(context, index,data);
-                                  },
-                                  text1:
-                                      "Delete Playlist ${data.name.toUpperCase()}",
-                                  onPress: () {
-                                    musicList.deleteAt(index);
-                                    Navigator.pop(context);
-                                    customToast(
-                                        'Deleted ${data.name}', context);
-                                  });
-                            },
-                            onTap: () {
-                              Navigator.pushNamed(context, '/playlistsong',
-                                  arguments: {
-                                    'playlist': data,
-                                    'folderindex': index
-                                  });
-                            },
-                          ),
+                                      ),
+                                      _showText(data.name,
+                                          fontWeight: FontWeight.w500)
+                                    ],
+                                  ),
+                                ),
                         );
                       }),
-                      itemCount: musicList.length),
+                      itemCount: musicList.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: .8, crossAxisCount: 2),
+                    ),
               icon: Icons.playlist_add_rounded,
               iconTap: () {
                 showPlaylistCreationDialogue(
@@ -180,7 +213,7 @@ class _PlaylistScreenState extends State<PlaylistScreen>
     );
   }
 
-  void editPlaylist(BuildContext context, int index,MusicModel data) {
+  void editPlaylist(BuildContext context, int index, MusicModel data) {
     final TextEditingController newTextEditor = TextEditingController();
     return showPlaylistCreationDialogue(
         context: context,
@@ -190,10 +223,35 @@ class _PlaylistScreenState extends State<PlaylistScreen>
         donePress: () async {
           if (_formKey.currentState!.validate()) {
             final newName = newTextEditor.text.trim();
-            await PlayListDB.renamePlaylist(index, newName);
-            newTextEditor.clear();
-            Navigator.pop(context);
+            final music = MusicModel(
+              songId: [],
+              name: newName,
+            );
+            final data =
+                PlayListDB.playListDb.values.map((e) => e.name.trim()).toList();
+            if (newName.isEmpty) {
+              return;
+            } else if (data.contains(music.name)) {
+              SnackBar snackBar = SnackBar(
+                behavior: SnackBarBehavior.floating,
+                width: 200.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                content: const Text(
+                  'Name Unavilable',
+                  style: TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
+                ),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            } else {
+              await PlayListDB.renamePlaylist(index, newName);
+
+              newTextEditor.clear();
               Navigator.pop(context);
+              Navigator.pop(context);
+            }
           }
         },
         validator: "Please enter playlist name",

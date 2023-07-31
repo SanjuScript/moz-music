@@ -11,37 +11,82 @@ class FavoriteButton extends StatefulWidget {
   @override
   State<FavoriteButton> createState() => _FavoriteButtonState();
 }
+class _FavoriteButtonState extends State<FavoriteButton> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
-class _FavoriteButtonState extends State<FavoriteButton> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize the animation controller with a duration of 300 milliseconds
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    // Define the tween for the animation (size of the heart icon)
+    _animation = Tween<double>(begin: 1.0, end: 0.8).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _animationController.reverse();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _playAnimation() {
+    _animationController.forward(from: 0.0);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: FavoriteDb.favoriteSongs,
-        builder:
-            (BuildContext ctx, List<SongModel> favoriteData, Widget? child) {
-          return IconButton(
-            onPressed: () {
-              if (FavoriteDb.isFavor(widget.songFavorite)) {
-                FavoriteDb.delete(widget.songFavorite.id);
-              } else {
-                FavoriteDb.add(widget.songFavorite);
-              }
-
-              // ignore: invalid_use_of_protected_member
-              FavoriteDb.favoriteSongs.notifyListeners();
-            },
-            icon: FavoriteDb.isFavor(widget.songFavorite)
-                ? Icon(
-                    Icons.favorite,
-                    color: Theme.of(context).primaryColorDark,
-                    size: 41,
-                  )
-                : Icon(
-                    Icons.favorite,
-                    color: Theme.of(context).hintColor,
-                    size: 41,
-                  ),
-          );
-        });
+      valueListenable: FavoriteDb.favoriteSongs,
+      builder: (context, value, child) {
+          return GestureDetector(
+        onTap: () {
+          if (FavoriteDb.isFavor(widget.songFavorite)) {
+            FavoriteDb.delete(widget.songFavorite.id);
+          } else {
+            FavoriteDb.add(widget.songFavorite);
+          }
+    
+          // Trigger the animation when the favorite button is tapped
+          _playAnimation();
+    
+          // ignore: invalid_use_of_protected_member
+          FavoriteDb.favoriteSongs.notifyListeners();
+        },
+        child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (BuildContext context, Widget? child) {
+            return ScaleTransition(
+              scale: _animation,
+              child: Icon(
+                Icons.favorite,
+                color: FavoriteDb.isFavor(widget.songFavorite)
+                    ? Theme.of(context).primaryColorDark
+                    : Theme.of(context).hintColor,
+                size: 41.0,
+              ),
+            );
+          },
+        ),
+      );
+      },
+   
+    );
   }
 }

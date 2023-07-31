@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:music_player/COLORS/colors.dart';
 import 'package:music_player/HELPER/artist_helper.dart';
+import 'package:music_player/PROVIDER/theme_class_provider.dart';
 import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
 import 'package:music_player/WIDGETS/dialogues/song_delete_dialogue.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:provider/provider.dart';
 import '../CONTROLLER/song_controllers.dart';
 import '../DATABASE/recently_played.dart';
 import '../screens/favoritepage/favorite_button.dart';
@@ -41,7 +44,7 @@ class SongListViewer extends StatelessWidget {
         boxShadow: shadowVisibility
             ? [
                 BoxShadow(
-                  color: Theme.of(context).shadowColor,
+                  color:  Theme.of(context).shadowColor,
                   blurRadius: 3,
                   offset: const Offset(2, 2),
                 ),
@@ -231,10 +234,28 @@ Widget songDisplay(BuildContext context,
           child: Padding(
             padding: const EdgeInsets.only(left: 7),
             child: CircleAvatar(
-              child: Nuemorphic(
-                
+              child: Container(
+                height: 100,
+                width: 100,
                 padding: const EdgeInsets.all(2),
-                borderRadius: BorderRadius.circular(100),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(100),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Provider.of<ThemeProvider>(context).gettheme() ==
+                                lightThemeMode
+                            ? Theme.of(context).shadowColor
+                            : Color.fromARGB(255, 24, 24, 24),
+                        blurRadius: 3,
+                        offset: const Offset(2, 2),
+                      ),
+                      BoxShadow(
+                        color: Theme.of(context).dividerColor,
+                        blurRadius: 3,
+                        offset: const Offset(-2, -2),
+                      ),
+                    ]),
                 child: AudioArtworkDefiner(
                   id: song.id,
                   isRectangle: false,
@@ -268,10 +289,7 @@ Widget songDisplay(BuildContext context,
             },
             context: context,
             enableRemoveButon: true,
-            
             remove: remove,
-           
-          
             artist: song.artist.toString(),
             title: song.title,
             composer: song.composer.toString(),

@@ -101,58 +101,50 @@ class _NowPlayingState extends State<NowPlaying>
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       //Back Arrow Here
-                      iconConatinerr(
-                          Consumer<NowPlayingProvider>(
-                           builder: (context, value, child) {
-                              return IconButton(
-                                      onPressed: () {
-                                        bottomDetailsSheet(
-                                          id: widget
-                                              .songModelList[value.currentIndex].id,
-                                          context: context,
-                                          artist: widget
-                                              .songModelList[value.currentIndex].artist
-                                              .toString(),
-                                          title: widget
-                                              .songModelList[value.currentIndex].title,
-                                          composer: widget
-                                              .songModelList[value.currentIndex]
-                                              .composer
-                                              .toString(),
-                                          genre: widget
-                                              .songModelList[value.currentIndex].genre
-                                              .toString(),
-                                          song:
-                                              widget.songModelList[value.currentIndex],
-                                          filePath: filePath,
-                                          file: file,
-                                          isPlaylistShown: true,
-                                          onTap: () {
-                                            showPlaylistdialog(context);
-                                          },
-                                          delete: () async {
-                                            showSongDeleteDialogue(
-                                                context,
-                                                widget
-                                                    .songModelList[value.currentIndex]);
-                                            widget.songModelList.removeAt(widget
-                                                .songModelList[value.currentIndex].id);
-                                            if (GetSongs.player.hasNext) {
-                                              await GetSongs.player.seekToNext();
-                                              await GetSongs.player.play();
-                                            } else if (GetSongs.player.hasPrevious) {
-                                              await GetSongs.player.play();
-                                            }
-                                          },
-                                        );
-                                      },
-                                      icon: const Icon(
-                                        Icons.more_vert_rounded,
-                                        color: Color(0xff97A4B7),
-                                      ));
-                            }
-                          ),
-                          context),
+                      iconConatinerr(Consumer<NowPlayingProvider>(
+                          builder: (context, value, child) {
+                        return IconButton(
+                            onPressed: () {
+                              bottomDetailsSheet(
+                                id: widget.songModelList[value.currentIndex].id,
+                                context: context,
+                                artist: widget
+                                    .songModelList[value.currentIndex].artist
+                                    .toString(),
+                                title: widget
+                                    .songModelList[value.currentIndex].title,
+                                composer: widget
+                                    .songModelList[value.currentIndex].composer
+                                    .toString(),
+                                genre: widget
+                                    .songModelList[value.currentIndex].genre
+                                    .toString(),
+                                song: widget.songModelList[value.currentIndex],
+                                filePath: filePath,
+                                file: file,
+                                isPlaylistShown: true,
+                                onTap: () {
+                                  showPlaylistdialog(context);
+                                },
+                                delete: () async {
+                                  showSongDeleteDialogue(context,
+                                      widget.songModelList[value.currentIndex]);
+                                  widget.songModelList.removeAt(widget
+                                      .songModelList[value.currentIndex].id);
+                                  if (GetSongs.player.hasNext) {
+                                    await GetSongs.player.seekToNext();
+                                    await GetSongs.player.play();
+                                  } else if (GetSongs.player.hasPrevious) {
+                                    await GetSongs.player.play();
+                                  }
+                                },
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.more_vert_rounded,
+                              color: Color(0xff97A4B7),
+                            ));
+                      }), context),
                       Text(
                         "PLAYING NOW",
                         textAlign: TextAlign.center,
@@ -162,8 +154,13 @@ class _NowPlayingState extends State<NowPlaying>
                             color: const Color(0xff97A4B7)),
                       ),
                       iconConatiner(
-                        onMore:Provider.of<ThemeProvider>(context).gettheme() == lightThemeMode ,
-                        ChangeThemeButtonWidget(visiblity: true,), context)
+                          onMore:
+                              Provider.of<ThemeProvider>(context).gettheme() ==
+                                  lightThemeMode,
+                          ChangeThemeButtonWidget(
+                            visiblity: true,
+                          ),
+                          context)
                     ],
                   ),
                 ),
@@ -279,6 +276,7 @@ class _NowPlayingState extends State<NowPlaying>
                     width: wt * 0.9,
                     height: ht * 0.02,
                     child: Nuemorphic(
+                      shadowColorVisiblity: true,
                       padding: const EdgeInsets.only(top: 4, left: 5, right: 5),
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
                       child: Consumer<NowPlayingProvider>(
@@ -338,19 +336,25 @@ class _NowPlayingState extends State<NowPlaying>
                           child: StreamBuilder<bool>(
                             stream: GetSongs.player.shuffleModeEnabledStream,
                             builder: (context, snapshot) {
-                              _shuffleMode = snapshot.data!;
-                              if (_shuffleMode) {
-                                return Icon(
-                                  FontAwesomeIcons.shuffle,
-                                  size: wt * 0.06,
-                                  color: Colors.deepPurple[400],
-                                );
+                              // Check if the stream has data
+                              if (snapshot.hasData) {
+                                _shuffleMode = snapshot.data!;
+                                if (_shuffleMode) {
+                                  return Icon(
+                                    FontAwesomeIcons.shuffle,
+                                    size: wt * 0.06,
+                                    color: Colors.deepPurple[400],
+                                  );
+                                } else {
+                                  return Icon(
+                                    FontAwesomeIcons.shuffle,
+                                    size: wt * 0.06,
+                                    color: const Color(0xff9CADC0),
+                                  );
+                                }
                               } else {
-                                return Icon(
-                                  FontAwesomeIcons.shuffle,
-                                  size: wt * 0.06,
-                                  color: const Color(0xff9CADC0),
-                                );
+                                // Handle the case where there's no data yet or the stream is still loading
+                                return CircularProgressIndicator(); // or any other loading indicator
                               }
                             },
                           ),
@@ -580,7 +584,7 @@ class _NowPlayingState extends State<NowPlaying>
                                               DismissDirection.startToEnd,
                                           background: Container(
                                             alignment: Alignment.centerLeft,
-                                            color: Colors.red,
+                                            color: Colors.grey[400],
                                             child: const Padding(
                                               padding:
                                                   EdgeInsets.only(left: 16),
@@ -597,15 +601,9 @@ class _NowPlayingState extends State<NowPlaying>
                                             title: Text(
                                               data.name.toUpperCase(),
                                               style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                color:
-                                                    Provider.of<ThemeProvider>(
-                                                                    context)
-                                                                ==
-                                                            darkThemeMode
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                              ),
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Theme.of(context)
+                                                      .cardColor),
                                             ),
                                             trailing: IconButton(
                                               icon: data.isValueIn(widget
