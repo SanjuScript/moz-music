@@ -10,7 +10,7 @@ class PlayListDB {
   static final playListDb = Hive.box<MusicModel>('playlistDb');
 
 //  ValueNotifier<List<MusicModel>> viewPlaylistnotifier = ValueNotifier([]);
-
+ static int get playlistLength => playlistnotifier.value.length;
   static Future<void> playlistAdd(MusicModel value) async {
     final playListDb = Hive.box<MusicModel>('playlistDB');
     await playListDb.add(value);

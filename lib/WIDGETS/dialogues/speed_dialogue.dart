@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 
 import '../../CONTROLLER/song_controllers.dart';
+
 void showSpeedDialogue(BuildContext context) {
   double selectedSpeed = GetSongs.player.playing ? GetSongs.player.speed : 1.0;
 
@@ -17,10 +17,10 @@ void showSpeedDialogue(BuildContext context) {
           style: TextStyle(
             fontFamily: 'coolvetica',
             color: Theme.of(context).cardColor,
-            fontSize: MediaQuery.of(context).size.height *0.030,
+            fontSize: MediaQuery.of(context).size.height * 0.030,
           ),
         ),
-        titlePadding: const EdgeInsets.all( 10),
+        titlePadding: const EdgeInsets.all(10),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
         backgroundColor: Theme.of(context).splashColor,
         content: Column(
@@ -30,24 +30,22 @@ void showSpeedDialogue(BuildContext context) {
               padding: const EdgeInsets.only(bottom: 8),
               child: speedSelector(context, "0.5x", 0.5, selectedSpeed == 0.5),
             ),
-             Padding(
+            Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: speedSelector(context, "0.8x", 0.8, selectedSpeed == 0.8),
             ),
-             Padding(
+            Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: speedSelector(context, "1.0x", 1.0, selectedSpeed == 1.0),
             ),
-             Padding(
+            Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: speedSelector(context, "1.5x", 1.5, selectedSpeed == 1.5),
             ),
-             Padding(
+            Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: speedSelector(context, "2.0x", 2.0, selectedSpeed == 2.0),
             ),
-            
-          
           ],
         ),
         actions: [
@@ -68,10 +66,10 @@ void showSpeedDialogue(BuildContext context) {
       );
     }),
   );
-} 
+}
 
-Widget speedSelector(
-    BuildContext context, String speedLabel, double speedValue, bool isSelected) {
+Widget speedSelector(BuildContext context, String speedLabel, double speedValue,
+    bool isSelected) {
   Color buttonColor = isSelected ? Colors.green : const Color(0xff97A4B7);
 
   return SizedBox(
@@ -86,7 +84,6 @@ Widget speedSelector(
       },
       style: TextButton.styleFrom(
         shape: RoundedRectangleBorder(
-          side: const BorderSide(color: Color(0xff97A4B7)),
           borderRadius: BorderRadius.circular(10),
         ),
         backgroundColor: buttonColor,
@@ -96,7 +93,9 @@ Widget speedSelector(
         style: TextStyle(
           fontFamily: 'coolvetica',
           fontSize: 14,
-          color: isSelected ? Colors.white : const Color.fromARGB(255, 227, 231, 236),
+          color: isSelected
+              ? Colors.white
+              : const Color.fromARGB(255, 227, 231, 236),
         ),
       ),
     ),

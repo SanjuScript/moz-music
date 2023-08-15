@@ -13,7 +13,11 @@ enum SortOption {
   afileSize,
   zfileSize
 }
-
+ 
+ enum SongPagePopMenu{
+  sortMenu,
+  resetSOng,  
+ }
   // SortOption defaultSort = SortOption.adate;
   SongSortType getSortType(SortOption sortOption) {
     switch (sortOption) {

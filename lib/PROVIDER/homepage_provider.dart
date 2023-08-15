@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -7,24 +9,21 @@ import '../HELPER/sort_enum.dart';
 
 class HomePageSongProvider extends ChangeNotifier {
   List<SongModel> homePageSongs = [];
-
+  List<SongModel> recentSongs = [];
   bool _permissionGranted = false;
   Future<List<SongModel>>? _songsFuture;
   SortOption _defaultSort = SortOption.adate;
   Set<int> _removedSongs = {};
 
-
   Set<int> get removedSongs => _removedSongs;
-
 
   bool get permissionGranted => _permissionGranted;
   Future<List<SongModel>>? get songsFuture => _songsFuture;
   SortOption get defaultSort => _defaultSort;
   List<SongModel> get songs => homePageSongs;
+  List<SongModel> get recentsong => recentSongs;
 
   final OnAudioQuery _audioQuery = OnAudioQuery();
-
-
 
   void removeSong(SongModel song) {
     homePageSongs.remove(song);
@@ -56,8 +55,7 @@ class HomePageSongProvider extends ChangeNotifier {
   void resetRemovedSongs() async {
     _removedSongs.clear();
     await saveRemovedSongs(); // Save the cleared removed songs
-    _songsFuture =
-        querySongs(); // Update homePageSongs with filtered songs
+    _songsFuture = querySongs(); // Update homePageSongs with filtered songs
     notifyListeners();
   }
 
@@ -69,13 +67,12 @@ class HomePageSongProvider extends ChangeNotifier {
     );
   }
 
-
-
   Future<void> loadRemovedSongs() async {
     final prefs = await SharedPreferences.getInstance();
     final removedSongIds = prefs.getStringList('removed_songs') ?? [];
     _removedSongs = removedSongIds.map(int.parse).toSet();
   }
+
 
   Future<List<SongModel>> querySongs() async {
     final sortType = getSortType(defaultSort);
@@ -93,6 +90,7 @@ class HomePageSongProvider extends ChangeNotifier {
     // Filter out unwanted songs
     final filteredSongs = songs.where((song) {
       final displayName = song.displayName.toLowerCase();
+       
       return !_removedSongs.contains(song.id) && // Exclude removed songs
           !displayName.contains(".opus") &&
           !displayName.contains("aud") &&
@@ -132,8 +130,8 @@ class HomePageSongProvider extends ChangeNotifier {
     // Call loadRemovedSongs asynchronously using a microtask
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await loadRemovedSongs();
-      _songsFuture = querySongs(
-          ); // Call querySongs after loading removed songs
+      _songsFuture =
+          querySongs(); // Call querySongs after loading removed songs
       notifyListeners();
     });
   }

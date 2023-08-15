@@ -32,12 +32,12 @@ class Nuemorphic extends StatelessWidget {
                   BoxShadow(
                     color: shadowColorVisiblity
                         ? Theme.of(context).shadowColor
-                        : const Color.fromARGB(255, 6, 8, 10),
+                        : Colors.transparent,
                     blurRadius: 3,
                     offset: const Offset(2, 2),
                   ),
                   BoxShadow(
-                    color: Theme.of(context).dividerColor,
+                    color: Colors.transparent,
                     blurRadius: 3,
                     offset: const Offset(-2, -2),
                   ),

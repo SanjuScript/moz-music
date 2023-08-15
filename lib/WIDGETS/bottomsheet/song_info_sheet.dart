@@ -36,7 +36,6 @@ void bottomDetailsSheet({
   void Function()? remove,
   bool enableRemoveButon = false,
   bool isPlaylistShown = false,
-  required void Function() delete,
 }) async {
   await showModalBottomSheet<void>(
    backgroundColor: Theme.of(context).splashColor,
@@ -147,14 +146,7 @@ void bottomDetailsSheet({
                   );
                 },
               ),
-              // InkWell(
-              //   onTap: delete,
-              //   child: moreListSheet(
-              //     context: context,
-              //     text: 'Delete',
-              //     icon: Icons.delete_rounded,
-              //   ),
-              // ),
+            
             ],
           ),
         ),

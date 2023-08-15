@@ -23,6 +23,8 @@ void fetchAllSongs() async {
         !displayName.contains("recording") &&
         !displayName.contains("MIDI") &&
         !displayName.contains("pxl") &&
+         !displayName.contains("PTT") &&
+         !displayName.contains("ptt") &&
         !displayName.contains("Record") &&
         !displayName.contains("VID") &&
         !displayName.contains("whatsapp");

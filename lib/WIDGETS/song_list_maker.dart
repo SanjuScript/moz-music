@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:music_player/COLORS/colors.dart';
+import 'package:music_player/DATABASE/most_played.dart';
 import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:music_player/PROVIDER/theme_class_provider.dart';
 import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
 import 'package:music_player/WIDGETS/dialogues/song_delete_dialogue.dart';
+import 'package:music_player/screens/most_played_songs.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import '../CONTROLLER/song_controllers.dart';
@@ -44,7 +46,7 @@ class SongListViewer extends StatelessWidget {
         boxShadow: shadowVisibility
             ? [
                 BoxShadow(
-                  color:  Theme.of(context).shadowColor,
+                  color: Theme.of(context).shadowColor,
                   blurRadius: 3,
                   offset: const Offset(2, 2),
                 ),
@@ -139,6 +141,7 @@ class SongListViewerForSections extends StatelessWidget {
                       isRectangle: true,
                       radius: 5,
                       imgRadius: 5,
+                      iconSize: 25,
                     ),
                   ),
                 ),
@@ -222,125 +225,83 @@ Widget songDisplay(BuildContext context,
 
 // log('File Path: $filePath');
 // log('File Size: $fileSizeInMB MB');
-  return SongListViewer(
-    margin: const EdgeInsets.only(left: 5, right: 5, bottom: 0, top: 5),
-    color: Theme.of(context).scaffoldBackgroundColor,
-    shadowVisibility: false,
-    borderradius: const BorderRadius.all(Radius.circular(20)),
-    child: ListTile(
-        tileColor: Theme.of(context).scaffoldBackgroundColor,
-        leading: Transform.scale(
-          scale: MediaQuery.of(context).size.width * 0.0045,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 7),
-            child: CircleAvatar(
-              child: Container(
-                height: 100,
-                width: 100,
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.circular(100),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Provider.of<ThemeProvider>(context).gettheme() ==
-                                lightThemeMode
-                            ? Theme.of(context).shadowColor
-                            : const Color.fromARGB(255, 24, 24, 24),
-                        blurRadius: 3,
-                        offset: const Offset(2, 2),
-                      ),
-                      BoxShadow(
-                        color: Theme.of(context).dividerColor,
-                        blurRadius: 3,
-                        offset: const Offset(-2, -2),
-                      ),
-                    ]),
-                child: AudioArtworkDefiner(
-                  id: song.id,
-                  isRectangle: false,
-                ),
-              ),
-            ),
-          ),
+  return ListTile(
+      tileColor: Theme.of(context).scaffoldBackgroundColor,
+      leading: SizedBox(
+        height: MediaQuery.sizeOf(context).height * 0.25,
+        width: MediaQuery.sizeOf(context).width * 0.16,
+        child: AudioArtworkDefiner(
+          id: song.id,
+          imgRadius: 8,
+          iconSize: 30,
         ),
-        title: Padding(
-          padding: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * 0.06,
-          ),
-          child: Text(
-            // item.data![index].title.toUpperCase(),
-            song.title,
-            maxLines: 1,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).cardColor,
-              letterSpacing: .7,
-              // fontWeight: FontWeight.bold,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+      ),
+      title: Text(
+        // item.data![index].title.toUpperCase(),
+        song.title,
+        maxLines: 1,
+        style: TextStyle(
+          fontWeight: FontWeight.w300,
+          color: Theme.of(context).cardColor,
+          letterSpacing: .6,
+          // fontWeight: FontWeight.bold,
+          fontFamily: 'rounder',
+          overflow: TextOverflow.ellipsis,
         ),
-        onLongPress: () {
-          bottomDetailsSheet(
-            delete: () {
-              // print(filePath);
-              showSongDeleteDialogue(context, song);
+      ),
+      onLongPress: () {
+        bottomDetailsSheet(
+          context: context,
+          enableRemoveButon: true,
+          remove: remove,
+          artist: song.artist.toString(),
+          title: song.title,
+          composer: song.composer.toString(),
+          genre: song.genre.toString(),
+          song: song,
+          filePath: song.data,
+          file: File(song.data),
+          onTap: () {},
+          id: song.id,
+        );
+      },
+      selectedTileColor: Theme.of(context).scaffoldBackgroundColor,
+      selectedColor: Theme.of(context).scaffoldBackgroundColor,
+      focusColor: Theme.of(context).scaffoldBackgroundColor,
+      hoverColor: Theme.of(context).scaffoldBackgroundColor,
+      subtitle: Text(
+        artistHelper(song.artist.toString(), song.fileExtension),
+        maxLines: 1,
+        style: const TextStyle(
+            fontSize: 13,
+            fontFamily: 'rounder',
+            overflow: TextOverflow.ellipsis,
+            fontWeight: FontWeight.normal,
+            color: Color(0xff97A4B7)),
+      ),
+      onTap: disableOnTap
+          ? null
+          : () {
+              if (GetSongs.player.playing != true) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NowPlaying(
+                              songModelList: songs,
+                            )));
+              }
+              //   print("object");
+              // }
+              GetSongs.player.setAudioSource(GetSongs.createSongList(songs),
+                  //item.data
+                  initialIndex: index);
+              //index
+              RecentlyPlayedDB.addRecentlyPlayed(song);
+              MostlyPlayedDB.incrementPlayCount(song);
+              GetSongs.player.play();
+              RecentlyPlayedDB.intialize(songs);
+              GetSongs.playingSongs = songs;
             },
-            context: context,
-            enableRemoveButon: true,
-            remove: remove,
-            artist: song.artist.toString(),
-            title: song.title,
-            composer: song.composer.toString(),
-            genre: song.genre.toString(),
-            song: song,
-            filePath: song.data,
-            file: File(song.data),
-            onTap: () {},
-            id: song.id,
-          );
-        },
-        selectedTileColor: Theme.of(context).scaffoldBackgroundColor,
-        selectedColor: Theme.of(context).scaffoldBackgroundColor,
-        focusColor: Theme.of(context).scaffoldBackgroundColor,
-        hoverColor: Theme.of(context).scaffoldBackgroundColor,
-        subtitle: Padding(
-          padding: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * 0.06,
-          ),
-          child: Text(
-            artistHelper(song.artist.toString(), song.fileExtension),
-            maxLines: 1,
-            style: TextStyle(
-                fontSize: MediaQuery.of(context).size.width * 0.038,
-                fontFamily: 'optica',
-                fontWeight: FontWeight.w400,
-                color: Theme.of(context).cardColor),
-          ),
-        ),
-        onTap: disableOnTap
-            ? null
-            : () {
-                if (GetSongs.player.playing != true) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NowPlaying(
-                                songModelList: songs,
-                              )));
-                }
-                //   print("object");
-                // }
-                GetSongs.player.setAudioSource(GetSongs.createSongList(songs),
-                    //item.data
-                    initialIndex: index);
-                //index
-                RecentlyPlayedDB.addRecentlyPlayed(song.id);
-
-                GetSongs.player.play();
-              },
-        trailing:
-            isTrailingChange ? trailing : FavoriteButton(songFavorite: song)),
-  );
+      trailing:
+          isTrailingChange ? trailing : FavoriteButton(songFavorite: song));
 }

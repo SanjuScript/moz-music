@@ -1,17 +1,12 @@
 // ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
-import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
-import 'package:music_player/WIDGETS/dialogues/song_delete_dialogue.dart';
 import 'package:music_player/Widgets/song_list_maker.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import '../../DATABASE/recently_played.dart';
 import '../../HELPER/get_audio_size_in_mb.dart';
-import '../../WIDGETS/bottomsheet/song_info_sheet.dart';
 import '../../WIDGETS/dialogues/playlist_delete_dialogue.dart';
 import '../../Widgets/appbar.dart';
 import '../../CONTROLLER/song_controllers.dart';
@@ -25,6 +20,7 @@ class FavoriteScreen extends StatefulWidget {
 
 class _FavoriteScreenState extends State<FavoriteScreen>
     with AutomaticKeepAliveClientMixin {
+      
   void playSongsOnTap(List<SongModel> favoriteData, int index) {
     List<SongModel> favoriteList = [...favoriteData];
 
@@ -35,7 +31,7 @@ class _FavoriteScreenState extends State<FavoriteScreen>
           return NowPlaying(songModelList: favoriteList);
         })),
       );
-    } 
+    }
     GetSongs.player.setAudioSource(GetSongs.createSongList(favoriteList),
         initialIndex: index);
     GetSongs.player.play();
@@ -133,57 +129,12 @@ class _FavoriteScreenState extends State<FavoriteScreen>
                           String filePath = song.data;
                           File file = File(filePath);
                           double fileSizeInMB = getFileSizeInMB(file);
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.10,
-                              child: SongListViewerForSections(
-                                
-                                trailingWidget: InkWell(
-                                  onTap: () {
-                                      FavoriteDb.favoriteSongs.notifyListeners();
-                                    FavoriteDb.delete(song.id);
-                                  },
-                                  child: const Icon(FontAwesomeIcons.heartCircleMinus)),
-                                  fileSize:
-                                      "${fileSizeInMB.toStringAsFixed(2)} Mb",
-                                  color: Theme.of(context).cardColor,
-                                  onTap: () {
-                                    playSongsOnTap(favoriteData, index);
-                                    RecentlyPlayedDB.addRecentlyPlayed(song.id);
-                                  },
-                                  onLongpress: () {
-                                    bottomDetailsSheet(
-                                      id: song.id,
-                                        context: context,
-                                        onTap: () {},
-                                        artist: song.artist.toString(),
-                                        title: song.title,
-                                        composer: song.composer.toString(),
-                                        genre: song.genre.toString(),
-                                        song: song,
-                                        filePath: filePath,
-                                        file: file,
-                                        delete: () {
-                                          showSongDeleteDialogue(context, song);
-                                        });
-                                  },
-                                  title: song.title.toUpperCase(),
-                                  icon: FontAwesomeIcons.heartCircleCheck,
-                                  subtitle: artistHelper(song.artist.toString(), song.fileExtension),
-                                  id: song.id,
-                                  trailingOnTap: () {
-                                  
-                                  },
-                                  child: const SizedBox()),
-                            ),
-                          );
+                          return songDisplay(context,
+                              song: song, songs: favoriteData, index: index);
                         },
                         itemCount: favoriteData.length,
                       ),
-                      
                 icon: Icons.favorite_rounded,
-                
                 iconTap: () {},
               ),
             ));

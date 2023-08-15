@@ -3,6 +3,7 @@ import 'package:music_player/Widgets/buttons/theme_button_widget.dart';
 import 'package:provider/provider.dart';
 import '../ANIMATION/slide_animation.dart';
 import '../COLORS/colors.dart';
+import '../DATABASE/most_played.dart';
 import '../PROVIDER/theme_class_provider.dart';
 import '../SCREENS/playlist/playlist_screen.dart';
 import '../screens/about.dart';
@@ -11,11 +12,11 @@ import '../SCREENS/privacy_policy.dart';
 import '../SCREENS/search_music_screen.dart';
 import '../SCREENS/setting.dart';
 import 'bottomsheet/sleep_timer_sheet.dart';
-import 'buttons/icon_buttons.dart';
 
 Widget drawerWidget(
     {required BuildContext context,
     required GlobalKey<ScaffoldState> scaffoldKey}) {
+
   return Drawer(
     child: Container(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -95,6 +96,7 @@ Widget drawerWidget(
                           const PrivacyPolicyPage(), context, scaffoldKey);
                     },
                     text: 'Privacy Policy'),
+             
               ],
             ),
           ),
@@ -129,14 +131,11 @@ Widget listDrawerItems(
     ),
     title: Text(
       text,
-      style: TextStyle(color: Theme.of(context).cardColor),
+      
+      style: TextStyle(color: Theme.of(context).cardColor,fontFamily: 'rounder'),
     ),
     trailing: isTrailingVisible
-        ? iconConatiner(
-            onMore: Provider.of<ThemeProvider>(context).gettheme() ==
-                lightThemeMode,
-            const ChangeThemeButtonWidget(),
-            context)
+        ? ChangeThemeButtonWidget()
         : trailingIcon,
   );
 }

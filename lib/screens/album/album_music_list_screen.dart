@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:music_player/HELPER/artist_helper.dart';
-import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
-import '../../CONTROLLER/song_controllers.dart';
-import '../../DATABASE/recently_played.dart';
 import '../../PROVIDER/album_song_list_provider.dart';
 import '../../WIDGETS/song_list_maker.dart';
-import '../favoritepage/favorite_button.dart';
 
 class AlbumMusicListing extends StatefulWidget {
   const AlbumMusicListing({Key? key, required this.albumModel})
@@ -140,55 +134,8 @@ class _AlbumMusicListingState extends State<AlbumMusicListing> {
                     ListView.builder(
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.10,
-                            child: SongListViewerForSections(
-                              isWidget: false,
-                              color: Colors.transparent,
-                              fileSize: '',
-                              id: songs[index].id,
-                              onLongpress: () {},
-                              subtitle: artistHelper(
-                                  songs[index].artist.toString(),
-                                  songs[index].fileExtension),
-                              onTap: () {
-                                List<SongModel> newlist = [...songs];
-                                GetSongs.player.stop();
-                                GetSongs.player.setAudioSource(
-                                    GetSongs.createSongList(newlist),
-                                    initialIndex: index);
-                                GetSongs.player.play();
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return NowPlaying(
-                                    songModelList: GetSongs.playingSongs,
-                                  );
-                                }));
-                                RecentlyPlayedDB.addRecentlyPlayed(
-                                    songs[index].id);
-                                GetSongs.player.playerStateStream
-                                    .listen((playerState) {
-                                  if (playerState.processingState ==
-                                      ProcessingState.completed) {
-                                    if (GetSongs.player.currentIndex ==
-                                        songs.length - 1) {
-                                      GetSongs.player
-                                          .seek(Duration.zero, index: 0);
-                                    }
-                                  }
-                                });
-                              },
-                              trailingWidget:
-                                  FavoriteButton(songFavorite: songs[index]),
-                              trailingOnTap: () {},
-                              icon: Icons.delete,
-                              title: songs[index].title,
-                              child: const SizedBox(),
-                            ),
-                          ),
-                        );
+                        return songDisplay(context,
+                            song: songs[index], songs: songs, index: index);
                       },
                       physics: const BouncingScrollPhysics(),
                       itemCount: songs.length,

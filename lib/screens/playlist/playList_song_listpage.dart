@@ -78,45 +78,10 @@ class _PlayListSongListScreenState extends State<PlayListSongListScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      // appBar: AppBar(
-      //   automaticallyImplyLeading: false,
-      //   toolbarHeight: MediaQuery.of(context).size.height * 0.08,
-      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      //   elevation: 1,
-      //   title: SizedBox(
-      //     width: MediaQuery.of(context).size.width * 0.88,
-      //     child: TextField(
-      //       autofocus: true,
-      //       style: const TextStyle(fontWeight: FontWeight.bold),
-      //       decoration: InputDecoration(
-      //         contentPadding: EdgeInsets.only(
-      //             left: MediaQuery.of(context).size.width * 0.1),
-      //         filled: true,
-      //         fillColor:   Theme.of(context).colorScheme.inversePrimary.withOpacity(.3),
-      //         border: OutlineInputBorder(
-      //             borderRadius: BorderRadius.circular(
-      //               20),
-      //             borderSide: BorderSide.none),
-      //         hintText: 'Artists, songs, or albums',
-      //         hintStyle: TextStyle(
-      //           color: Theme.of(context).cardColor,
-      //         ),
-      //         prefixIcon: Icon(
-      //           Icons.search,
-      //           color: Theme.of(context).cardColor,
-      //         ),
-      //       ),
-            // onChanged: (value) {
-            //   setState(() {
-            //     shouldAutofocus = false;
-            //   });
-            //   searchProvider.filterSongs(value);
-            // },
-      //     ),
-      //   ),
-      // ),
+     
       appBar:  AppBar(
         automaticallyImplyLeading: false,
+        surfaceTintColor: Colors.transparent,
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 1,
@@ -139,6 +104,8 @@ class _PlayListSongListScreenState extends State<PlayListSongListScreen>
                   borderSide: BorderSide.none),
               hintText: 'Artists, songs, or albums',
               hintStyle: TextStyle(
+                fontFamily: 'rounder',
+                fontWeight: FontWeight.normal,
                 color: Theme.of(context).cardColor,
               ),
               prefixIcon: Icon(

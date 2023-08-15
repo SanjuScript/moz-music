@@ -11,7 +11,9 @@ class FavoriteButton extends StatefulWidget {
   @override
   State<FavoriteButton> createState() => _FavoriteButtonState();
 }
-class _FavoriteButtonState extends State<FavoriteButton> with SingleTickerProviderStateMixin {
+
+class _FavoriteButtonState extends State<FavoriteButton>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
 
@@ -55,38 +57,70 @@ class _FavoriteButtonState extends State<FavoriteButton> with SingleTickerProvid
     return ValueListenableBuilder(
       valueListenable: FavoriteDb.favoriteSongs,
       builder: (context, value, child) {
-          return GestureDetector(
-        onTap: () {
-          if (FavoriteDb.isFavor(widget.songFavorite)) {
-            FavoriteDb.delete(widget.songFavorite.id);
-          } else {
-            FavoriteDb.add(widget.songFavorite);
-          }
-    
-          // Trigger the animation when the favorite button is tapped
-          _playAnimation();
-    
-          // ignore: invalid_use_of_protected_member
-          FavoriteDb.favoriteSongs.notifyListeners();
-        },
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (BuildContext context, Widget? child) {
-            return ScaleTransition(
-              scale: _animation,
-              child: Icon(
-                Icons.favorite,
-                color: FavoriteDb.isFavor(widget.songFavorite)
-                    ? Theme.of(context).primaryColorDark
-                    : Theme.of(context).hintColor,
-                size: 41.0,
-              ),
-            );
+        return GestureDetector(
+          onTap: () {
+            if (FavoriteDb.isFavor(widget.songFavorite)) {
+              FavoriteDb.delete(widget.songFavorite.id);
+            } else {
+              FavoriteDb.add(widget.songFavorite);
+            }
+
+            // Trigger the animation when the favorite button is tapped
+            _playAnimation();
+
+            // ignore: invalid_use_of_protected_member
+            FavoriteDb.favoriteSongs.notifyListeners();
           },
-        ),
-      );
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (BuildContext context, Widget? child) {
+              return ScaleTransition(
+                scale: _animation,
+                child: ShaderMask(
+                  shaderCallback: (Rect bounds) {
+                    return LinearGradient(
+                      colors: FavoriteDb.isFavor(widget.songFavorite)
+                          ? [
+                              const Color.fromARGB(255, 148, 101, 228),
+                              const Color.fromARGB(255, 112, 64, 194),
+                            ]
+                          : [
+                             
+                               Theme.of(context).highlightColor,
+                                 Theme.of(context).canvasColor,
+                            
+                            ],
+                      tileMode: TileMode.clamp,
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ).createShader(bounds);
+                  },
+                  blendMode: BlendMode.srcATop,
+                  child: const Icon(
+                    Icons.favorite,
+                    shadows: [
+                      BoxShadow(
+                        color: Color.fromARGB(80, 170, 140, 221),
+                        offset: Offset(2, 2),
+                        spreadRadius: 5,
+                        blurRadius: 13,
+                      ),
+                      BoxShadow(
+                        color: Color.fromARGB(92, 202, 202, 202),
+                        blurRadius: 13,
+                        spreadRadius: 5,
+                        offset: Offset(-2, -2),
+                      ),
+                    ],
+                    color: Colors.white, // Icon color for the mask
+                    size: 41.0,
+                  ),
+                ),
+              );
+            },
+          ),
+        );
       },
-   
     );
   }
 }

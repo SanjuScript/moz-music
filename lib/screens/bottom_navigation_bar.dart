@@ -1,16 +1,18 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member
 import 'package:flutter/material.dart';
+import 'package:music_player/SCREENS/home_page.dart';
 import 'package:music_player/SCREENS/playlist/playlist_screen.dart';
 import 'package:music_player/PROVIDER/sleep_timer_provider.dart';
 import 'package:music_player/SCREENS/recently_played.dart';
 import 'package:music_player/SCREENS/setting.dart';
+import 'package:music_player/screens/most_played_songs.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import '../DATABASE/favorite_db.dart';
 import '../CONTROLLER/song_controllers.dart';
 import '../WIDGETS/bottomsheet/sleep_timer_sheet.dart';
 import 'favoritepage/favoriteSongLists.dart';
-import 'home_page.dart';
+import 'song_listing_page.dart';
 import 'mini_player.dart';
 
 class BottomNav extends StatefulWidget {
@@ -21,16 +23,10 @@ class BottomNav extends StatefulWidget {
 }
 
 class _BottomNavState extends State<BottomNav> {
-  int selectedIndex = 0;
+  int selectedIndex = 1;
   late PageController pageController;
-  
-  final List<Widget> pages = [
-    const HomePage(),
-    const FavoriteScreen(),
-    const PlaylistScreen(),
-    const RecentlyPlayed(),
-    const Settings(),
-  ];
+
+  late List<Widget> pages = [];
 
   void onPageChange(int index) {
     setState(() {
@@ -49,7 +45,31 @@ class _BottomNavState extends State<BottomNav> {
   @override
   void initState() {
     super.initState();
+
     pageController = PageController(initialPage: selectedIndex);
+    pages = [
+      _homepage(),
+      const SongListingPage(),
+      const FavoriteScreen(),
+      const PlaylistScreen(),
+      const RecentlyPlayed(),
+      const MostlyPlayed(),
+      const Settings(),
+    ];
+  }
+
+  Widget _homepage() {
+    return HomePage(favorite: () {
+      navigateToPage(2);
+    }, songs: () {
+      navigateToPage(1);
+    }, playlist: () {
+      navigateToPage(3);
+    }, recently: () {
+      navigateToPage(4);
+    }, mostly: () {
+      navigateToPage(5);
+    });
   }
 
   @override
@@ -139,12 +159,9 @@ class _BottomNavState extends State<BottomNav> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 GetSongs.player.currentIndex != null
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.098,
-                          child: const MiniPlayer(),
-                        ),
+                    ? SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.098,
+                        child: const MiniPlayer(),
                       )
                     : const SizedBox(),
                 Theme(
@@ -176,23 +193,31 @@ class _BottomNavState extends State<BottomNav> {
                       items: <BottomNavigationBarItem>[
                         bottomNavBarMethod(
                           bottomNavBarIcon: Icons.home,
-                          bottomNavBarLabel: 'HOME',
+                          bottomNavBarLabel: 'Home',
+                        ),
+                        bottomNavBarMethod(
+                          bottomNavBarIcon: Icons.library_music,
+                          bottomNavBarLabel: 'Songs',
                         ),
                         bottomNavBarMethod(
                           bottomNavBarIcon: Icons.favorite,
-                          bottomNavBarLabel: 'FAVORITE',
+                          bottomNavBarLabel: 'Favorites',
                         ),
                         bottomNavBarMethod(
                           bottomNavBarIcon: Icons.queue_music,
-                          bottomNavBarLabel: 'PLAYLIST',
+                          bottomNavBarLabel: 'Playlist',
                         ),
                         bottomNavBarMethod(
                           bottomNavBarIcon: Icons.music_note_outlined,
                           bottomNavBarLabel: 'Recently',
                         ),
                         bottomNavBarMethod(
+                          bottomNavBarIcon: Icons.play_lesson_rounded,
+                          bottomNavBarLabel: 'Most played',
+                        ),
+                        bottomNavBarMethod(
                           bottomNavBarIcon: Icons.settings,
-                          bottomNavBarLabel: 'SETTINGS',
+                          bottomNavBarLabel: 'Settings',
                         ),
                       ],
                     ),

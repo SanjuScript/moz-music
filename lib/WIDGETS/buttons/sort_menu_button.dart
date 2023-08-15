@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../HELPER/sort_enum.dart';
-
 class SortOptionBottomSheet extends StatelessWidget {
   final SortOption selectedOption;
   final ValueChanged<SortOption> onSelected;
@@ -66,18 +65,31 @@ class SortOptionBottomSheet extends StatelessWidget {
     }
   }
 
-  Text buildListTileTitle(
+  Widget buildListTileTitle(
       BuildContext context, SortOption option, String title) {
     final isSelected = selectedOption == option;
     final textStyle = TextStyle(
-      letterSpacing: 2,
-      fontFamily: 'coolvetica',
-      color: isSelected ? Colors.green : Theme.of(context).cardColor,
+      letterSpacing: .6,
+      fontFamily: 'rounder',
+      color: isSelected ? Colors.deepPurple[300] : Theme.of(context).cardColor,
       fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
     );
-    return Text(
-      title.toUpperCase(),
-      style: textStyle,
+
+    return Row(
+      children: [
+        Radio<SortOption>(
+          value: option,
+          groupValue: selectedOption,
+          onChanged: (value) {
+            onSelected(value!);
+            Navigator.pop(context);
+          },
+        ),
+        Text(
+          title.toUpperCase(),
+          style: textStyle,
+        ),
+      ],
     );
   }
 }

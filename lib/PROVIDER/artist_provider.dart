@@ -4,7 +4,9 @@ import 'package:on_audio_query/on_audio_query.dart';
 class ArtistProvider extends ChangeNotifier {
   final OnAudioQuery _audioQuery = OnAudioQuery();
   List<ArtistModel> artists = [];
-
+  ArtistProvider() {
+    fetchArtists();
+  }
   Future<void> fetchArtists() async {
     final fetchedArtists = await _audioQuery.queryArtists(
       sortType: ArtistSortType.NUM_OF_TRACKS,
@@ -23,4 +25,5 @@ class ArtistProvider extends ChangeNotifier {
     artists = filteredArtists;
     notifyListeners();
   }
+  int get totalArtists => artists.length;
 }

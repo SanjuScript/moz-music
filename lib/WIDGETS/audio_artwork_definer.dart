@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:music_player/COLORS/colors.dart';
+import 'package:music_player/PROVIDER/theme_class_provider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'dart:typed_data';
 
+import 'package:provider/provider.dart';
 
 class AudioArtworkDefiner extends StatefulWidget {
   final int id;
@@ -12,15 +15,18 @@ class AudioArtworkDefiner extends StatefulWidget {
   final double imgRadius;
   final bool enableAnimation;
   final ArtworkType type;
-
+  final bool visibleShadow;
+  final double iconSize;
   const AudioArtworkDefiner({
     Key? key,
     required this.id,
     this.size = 250,
+    this.iconSize = 70,
     this.imgRadius = 30,
     this.isRectangle = false,
     this.radius = 0,
     this.enableAnimation = false,
+    this.visibleShadow = false,
     this.type = ArtworkType.AUDIO,
   }) : super(key: key);
 
@@ -119,14 +125,16 @@ class _AudioArtworkDefinerState extends State<AudioArtworkDefiner>
         ),
       );
     } else {
-      return ClipRRect(
+      return Container(
           clipBehavior: Clip.antiAlias,
-          borderRadius: BorderRadius.circular(widget.imgRadius),
-          child: Image.asset(
-           'assets/logo.jpg',
-            fit: BoxFit.cover,
-            filterQuality: FilterQuality.high,
-            gaplessPlayback: true,
+          decoration: BoxDecoration(
+            color:Theme.of(context).indicatorColor,
+            borderRadius: BorderRadius.circular(widget.imgRadius),
+          ),
+          child: Icon(
+            Icons.music_note_rounded,
+            size: widget.iconSize,
+            color:Theme.of(context).secondaryHeaderColor,
           ));
     }
   }

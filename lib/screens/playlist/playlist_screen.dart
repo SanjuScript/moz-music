@@ -5,6 +5,7 @@ import 'package:music_player/DATABASE/playlistDb.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_creation_dialogue.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
+import 'package:music_player/WIDGETS/playlist_box.dart';
 import '../../Model/music_model.dart';
 import '../../Widgets/appbar.dart';
 import '../../Widgets/song_list_maker.dart';
@@ -29,20 +30,10 @@ class _PlaylistScreenState extends State<PlaylistScreen>
     PlayListDB.playlistnotifier.notifyListeners();
   }
 
-  Widget _showText(String text, {FontWeight fontWeight = FontWeight.w400}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Text(
-        text,
-        style: TextStyle(
-            fontFamily: 'coolvetica',
-            fontSize: MediaQuery.of(context).size.height * 0.020,
-            letterSpacing: 1.5,
-            overflow: TextOverflow.ellipsis,
-            fontWeight: fontWeight,
-            color: Theme.of(context).cardColor),
-      ),
-    );
+  @override
+  void initState() {
+    PlayListDB.getAllPlaylist();
+    super.initState();
   }
 
   @override
@@ -97,99 +88,65 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                       itemBuilder: ((BuildContext context, int index) {
                         final data = musicList.values.toList()[index];
                         return InkWell(
-                          overlayColor: MaterialStatePropertyAll(
-                              Theme.of(context).shadowColor.withOpacity(.2)),
-                          onLongPress: () {
-                            showPlaylistDeleteDialogue(
-                                context: context,
-                                isPlaylistPage: true,
-                                rename: () {
-                                  editPlaylist(context, index, data);
-                                },
-                                text1:
-                                    "Delete Playlist ${data.name.toUpperCase()}",
-                                onPress: () {
-                                  musicList.deleteAt(index);
-                                  Navigator.pop(context);
-                                });
-                          },
-                          onTap: () {
-                            Navigator.pushNamed(context, '/playlistsong',
-                                arguments: {
-                                  'playlist': data,
-                                  'folderindex': index
-                                });
-                          },
-                          child: data.songId.isEmpty
-                              ? SongListViewer(
-                                  margin: const EdgeInsets.only(
-                                      left: 10, right: 10, bottom: 10, top: 10),
-                                  borderradius: const BorderRadius.all(
-                                      Radius.circular(10)),
-                                  color:
-                                      Theme.of(context).scaffoldBackgroundColor,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.playlist_add_circle_rounded,
-                                        color: Theme.of(context).cardColor,
-                                        size: 26,
-                                      ),
-                                      _showText(data.name),
-                                      _showText("Add song")
-                                    ],
-                                  ),
-                                )
-                              : SongListViewer(
-                                  margin: const EdgeInsets.only(
-                                      left: 10, right: 10, bottom: 10, top: 10),
-                                  borderradius: const BorderRadius.all(
-                                      Radius.circular(10)),
-                                  color:
-                                      Theme.of(context).scaffoldBackgroundColor,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8),
-                                        child: SizedBox(
-                                          height: MediaQuery.sizeOf(context)
-                                                  .height *
-                                              0.18,
-                                          //  width: MediaQuery.sizeOf(context).width * 0.23,
-                                          child: AudioArtworkDefiner(
-                                              size: 500,
-                                              imgRadius: 6,
-                                              id: data.songId.last),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: Text(
-                                          "${data.songId.length.toString()} songs",
-                                          style: TextStyle(
-                                              fontFamily: 'coolvetica',
-                                              letterSpacing: 1,
-                                              fontSize: 11,
-                                              overflow: TextOverflow.ellipsis,
-                                              fontWeight: FontWeight.w500,
-                                              color:
-                                                  Theme.of(context).cardColor),
-                                        ),
-                                      ),
-                                      _showText(data.name,
-                                          fontWeight: FontWeight.w500)
-                                    ],
-                                  ),
-                                ),
-                        );
+                            overlayColor: MaterialStatePropertyAll(
+                                Theme.of(context).shadowColor.withOpacity(.2)),
+                            onLongPress: () {
+                              showPlaylistDeleteDialogue(
+                                  context: context,
+                                  isPlaylistPage: true,
+                                  rename: () {
+                                    editPlaylist(context, index, data);
+                                  },
+                                  text1:
+                                      "Delete Playlist ${data.name.toUpperCase()}",
+                                  onPress: () {
+                                    musicList.deleteAt(index);
+                                    Navigator.pop(context);
+                                  });
+                            },
+                            onTap: () {
+                              Navigator.pushNamed(context, '/playlistsong',
+                                  arguments: {
+                                    'playlist': data,
+                                    'folderindex': index
+                                  });
+                            },
+                            child: data.songId.isEmpty
+                                ? PlaylistCreationBox(
+                                    artwork: Container(
+                                        width: double.infinity,
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .indicatorColor,
+                                            borderRadius:
+                                                BorderRadius.circular(6)),
+                                        child: Icon(
+                                          Icons.playlist_add_rounded,
+                                          size: 40,
+                                          color: Theme.of(context)
+                                              .secondaryHeaderColor,
+                                        )),
+                                    songCount:
+                                        "${data.songId.length.toString()} songs",
+                                    isArtworkAvailable: true,
+                                    text: data.name,
+                                  )
+                                : PlaylistCreationBox(
+                                    artwork: AudioArtworkDefiner(
+                                        size: 500,
+                                        imgRadius: 6,
+                                        id: data.songId.last),
+                                    songCount:
+                                        "${data.songId.length.toString()} songs",
+                                    isArtworkAvailable: true,
+                                    text: data.name,
+                                  ));
                       }),
                       itemCount: musicList.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: .8, crossAxisCount: 2),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              childAspectRatio: .8, crossAxisCount: 2),
                     ),
               icon: Icons.playlist_add_rounded,
               iconTap: () {
@@ -254,7 +211,7 @@ class _PlaylistScreenState extends State<PlaylistScreen>
             }
           }
         },
-        validator: "Please enter playlist name",
+        validator: "Please enter new playlist name",
         nameController: newTextEditor);
   }
 

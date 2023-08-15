@@ -61,7 +61,8 @@ class _SongSectionsState extends State<SongSections>
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                       child: Container(
-                        color: Theme.of(context).hoverColor.withOpacity(.2),
+                        color: Color.fromARGB(175, 149, 117, 205)!
+                        .withOpacity(.2),
                       ),
                     ),
                   ),
@@ -77,7 +78,7 @@ class _SongSectionsState extends State<SongSections>
                         maxLines: 1,
                         style: TextStyle(
                           letterSpacing: 1,
-                          fontFamily: "beauti",
+                          fontFamily: "rounder",
                           overflow: TextOverflow.ellipsis,
                           fontSize: 15,
                           color: Theme.of(context).cardColor,

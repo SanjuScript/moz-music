@@ -9,7 +9,7 @@ class FavoriteDb {
   static bool isInitialized = false;
   static final musicDb = Hive.box<int>('FavoriteDB');
   static ValueNotifier<List<SongModel>> favoriteSongs = ValueNotifier([]);
-
+  static int get favoriteSongsLength => favoriteSongs.value.length;
   static intialize(List<SongModel> songs) {
     for (SongModel song in songs) {
       if (isFavor(song)) {

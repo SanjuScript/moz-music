@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:music_player/PROVIDER/miniplayer_provider.dart';
 import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
 import 'package:music_player/WIDGETS/nuemorphic_button.dart';
 import 'package:music_player/Widgets/audio_artwork_definer.dart';
 import 'package:provider/provider.dart';
+import '../DATABASE/most_played.dart';
 import '../DATABASE/recently_played.dart';
 import '../ANIMATION/up_animation.dart';
 import '../CONTROLLER/song_controllers.dart';
 // ignore: depend_on_referenced_packages
 import 'package:rxdart/rxdart.dart';
 import '../HELPER/duration.dart';
-
 
 class MiniPlayer extends StatelessWidget {
   const MiniPlayer({Key? key}) : super(key: key);
@@ -36,43 +37,12 @@ class MiniPlayer extends StatelessWidget {
     return Consumer<MiniplayerProvider>(
       builder: (context, value, child) {
         return Container(
-          decoration: BoxDecoration(
-              color: Colors.deepPurple[400],
-              borderRadius: BorderRadius.circular(20)),
-          height: 100,
-          child: Column(
+          decoration: BoxDecoration(color: Theme.of(context).focusColor),
+          child: Stack(
+            fit: StackFit.loose,
             children: [
-              StreamBuilder<DurationState>(
-                stream: _durationStateStream,
-                builder: (context, snapshot) {
-                  final durationState = snapshot.data;
-                  final progress = durationState?.position ?? Duration.zero;
-                  final total = durationState?.total ?? Duration.zero;
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: ProgressBar(
-                      barHeight: ht * 0.003,
-                      barCapShape: BarCapShape.round,
-                      progressBarColor: const Color.fromARGB(255, 120, 78, 156),
-                      bufferedBarColor: const Color.fromARGB(255, 120, 78, 156),
-                      thumbGlowColor: Colors.transparent,
-                      thumbColor: const Color.fromARGB(255, 120, 78, 156),
-                      thumbRadius: ht * 0.001,
-                      thumbGlowRadius: wt * 0.03,
-                      baseBarColor: Colors.transparent,
-                      progress: progress,
-                      total: total,
-                      timeLabelLocation: TimeLabelLocation.none,
-                      onSeek: (duration) {
-                        GetSongs.player.seek(duration);
-                      },
-                    ),
-                  );
-                },
-              ),
               ListTile(
-                tileColor: Theme.of(context).scaffoldBackgroundColor,
+                tileColor: Colors.transparent,
                 onTap: () {
                   Navigator.push(
                       context,
@@ -90,34 +60,59 @@ class MiniPlayer extends StatelessWidget {
                         borderRadius: BorderRadius.circular(100),
                         shadowVisibility: false,
                         child: AudioArtworkDefiner(
+                          iconSize: 25,
                           id: GetSongs
                               .playingSongs[GetSongs.player.currentIndex!].id,
+                          imgRadius: 8,
                         ),
                       ),
                     ),
                   ),
                 ),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                 title: Text(
                   GetSongs.playingSongs[GetSongs.player.currentIndex!].title
                       .toUpperCase(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontFamily: 'appollo',
-                    letterSpacing: .2,
-                    color: const Color.fromARGB(255, 228, 229, 229),
-                    fontWeight: FontWeight.bold,
-                    fontSize: wt * 0.035,
-                  ),
+                      shadows: const [
+                        BoxShadow(
+                          color: Color.fromARGB(86, 139, 139, 139),
+                          blurRadius: 15,
+                          offset: Offset(-2, 2),
+                        ),
+                      ],
+                      fontSize: 15,
+                      fontFamily: 'rounder',
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).cardColor),
                 ),
                 subtitle: Text(
-                  "${GetSongs.playingSongs[GetSongs.player.currentIndex!].artist.toString() == '<unknown>' ? 'No Artist' : GetSongs.playingSongs[GetSongs.player.currentIndex!].artist.toString()} .${GetSongs.playingSongs[GetSongs.player.currentIndex!].fileExtension.toString()}",
-                  maxLines: 1,
+                  GetSongs.playingSongs[GetSongs.player.currentIndex!].artist
+                              .toString() ==
+                          '<unknown>'
+                      ? 'No Artist'
+                      : GetSongs
+                          .playingSongs[GetSongs.player.currentIndex!].artist
+                          .toString(),
+                          maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                      color: const Color.fromARGB(255, 228, 229, 229),
-                      fontSize: wt * 0.028,
-                      overflow: TextOverflow.ellipsis),
+                      shadows: const [
+                        BoxShadow(
+                          color: Color.fromARGB(34, 107, 107, 107),
+                          blurRadius: 15,
+                          offset: Offset(-2, 2),
+                        ),
+                      ],
+                      fontSize: 13,
+                      fontFamily: 'rounder',
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).cardColor.withOpacity(.4)),
                 ),
                 trailing: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.33,
@@ -127,13 +122,15 @@ class MiniPlayer extends StatelessWidget {
                       InkWell(
                         onTap: () {
                           RecentlyPlayedDB.addRecentlyPlayed(GetSongs
-                              .playingSongs[GetSongs.player.currentIndex!].id);
+                              .playingSongs[GetSongs.player.currentIndex!]);
                           miniProvider.previousButton(context);
+                        MostlyPlayedDB.incrementPlayCount(GetSongs
+                              .playingSongs[GetSongs.player.currentIndex!]);
                         },
                         child: Icon(
-                          Icons.skip_previous_sharp,
-                          color: const Color.fromARGB(255, 228, 229, 229),
-                          size: wt * 0.09,
+                          FontAwesomeIcons.backward,
+                          color: Theme.of(context).cardColor.withOpacity(.9),
+                          size: wt * 0.06,
                         ),
                       ),
                       InkWell(
@@ -146,15 +143,17 @@ class MiniPlayer extends StatelessWidget {
                             bool? playingStage = snapshot.data;
                             if (playingStage != null && playingStage) {
                               return Icon(
-                                Icons.pause_circle,
-                                color: const Color.fromARGB(255, 228, 229, 229),
-                                size: wt * 0.10,
+                                FontAwesomeIcons.pause,
+                                color:
+                                    Theme.of(context).cardColor.withOpacity(.9),
+                                size: wt * 0.08,
                               );
                             } else {
                               return Icon(
-                                Icons.play_circle_fill_rounded,
-                                color: const Color.fromARGB(255, 228, 229, 229),
-                                size: wt * 0.10,
+                                FontAwesomeIcons.play,
+                                color:
+                                    Theme.of(context).cardColor.withOpacity(.9),
+                                size: wt * 0.07,
                               );
                             }
                           },
@@ -163,18 +162,45 @@ class MiniPlayer extends StatelessWidget {
                       InkWell(
                           onTap: () {
                             RecentlyPlayedDB.addRecentlyPlayed(GetSongs
-                                .playingSongs[GetSongs.player.currentIndex!]
-                                .id);
+                                .playingSongs[GetSongs.player.currentIndex!]);
                             miniProvider.nextButton(context);
+                           MostlyPlayedDB.incrementPlayCount(GetSongs
+                                .playingSongs[GetSongs.player.currentIndex!]);
                           },
                           child: Icon(
-                            Icons.skip_next_sharp,
-                            color: const Color.fromARGB(255, 228, 229, 229),
-                            size: wt * 0.09,
+                            FontAwesomeIcons.forward,
+                            color: Theme.of(context).cardColor.withOpacity(.9),
+                            size: wt * 0.06,
                           ))
                     ],
                   ),
                 ),
+              ),
+              StreamBuilder<DurationState>(
+                stream: _durationStateStream,
+                builder: (context, snapshot) {
+                  final durationState = snapshot.data;
+                  final progress = durationState?.position ?? Duration.zero;
+                  final total = durationState?.total ?? Duration.zero;
+
+                  return ProgressBar(
+                    barHeight: ht * 0.003,
+                    barCapShape: BarCapShape.round,
+                    progressBarColor: const Color.fromARGB(255, 120, 78, 156),
+                    bufferedBarColor: const Color.fromARGB(255, 120, 78, 156),
+                    thumbGlowColor: Colors.transparent,
+                    thumbColor: const Color.fromARGB(255, 120, 78, 156),
+                    thumbRadius: ht * 0.001,
+                    thumbGlowRadius: wt * 0.03,
+                    baseBarColor: Colors.transparent,
+                    progress: progress,
+                    total: total,
+                    timeLabelLocation: TimeLabelLocation.none,
+                    onSeek: (duration) {
+                      GetSongs.player.seek(duration);
+                    },
+                  );
+                },
               ),
             ],
           ),

@@ -56,6 +56,7 @@ class _SearchPageState extends State<SearchPage>
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        surfaceTintColor: Colors.transparent,
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 1,
@@ -77,7 +78,10 @@ class _SearchPageState extends State<SearchPage>
                   borderSide: BorderSide.none),
               hintText: 'Artists, songs, or albums',
               hintStyle: TextStyle(
+                fontFamily: 'rounder',
                 color: Theme.of(context).cardColor,
+                letterSpacing: .6,
+                fontWeight: FontWeight.normal
               ),
               prefixIcon: Icon(
                 Icons.search,
