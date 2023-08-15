@@ -157,7 +157,7 @@ class _NowPlayingState extends State<NowPlaying>
                           onMore:
                               Provider.of<ThemeProvider>(context).gettheme() ==
                                   lightThemeMode,
-                          ChangeThemeButtonWidget(
+                          const ChangeThemeButtonWidget(
                             visiblity: true,
                           ),
                           context)
@@ -354,7 +354,7 @@ class _NowPlayingState extends State<NowPlaying>
                                 }
                               } else {
                                 // Handle the case where there's no data yet or the stream is still loading
-                                return CircularProgressIndicator(); // or any other loading indicator
+                                return const CircularProgressIndicator(); // or any other loading indicator
                               }
                             },
                           ),
@@ -530,7 +530,7 @@ class _NowPlayingState extends State<NowPlaying>
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Divider(),
+                    const Divider(),
                     const SizedBox(height: 8),
                     ValueListenableBuilder(
                       valueListenable:

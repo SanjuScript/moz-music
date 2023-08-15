@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:music_player/COLORS/colors.dart';
-import 'package:music_player/PROVIDER/theme_class_provider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'dart:typed_data';
 
-import 'package:provider/provider.dart';
 
 class AudioArtworkDefiner extends StatefulWidget {
   final int id;

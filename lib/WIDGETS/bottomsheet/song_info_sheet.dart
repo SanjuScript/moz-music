@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:share_plus/share_plus.dart';

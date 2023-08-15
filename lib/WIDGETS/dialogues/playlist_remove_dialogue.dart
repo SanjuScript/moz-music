@@ -5,14 +5,14 @@ class DeleteSongDialog extends StatelessWidget {
   final String songTitle;
   final void Function() onPress;
 
-  DeleteSongDialog({Key? key, required this.songTitle, required this.onPress})
+  const DeleteSongDialog({Key? key, required this.songTitle, required this.onPress})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SlideTransition(
       position: Tween<Offset>(
-        begin: Offset(0, 1), // Slide up from bottom
+        begin: const Offset(0, 1), // Slide up from bottom
         end: Offset.zero,
       ).animate(CurvedAnimation(
         parent: ModalRoute.of(context)!.animation!,

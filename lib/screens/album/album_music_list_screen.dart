@@ -57,11 +57,11 @@ class _AlbumMusicListingState extends State<AlbumMusicListing> {
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    SizedBox(height: 50),
+                    const SizedBox(height: 50),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        SizedBox(width: 15),
+                        const SizedBox(width: 15),
                         IconButton(
                           splashColor: Colors.transparent,
                           onPressed: () {
@@ -75,7 +75,7 @@ class _AlbumMusicListingState extends State<AlbumMusicListing> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
@@ -91,7 +91,7 @@ class _AlbumMusicListingState extends State<AlbumMusicListing> {
                               isRectangle: true,
                             ),
                           ),
-                          SizedBox(width: 15),
+                          const SizedBox(width: 15),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,

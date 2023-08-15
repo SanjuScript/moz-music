@@ -246,7 +246,7 @@ Widget songDisplay(BuildContext context,
                         color: Provider.of<ThemeProvider>(context).gettheme() ==
                                 lightThemeMode
                             ? Theme.of(context).shadowColor
-                            : Color.fromARGB(255, 24, 24, 24),
+                            : const Color.fromARGB(255, 24, 24, 24),
                         blurRadius: 3,
                         offset: const Offset(2, 2),
                       ),

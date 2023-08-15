@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 Widget iconConatiner(Widget child, BuildContext context,
     {bool onMore = false}) {
   return AnimatedContainer(
-    duration: Duration(milliseconds: 500),
+    duration: const Duration(milliseconds: 500),
     height: MediaQuery.of(context).size.height * 0.05,
     width: onMore
         ? MediaQuery.of(context).size.width * 0.11
@@ -33,7 +33,7 @@ Widget iconConatinerr(
 ) {
   return Flexible(
     child: AnimatedContainer(
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       height: MediaQuery.of(context).size.height * 0.05,
       width: MediaQuery.of(context).size.width * 0.11,
       decoration: BoxDecoration(

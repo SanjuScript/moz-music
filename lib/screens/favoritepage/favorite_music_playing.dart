@@ -23,7 +23,7 @@ class _FavoriteButtonState extends State<FavButMusicPlaying>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 200),
     );
 
     _animation = Tween<double>(begin: 1.0, end: 0.8).animate(
@@ -71,7 +71,7 @@ class _FavoriteButtonState extends State<FavButMusicPlaying>
                   size: 23.0,
                   color: FavoriteDb.isFavor(widget.songFavoriteMusicPlaying)
                       ? Colors.deepPurple[400]
-                      : Color(0xff9CADC0),
+                      : const Color(0xff9CADC0),
                 ),
               );
             },

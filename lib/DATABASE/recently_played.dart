@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:music_player/screens/home_page.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 import '../CONTROLLER/song_controllers.dart';

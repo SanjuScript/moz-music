@@ -82,7 +82,7 @@ class _ChangeThemeButtonWidgetState extends State<ChangeThemeButtonWidget> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Pick a shadow color'),
+                      title: const Text('Pick a shadow color'),
                       content: SingleChildScrollView(
                         child: ColorPicker(
                           hexInputBar: true,
@@ -106,20 +106,18 @@ class _ChangeThemeButtonWidgetState extends State<ChangeThemeButtonWidget> {
                           onPressed: () {
                             Navigator.of(context).pop(dynamicShadowColor);
                           },
-                          child: Text('OK'),
+                          child: const Text('OK'),
                         ),
                       ],
                     );
                   },
                 );
 
-                if (pickedColor != null) {
-                  setState(() {
-                    dynamicShadowColor = pickedColor;
-                  });
-                  _saveShadowColor(dynamicShadowColor);
-                  onThemeChanged(_darkTheme, themeProvider, dynamicShadowColor);
-                }
+                setState(() {
+                  dynamicShadowColor = pickedColor;
+                });
+                _saveShadowColor(dynamicShadowColor);
+                onThemeChanged(_darkTheme, themeProvider, dynamicShadowColor);
               },
               icon: Icon(
                 Icons.color_lens,

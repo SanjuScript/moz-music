@@ -31,7 +31,7 @@ final darkThemeMode = ThemeData(
   hintColor: const Color.fromARGB(255, 46, 53, 53),
   highlightColor: const Color.fromARGB(255, 47, 62, 83),
   hoverColor: Colors.black,
-  splashColor:  Color.fromARGB(255, 39, 39, 39),
+  splashColor:  const Color.fromARGB(255, 39, 39, 39),
   dialogTheme: const DialogTheme(
     backgroundColor: Color(0xFF1F1F1F),
     titleTextStyle: TextStyle(

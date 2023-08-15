@@ -64,8 +64,8 @@ class _PlayListSongListScreenState extends State<PlayListSongListScreen>
                     });
                   },
                   icon: playlist.isValueIn(foundSongs[index].id)
-                      ? Icon(Icons.done)
-                      : Icon(Icons.add)));
+                      ? const Icon(Icons.done)
+                      : const Icon(Icons.add)));
         },
         itemCount: foundSongs.length,
       );

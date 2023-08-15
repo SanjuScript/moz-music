@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:music_player/ANIMATION/slide_animation.dart';
 import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:music_player/PROVIDER/album_provider.dart';
 import 'package:music_player/WIDGETS/indicators.dart';
-import 'package:music_player/WIDGETS/nuemorphic_button.dart';
 import 'package:music_player/Widgets/audio_artwork_definer.dart';
 import 'package:music_player/SCREENS/album/album_music_list_screen.dart';
 import 'package:music_player/Widgets/song_list_maker.dart';

@@ -188,7 +188,7 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                         );
                       }),
                       itemCount: musicList.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           childAspectRatio: .8, crossAxisCount: 2),
                     ),
               icon: Icons.playlist_add_rounded,
