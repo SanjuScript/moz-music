@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:flutter/services.dart';
-import 'package:music_player/DATABASE/most_played.dart';
-import 'package:music_player/DATABASE/recently_played.dart';
 import 'package:music_player/Model/music_model.dart';
 import 'package:music_player/PROVIDER/album_song_list_provider.dart';
 import 'package:music_player/PROVIDER/artist_provider.dart';
@@ -12,7 +10,6 @@ import 'package:music_player/PROVIDER/color_provider.dart';
 import 'package:music_player/PROVIDER/homepage_provider.dart';
 import 'package:music_player/PROVIDER/miniplayer_provider.dart';
 import 'package:music_player/PROVIDER/now_playing_provider.dart';
-import 'package:music_player/PROVIDER/search_screen_provider.dart';
 import 'package:music_player/PROVIDER/sleep_timer_provider.dart';
 import 'package:music_player/PROVIDER/theme_class_provider.dart';
 import 'package:music_player/SCREENS/about.dart';
@@ -22,15 +19,12 @@ import 'package:music_player/SCREENS/playlist/playlistSong_display_screen.dart';
 import 'package:music_player/SCREENS/privacy_policy.dart';
 import 'package:music_player/SCREENS/song_info.dart';
 import 'package:music_player/SCREENS/splash_screen.dart';
-import 'package:music_player/screens/recently_played.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'COLORS/colors.dart';
-import 'HELPER/sort_enum.dart';
 import 'PROVIDER/album_provider.dart';
 
 int? isViewed;
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -87,9 +81,6 @@ Future<void> main() async {
       ),
       ChangeNotifierProvider(
         create: (context) => HomePageSongProvider(),
-      ),
-      ChangeNotifierProvider(
-        create: (context) => SearchScreenProvider(),
       ),
       ChangeNotifierProvider(
         create: (context) => ColorProvider(),

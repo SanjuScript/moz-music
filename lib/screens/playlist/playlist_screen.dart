@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:music_player/DATABASE/playlistDb.dart';
+import 'package:music_player/SCREENS/playlist/playList_song_listpage.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_creation_dialogue.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
@@ -105,16 +106,21 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                                   });
                             },
                             onTap: () {
-                              Navigator.pushNamed(context, '/playlistsong',
-                                  arguments: {
-                                    'playlist': data,
-                                    'folderindex': index
-                                  });
+                              if (data.songId.isEmpty) {
+                                Navigator.pushNamed(
+                                    context, '/playlistSongList',
+                                    arguments: {'playlistt': data});
+                              } else {
+                                Navigator.pushNamed(context, '/playlistsong',
+                                    arguments: {
+                                      'playlist': data,
+                                      'folderindex': index
+                                    });
+                              }
                             },
                             child: data.songId.isEmpty
                                 ? PlaylistCreationBox(
                                     artwork: Container(
-                                        width: double.infinity,
                                         clipBehavior: Clip.antiAlias,
                                         decoration: BoxDecoration(
                                             color: Theme.of(context)

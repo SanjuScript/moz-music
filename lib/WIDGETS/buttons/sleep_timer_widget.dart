@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player/PROVIDER/sleep_timer_provider.dart';
 import 'package:music_player/Widgets/nuemorphic_button.dart';
@@ -98,29 +99,25 @@ class _SleepTimerForMozState extends State<SleepTimerForMoz> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.03,
                 width: MediaQuery.of(context).size.width * 0.9,
-                child: Nuemorphic(
-                  shadowColorVisiblity: true,
-                  borderRadius: BorderRadius.circular(15),
-                  child: Slider(
-                    inactiveColor: Theme.of(context).shadowColor,
-                    value: sliderValue,
-                    min: 0,
-                    max: 90,
-                    onChanged: (value) {
-                      setState(() {
-                        sliderValue = value;
-                        selectedDuration = value;
-                        saveSelectedDuration(value);
-                      });
-                    },
-                    onChangeEnd: (value) {
-                      setState(() {
-                        selectedDuration = value;
-                        saveSelectedDuration(value);
-                      });
-                    },
-                    label: selectedDuration.toStringAsFixed(0),
-                  ),
+                child: CupertinoSlider(
+                  // inactiveColor: Theme.of(context).shadowColor,
+                  value: sliderValue,
+                  min: 0,
+                  max: 90,
+                  onChanged: (value) {
+                    setState(() {
+                      sliderValue = value;
+                      selectedDuration = value;
+                      saveSelectedDuration(value);
+                    });
+                  },
+                  onChangeEnd: (value) {
+                    setState(() {
+                      selectedDuration = value;
+                      saveSelectedDuration(value);
+                    });
+                  },
+                  // label: selectedDuration.toStringAsFixed(0),
                 ),
               ),
               TextButton(

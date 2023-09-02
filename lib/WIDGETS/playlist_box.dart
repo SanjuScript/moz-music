@@ -26,7 +26,7 @@ class PlaylistCreationBox extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             child: SizedBox(
               height: MediaQuery.sizeOf(context).height * 0.18,
-              //  width: MediaQuery.sizeOf(context).width * 0.23,
+               width:double.infinity,
               child: artwork,
             ),
           ),

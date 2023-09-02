@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:music_player/PROVIDER/homepage_provider.dart';
 import 'package:provider/provider.dart';
-import '../PROVIDER/search_screen_provider.dart';
 import '../Widgets/song_list_maker.dart';
 
 class SearchPage extends StatefulWidget {
@@ -13,7 +13,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage>
     with AutomaticKeepAliveClientMixin {
   bool shouldAutofocus = true;
-  late SearchScreenProvider searchProvider;
+  late HomePageSongProvider searchProvider;
 
   @override
   bool get wantKeepAlive => true;
@@ -21,7 +21,7 @@ class _SearchPageState extends State<SearchPage>
   @override
   void initState() {
     super.initState();
-    searchProvider = Provider.of<SearchScreenProvider>(context, listen: false);
+    searchProvider = Provider.of<HomePageSongProvider>(context, listen: false);
     searchProvider.fetchAllSongs();
   }
 
@@ -98,7 +98,7 @@ class _SearchPageState extends State<SearchPage>
         ),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Consumer<SearchScreenProvider>(
+      body: Consumer<HomePageSongProvider>(
         builder: (context, provider, _) {
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 700),

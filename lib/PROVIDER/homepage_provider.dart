@@ -9,6 +9,8 @@ import '../HELPER/sort_enum.dart';
 
 class HomePageSongProvider extends ChangeNotifier {
   List<SongModel> homePageSongs = [];
+  List<SongModel> foundSongs = [];
+  late List<SongModel> allSongs;
   List<SongModel> recentSongs = [];
   bool _permissionGranted = false;
   Future<List<SongModel>>? _songsFuture;
@@ -39,6 +41,22 @@ class HomePageSongProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void filterSongs(String enteredKeyword) {
+    List<SongModel> results = [];
+    if (enteredKeyword.isEmpty) {
+      results = allSongs;
+    } else {
+      results = allSongs.where((element) {
+        return element.displayNameWOExt
+            .toLowerCase()
+            .contains(enteredKeyword.toLowerCase().trimRight());
+      }).toList();
+    }
+
+    foundSongs = results;
+    notifyListeners();
+  }
+
   set defaultSort(SortOption sortOption) {
     _defaultSort = sortOption;
     notifyListeners(); // Notify listeners of the state change
@@ -59,6 +77,31 @@ class HomePageSongProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void fetchAllSongs() async {
+    allSongs = await OnAudioQuery().querySongs(
+      sortType: SongSortType.DATE_ADDED,
+      orderType: OrderType.DESC_OR_GREATER,
+      uriType: UriType.EXTERNAL,
+      ignoreCase: null,
+    );
+
+    // Filter out unwanted songs
+    foundSongs = allSongs.where((song) {
+      final displayName = song.displayName.toLowerCase();
+      return !_removedSongs.contains(song.id) && // Exclude removed songs
+          !displayName.contains(".opus") &&
+          !displayName.contains("aud") &&
+          !displayName.contains("recordings") &&
+          !displayName.contains("recording") &&
+          !displayName.contains("MIDI") &&
+          !displayName.contains("pxl") &&
+          !displayName.contains("Record") &&
+          !displayName.contains("VID") &&
+          !displayName.contains("whatsapp");
+    }).toList();
+    notifyListeners();
+  }
+
   Future<void> saveRemovedSongs() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(
@@ -72,7 +115,6 @@ class HomePageSongProvider extends ChangeNotifier {
     final removedSongIds = prefs.getStringList('removed_songs') ?? [];
     _removedSongs = removedSongIds.map(int.parse).toSet();
   }
-
 
   Future<List<SongModel>> querySongs() async {
     final sortType = getSortType(defaultSort);
@@ -90,7 +132,7 @@ class HomePageSongProvider extends ChangeNotifier {
     // Filter out unwanted songs
     final filteredSongs = songs.where((song) {
       final displayName = song.displayName.toLowerCase();
-       
+
       return !_removedSongs.contains(song.id) && // Exclude removed songs
           !displayName.contains(".opus") &&
           !displayName.contains("aud") &&
@@ -111,19 +153,48 @@ class HomePageSongProvider extends ChangeNotifier {
   Future<void> handleRefresh() async {
     await Future.delayed(const Duration(seconds: 1));
     _songsFuture = querySongs();
-    notifyListeners(); // Notify listeners of the state change
+    notifyListeners();
   }
 
-  Future<void> checkPermissionsAndQuerySongs(SortOption defaultSort) async {
-    final permStatus = await Permission.storage.request();
-    if (permStatus.isDenied) {
-      await Permission.storage.request();
-    }
+  Future<void> checkPermissionsAndQuerySongs(
+      SortOption defaultSort, BuildContext context) async {
+    final status = await Permission.storage.request();
 
-    // Update the permissionGranted flag and call querySongs
-    _permissionGranted = true;
-    _songsFuture = querySongs();
-    notifyListeners(); // Notify listeners of the state change
+    if (status.isGranted) {
+      _permissionGranted = true;
+      _songsFuture = querySongs();
+      notifyListeners();
+    } else if (status.isDenied) {
+      // ignore: use_build_context_synchronously
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Permission Denied'),
+            content: const Text(
+              'This app needs storage permission to perform certain functions. Please grant the permission in app settings.',
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                child: const Text('OK'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                  openAppSettings(); // Open app settings page
+                },
+                child: const Text('Open Settings'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      openAppSettings();
+    }
   }
 
   HomePageSongProvider() {

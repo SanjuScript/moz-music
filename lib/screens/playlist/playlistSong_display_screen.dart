@@ -201,21 +201,29 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                             imgRadius: 15,
                           )),
                       Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            playlist.name,
-                            style: TextStyle(
-                              letterSpacing: 1,
-                              fontFamily: "appollo",
-                              fontSize: 23,
-                              color: Theme.of(context).cardColor,
-                              fontWeight: FontWeight.bold,
+                          SizedBox(
+                            width: MediaQuery.sizeOf(context).width * 0.6,
+                            child: Text(
+                              playlist.name,
+                              style: TextStyle(
+                                letterSpacing: 1,
+                                fontFamily: "appollo",
+                                fontSize: 23,
+                                overflow: TextOverflow.ellipsis,
+                                color: Theme.of(context).cardColor,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 5, right: 5),
                             child: Text(
+                              
                               "${playlistsong.length} Songs",
+                              textAlign: TextAlign.left,
                               style: const TextStyle(
                                 letterSpacing: 1,
                                 fontFamily: "appollo",
@@ -263,7 +271,8 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                                       GetSongs.createSongList(newlist),
                                       initialIndex: index);
                                   GetSongs.player.play();
-                                 MostlyPlayedDB.incrementPlayCount(playlistsong[index]);
+                                  MostlyPlayedDB.incrementPlayCount(
+                                      playlistsong[index]);
                                   RecentlyPlayedDB.addRecentlyPlayed(
                                       playlistsong[index]);
                                   // Add a completion listener to the audio player

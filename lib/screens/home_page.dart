@@ -9,6 +9,8 @@ import 'package:music_player/HELPER/scroll_behaviour.dart';
 import 'package:music_player/HELPER/sort_enum.dart';
 import 'package:music_player/HELPER/strings.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
+import 'package:music_player/WIDGETS/mostly_shot_display.dart';
+import 'package:music_player/WIDGETS/recently_shot_display.dart';
 import 'package:music_player/screens/artists/artists_page.dart';
 import 'package:music_player/screens/favoritepage/favorite_button.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -42,7 +44,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
-  List<SongModel> recentSong = [];
+
   void _navigate({required BuildContext context, required Widget child}) {
     Navigator.push(context, ThisIsFadeRoute(route: child));
   }
@@ -128,17 +130,10 @@ class _HomePageState extends State<HomePage>
     super.initState();
     MostlyPlayedDB.getMostlyPlayedSongs();
     RecentlyPlayedDB.getRecentlyPlayedSongs();
-    // MostPlayedDB.getMostPlayedSongs();
-    // Provider.of<HomePageSongProvider>(context).fetchRecentSongs();
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   Provider.of<HomePageSongProvider>(context).fetchRecentSongs();
-  // }
-
   final ScrollController _controller = ScrollController();
+ 
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -199,8 +194,8 @@ class _HomePageState extends State<HomePage>
               height: 15,
             ),
             SizedBox(
-              height: MediaQuery.sizeOf(context).height * 0.11,
-              child: ListView.builder(
+              height : MediaQuery.sizeOf(context).height * 0.11,
+              child:ListView.builder(
                 physics: const BouncingScrollPhysics(),
                 itemCount: audioData.length,
                 shrinkWrap: true,
@@ -269,7 +264,7 @@ class _HomePageState extends State<HomePage>
                 },
               ),
             ),
-            ValueListenableBuilder(
+             ValueListenableBuilder(
                 valueListenable: RecentlyPlayedDB.recentlyplayedSongNotifier,
                 builder: (BuildContext context, List<SongModel> value,
                     Widget? child) {
@@ -301,121 +296,7 @@ class _HomePageState extends State<HomePage>
                         )
                       : SizedBox.shrink();
                 }),
-            SizedBox(
-              height: MediaQuery.sizeOf(context).height * 0.22,
-              child: ValueListenableBuilder(
-                  valueListenable: RecentlyPlayedDB.recentlyplayedSongNotifier,
-                  builder: (BuildContext context, List<SongModel> value,
-                      Widget? child) {
-                    final temp = value.reversed.toList();
-                    recentSong = temp.toSet().toList();
-
-                    return value.length > 12
-                        ? ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            itemCount: recentSong.length,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              if (index < 12) {
-                                return InkWell(
-                                  onTap: () async {
-                                    if (GetSongs.player.playing != true) {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => NowPlaying(
-                                                  songModelList:
-                                                      GetSongs.playingSongs)));
-                                    }
-
-                                    await RecentlyPlayedDB.addRecentlyPlayed(
-                                        recentSong[index]);
-                                    await MostlyPlayedDB.incrementPlayCount(
-                                        recentSong[index]);
-                                    GetSongs.player.setAudioSource(
-                                        GetSongs.createSongList(
-                                          recentSong,
-                                        ),
-                                        initialIndex: index);
-                                    GetSongs.player.play();
-                                    GetSongs.player.playerStateStream
-                                        .listen((playerState) {
-                                      if (playerState.processingState ==
-                                          ProcessingState.completed) {
-                                        // Check if the current song is the last song in the playlist
-                                        if (GetSongs.player.currentIndex ==
-                                            recentSong.length - 1) {
-                                          // Rewind the playlist to the starting index
-                                          GetSongs.player
-                                              .seek(Duration.zero, index: 0);
-                                        }
-                                      }
-                                    });
-                                    GetSongs.songscopy = recentSong;
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                          width:
-                                              MediaQuery.sizeOf(context).width *
-                                                  0.26,
-                                          height: MediaQuery.sizeOf(context)
-                                                  .height *
-                                              0.12,
-                                          // Adjust the size as needed
-                                          margin: const EdgeInsets.only(
-                                              left: 8,
-                                              right: 8,
-                                              top: 14,
-                                              bottom: 12),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              boxShadow: []),
-                                          child: AudioArtworkDefiner(
-                                            id: recentSong[index].id,
-                                            imgRadius: 15,
-                                          )),
-                                      SizedBox(
-                                        height:
-                                            MediaQuery.sizeOf(context).height *
-                                                0.05,
-                                        width:
-                                            MediaQuery.sizeOf(context).width *
-                                                0.25,
-                                        child: Text(
-                                          recentSong[index].title,
-                                          maxLines: 2,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              shadows: const [
-                                                BoxShadow(
-                                                  color: Color.fromARGB(
-                                                      90, 89, 89, 89),
-                                                  blurRadius: 15,
-                                                  offset: Offset(-2, 2),
-                                                ),
-                                              ],
-                                              fontSize: 13,
-                                              fontFamily: 'rounder',
-                                              overflow: TextOverflow.ellipsis,
-                                              fontWeight: FontWeight.w400,
-                                              color:
-                                                  Theme.of(context).cardColor),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              } else {
-                                return const SizedBox.shrink();
-                              }
-                            },
-                          )
-                        : SizedBox.shrink();
-                  }),
-            ),
+       RecentlyShotDisplay(),
             ValueListenableBuilder(
                 valueListenable: MostlyPlayedDB.mostlyPlayedSongNotifier,
                 builder: (BuildContext context, List<SongModel> mostplayed,
@@ -424,9 +305,9 @@ class _HomePageState extends State<HomePage>
                       ? Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: InkWell(
+                                               overlayColor: MaterialStatePropertyAll(Colors.transparent),
                             onTap: _mostly,
-                             overlayColor:
-                                MaterialStateProperty.all(Colors.transparent),
+                           
                             child: Text(
                               "Mostly Played",
                               style: TextStyle(
@@ -447,177 +328,7 @@ class _HomePageState extends State<HomePage>
                         )
                       : SizedBox.shrink();
                 }),
-            SizedBox(
-              height: MediaQuery.sizeOf(context).height * 0.30,
-              child: ValueListenableBuilder<List<SongModel>>(
-                  valueListenable: MostlyPlayedDB.mostlyPlayedSongNotifier,
-                  builder: (BuildContext context, List<SongModel> mostplayed,
-                      Widget? child) {
-                    return mostplayed.length > 8
-                        ? PageView.builder(
-                            physics: PageScrollPhysics(),
-                            itemCount: 3,
-
-                            // scrollBehavior: MozScrollBehaviour(),
-                            itemBuilder: (context, pageIndex) {
-                              return ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 5),
-                                itemCount: mostplayed.length < 3
-                                    ? mostplayed.length
-                                    : 3,
-                                itemBuilder: (context, listviewindex) {
-                                  List<SongModel> items;
-                                  if (pageIndex == 0) {
-                                    items = mostplayed.sublist(0, 3);
-                                  } else if (pageIndex == 1) {
-                                    items = mostplayed.sublist(3, 6);
-                                  } else {
-                                    items = mostplayed.sublist(6, 9);
-                                  }
-                                  final playCount = MostlyPlayedDB.getPlayCount(
-                                      items[listviewindex].id);
-
-                                  return ListTile(
-                                    contentPadding: EdgeInsets.only(
-                                        top: 8, right: 8, left: 8),
-                                    leading: SizedBox(
-                                      height:
-                                          MediaQuery.sizeOf(context).height *
-                                              0.18,
-                                      width: MediaQuery.sizeOf(context).width *
-                                          0.16,
-                                      child: AudioArtworkDefiner(
-                                        id: items[listviewindex].id,
-                                        imgRadius: 10,
-                                        iconSize: 25,
-                                      ),
-                                    ),
-                                    title: Text(
-                                      items[listviewindex].title,
-                                      style: TextStyle(
-                                          shadows: const [
-                                            BoxShadow(
-                                              color: Color.fromARGB(
-                                                  86, 139, 139, 139),
-                                              blurRadius: 15,
-                                              offset: Offset(-2, 2),
-                                            ),
-                                          ],
-                                          fontSize: 17,
-                                          fontFamily: 'rounder',
-                                          overflow: TextOverflow.ellipsis,
-                                          fontWeight: FontWeight.w400,
-                                          color: Theme.of(context).cardColor),
-                                    ),
-                                    subtitle: Text(
-                                      artistHelper(
-                                          items[listviewindex]
-                                              .artist
-                                              .toString(),
-                                          ''),
-                                      style: TextStyle(
-                                          shadows: const [
-                                            BoxShadow(
-                                              color: Color.fromARGB(
-                                                  34, 107, 107, 107),
-                                              blurRadius: 15,
-                                              offset: Offset(-2, 2),
-                                            ),
-                                          ],
-                                          fontSize: 13,
-                                          fontFamily: 'rounder',
-                                          overflow: TextOverflow.ellipsis,
-                                          fontWeight: FontWeight.w400,
-                                          color: Theme.of(context)
-                                              .cardColor
-                                              .withOpacity(.4)),
-                                    ),
-                                    trailing: Column(
-                                      children: [
-                                        Text(
-                                          playCount.toString(),
-                                          style: TextStyle(
-                                              shadows: const [
-                                                BoxShadow(
-                                                  color: Color.fromARGB(
-                                                      86, 139, 139, 139),
-                                                  blurRadius: 15,
-                                                  offset: Offset(-2, 2),
-                                                ),
-                                              ],
-                                              fontSize: 17,
-                                              fontFamily: 'rounder',
-                                              overflow: TextOverflow.ellipsis,
-                                              fontWeight: FontWeight.w400,
-                                              color:
-                                                  Theme.of(context).cardColor),
-                                        ),
-                                        Text(
-                                          "played",
-                                          style: TextStyle(
-                                              shadows: const [
-                                                BoxShadow(
-                                                  color: Color.fromARGB(
-                                                      34, 107, 107, 107),
-                                                  blurRadius: 15,
-                                                  offset: Offset(-2, 2),
-                                                ),
-                                              ],
-                                              fontSize: 13,
-                                              fontFamily: 'rounder',
-                                              overflow: TextOverflow.ellipsis,
-                                              fontWeight: FontWeight.w400,
-                                              color: Theme.of(context)
-                                                  .cardColor
-                                                  .withOpacity(.4)),
-                                        ),
-                                      ],
-                                    ),
-                                    onTap: () async {
-                                      if (GetSongs.player.playing != true) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    NowPlaying(
-                                                        songModelList: GetSongs
-                                                            .playingSongs)));
-                                      }
-
-                                      await RecentlyPlayedDB.addRecentlyPlayed(
-                                          items[listviewindex]);
-                                      await MostlyPlayedDB.incrementPlayCount(
-                                          items[listviewindex]);
-                                      GetSongs.player.setAudioSource(
-                                          GetSongs.createSongList(
-                                            items,
-                                          ),
-                                          initialIndex: listviewindex);
-                                      GetSongs.player.play();
-                                      GetSongs.player.playerStateStream
-                                          .listen((playerState) {
-                                        if (playerState.processingState ==
-                                            ProcessingState.completed) {
-                                          // Check if the current song is the last song in the playlist
-                                          if (GetSongs.player.currentIndex ==
-                                              items.length - 1) {
-                                            // Rewind the playlist to the starting index
-                                            GetSongs.player
-                                                .seek(Duration.zero, index: 0);
-                                          }
-                                        }
-                                      });
-                                    },
-                                  );
-                                },
-                              );
-                            },
-                          )
-                        : SizedBox.shrink();
-                  }),
-            ),
+          const MostlyShotDisplay(),
             Padding(
               padding: const EdgeInsets.only(left: 10, top: 10),
               child: Text(
@@ -653,6 +364,7 @@ class _HomePageState extends State<HomePage>
                   itemBuilder: (context, index) {
                     if (index < 10) {
                       return InkWell(
+                                           overlayColor: MaterialStateProperty.all(Colors.transparent),
                         onTap: () async {
                           if (GetSongs.player.playing != true) {
                             Navigator.push(
@@ -678,7 +390,7 @@ class _HomePageState extends State<HomePage>
                                 ProcessingState.completed) {
                               // Check if the current song is the last song in the playlist
                               if (GetSongs.player.currentIndex ==
-                                  recentSong.length - 1) {
+                                  currentSongDate.length - 1) {
                                 // Rewind the playlist to the starting index
                                 GetSongs.player.seek(Duration.zero, index: 0);
                               }

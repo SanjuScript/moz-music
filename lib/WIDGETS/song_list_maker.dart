@@ -272,12 +272,12 @@ Widget songDisplay(BuildContext context,
       subtitle: Text(
         artistHelper(song.artist.toString(), song.fileExtension),
         maxLines: 1,
-        style: const TextStyle(
+        style:  TextStyle(
             fontSize: 13,
             fontFamily: 'rounder',
             overflow: TextOverflow.ellipsis,
             fontWeight: FontWeight.normal,
-            color: Color(0xff97A4B7)),
+            color:Theme.of(context).cardColor.withOpacity(.4)),
       ),
       onTap: disableOnTap
           ? null

@@ -453,7 +453,6 @@ class _NowPlayingState extends State<NowPlaying>
                                       );
                                     }
                                   } else {
-                                    // Handle the case where there's no data yet or the stream is still loading
                                     return const CircularProgressIndicator(); // or any other loading indicator
                                   }
                                 },

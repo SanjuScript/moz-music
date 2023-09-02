@@ -4,9 +4,9 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/DATABASE/playlistDb.dart';
 import 'package:music_player/Model/music_model.dart';
+import 'package:music_player/PROVIDER/homepage_provider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
-import '../../PROVIDER/search_screen_provider.dart';
 import '../../Widgets/song_list_maker.dart';
 
 class PlayListSongListScreen extends StatefulWidget {
@@ -19,7 +19,7 @@ class PlayListSongListScreen extends StatefulWidget {
 class _PlayListSongListScreenState extends State<PlayListSongListScreen>
     with AutomaticKeepAliveClientMixin {
   bool shouldAutofocus = true;
-  late SearchScreenProvider searchProvider;
+  late HomePageSongProvider searchProvider;
 
   @override
   bool get wantKeepAlive => true;
@@ -27,7 +27,7 @@ class _PlayListSongListScreenState extends State<PlayListSongListScreen>
   @override
   void initState() {
     super.initState();
-    searchProvider = Provider.of<SearchScreenProvider>(context, listen: false);
+    searchProvider = Provider.of<HomePageSongProvider>(context, listen: false);
     searchProvider.fetchAllSongs();
   }
 
@@ -78,8 +78,7 @@ class _PlayListSongListScreenState extends State<PlayListSongListScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-     
-      appBar:  AppBar(
+      appBar: AppBar(
         automaticallyImplyLeading: false,
         surfaceTintColor: Colors.transparent,
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,
@@ -89,11 +88,10 @@ class _PlayListSongListScreenState extends State<PlayListSongListScreen>
           width: MediaQuery.of(context).size.width * 0.88,
           child: TextField(
             autofocus: shouldAutofocus,
-            style:  TextStyle(fontWeight: FontWeight.bold,color: Theme.of(context).cardColor),
-            
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).cardColor),
             decoration: InputDecoration(
-              
-  
               contentPadding: EdgeInsets.only(
                   left: MediaQuery.of(context).size.width * 0.1),
               filled: true,
@@ -123,7 +121,7 @@ class _PlayListSongListScreenState extends State<PlayListSongListScreen>
         ),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Consumer<SearchScreenProvider>(
+      body: Consumer<HomePageSongProvider>(
         builder: (context, provider, _) {
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 700),

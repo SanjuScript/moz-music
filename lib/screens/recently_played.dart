@@ -60,6 +60,7 @@ class _RecentlyPlayedState extends State<RecentlyPlayed>
                             text1: "Delete All From Recently Played",
                             onPress: () {
                               RecentlyPlayedDB.deleteAll();
+                              Navigator.pop(context);
                             });
                       }
                     },

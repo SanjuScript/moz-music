@@ -60,6 +60,7 @@ class _MostlyPlayedState extends State<MostlyPlayed>
                             text1: "Delete All From Mostly Played",
                             onPress: () {
                               MostlyPlayedDB.deleteAll();
+                              Navigator.pop(context);
                             });
                       }
                     },

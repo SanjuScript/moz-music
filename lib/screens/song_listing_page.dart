@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:lottie/lottie.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
-import 'package:music_player/DATABASE/most_played.dart';
 import 'package:music_player/PROVIDER/homepage_provider.dart';
 import 'package:music_player/WIDGETS/drawer_widget.dart';
 import 'package:music_player/SCREENS/search_music_screen.dart';
@@ -17,7 +16,6 @@ import '../DATABASE/recently_played.dart';
 import '../HELPER/sort_enum.dart';
 import '../WIDGETS/buttons/sort_menu_button.dart';
 import '../WIDGETS/song_list_maker.dart';
-import '../WIDGETS/song_sections.dart';
 
 List<SongModel> startSong = [];
 
@@ -44,7 +42,7 @@ class _SongListingPageState extends State<SongListingPage>
     RecentlyPlayedDB.getRecentlyPlayedSongs();
     final homepageState =
         Provider.of<HomePageSongProvider>(context, listen: false);
-    homepageState.checkPermissionsAndQuerySongs(homepageState.defaultSort);
+    homepageState.checkPermissionsAndQuerySongs(homepageState.defaultSort,context);
     getSortOption().then((SortOption value) {
       setState(() {
         homepageState.defaultSort = value;
@@ -305,11 +303,10 @@ class _SongListingPageState extends State<SongListingPage>
               TextButton(
                 style: TextButton.styleFrom(backgroundColor: Colors.grey),
                 onPressed: () async {
-                  bool opened = await openAppSettings();
-                  if (opened) {
+                  openAppSettings().then((value) {
                     homepageState.checkPermissionsAndQuerySongs(
-                        homepageState.defaultSort);
-                  }
+                        homepageState.defaultSort,context);
+                  });
                 },
                 child: Text(
                   "Open Settings",
