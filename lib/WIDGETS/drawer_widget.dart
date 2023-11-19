@@ -85,7 +85,7 @@ Widget drawerWidget(
                     context: context,
                     leadingIcon: Icons.contact_page,
                     onTap: () {
-                      navigation(const AboutPage(), context, scaffoldKey);
+                      navigation( AboutPage(), context, scaffoldKey);
                     },
                     text: 'About'),
                 listDrawerItems(

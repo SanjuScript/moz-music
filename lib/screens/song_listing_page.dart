@@ -305,7 +305,7 @@ class _SongListingPageState extends State<SongListingPage>
                 onPressed: () async {
                   openAppSettings().then((value) {
                     homepageState.checkPermissionsAndQuerySongs(
-                        homepageState.defaultSort,context);
+                        homepageState.defaultSort,context,isallowed: true);
                   });
                 },
                 child: Text(

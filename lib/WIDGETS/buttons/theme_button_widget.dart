@@ -8,10 +8,16 @@ import '../../COLORS/colors.dart';
 
 class ChangeThemeButtonWidget extends StatefulWidget {
   final bool visibility; // Corrected spelling
-  const ChangeThemeButtonWidget({Key? key, this.visibility = false}) : super(key: key);
+  final bool changeICon;
+  const ChangeThemeButtonWidget({
+    Key? key,
+    this.visibility = false,
+    this.changeICon = false,
+  }) : super(key: key);
 
   @override
-  State<ChangeThemeButtonWidget> createState() => _ChangeThemeButtonWidgetState();
+  State<ChangeThemeButtonWidget> createState() =>
+      _ChangeThemeButtonWidgetState();
 }
 
 class _ChangeThemeButtonWidgetState extends State<ChangeThemeButtonWidget> {
@@ -39,18 +45,32 @@ class _ChangeThemeButtonWidgetState extends State<ChangeThemeButtonWidget> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     _darkTheme = (themeProvider.gettheme() == lightThemeMode);
-
-    return IconButton(
-      icon: Icon(
-        _darkTheme ? Icons.dark_mode : Icons.light_mode,
-        color: _darkTheme ? Colors.black : Colors.white,
-      ),
-      onPressed: () => _toggleTheme(themeProvider),
-    );
+    if (widget.changeICon) {
+      return Switch(
+          value: _darkTheme,
+          onChanged: (value) {
+         _toggleTheme(themeProvider);
+          },
+          // activeColor: Colors.black,
+          // activeTrackColor: Colors.grey[300],
+          // inactiveThumbColor: Colors.white,
+          // inactiveTrackColor: Colors.grey[700],
+        );
+    } else {
+      return IconButton(
+        icon: Icon(
+          _darkTheme ? Icons.dark_mode : Icons.light_mode,
+          color: _darkTheme ? Colors.black : Colors.white,
+        ),
+        onPressed: () => _toggleTheme(themeProvider),
+      );
+    }
   }
 
   void onThemeChanged(bool value, ThemeProvider themeProvider) async {
-    value ? themeProvider.setTheme(lightThemeMode) : themeProvider.setTheme(darkThemeMode);
+    value
+        ? themeProvider.setTheme(lightThemeMode)
+        : themeProvider.setTheme(darkThemeMode);
     var prefs = await SharedPreferences.getInstance();
     prefs.setBool('darkMode', value);
   }

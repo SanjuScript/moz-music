@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:music_player/DATABASE/most_played.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-import '../DATABASE/recently_played.dart';
 import '../HELPER/get_audio_size_in_mb.dart';
 import '../WIDGETS/appbar.dart';
-
-import 'package:flutter/material.dart';
 
 import '../WIDGETS/dialogues/playlist_delete_dialogue.dart';
 // ignore: unused_import
@@ -85,59 +82,69 @@ class _MostlyPlayedState extends State<MostlyPlayed>
                             physics: const BouncingScrollPhysics(),
                             itemCount: value.length,
                             itemBuilder: (context, index) {
-                              String filePath = value[index].data;
-                              File file = File(filePath);
-                              double fileSizeInMB = getFileSizeInMB(file);
-                               final playCount = MostlyPlayedDB.getPlayCount(
-                                      value[index].id);
-                              return songDisplay(context,
-                                  song: value[index],
+                              final song = value[index];
+                              if (song.data != null) {
+                                String filePath = song.data ??
+                                    ""; // If song.data is null, use an empty string as a default value
+                                File file = File(filePath);
+
+                                double fileSizeInMB = getFileSizeInMB(file);
+                                final playCount =
+                                    MostlyPlayedDB.getPlayCount(song.id);
+                                return songDisplay(
+                                  context,
+                                  song: song,
                                   songs: value,
-                                  isTrailingChange: 
-                                  true,
-                                  trailing:  Column(
+                                  isTrailingChange: true,
+                                  trailing: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          playCount.toString(),
-                                          style: TextStyle(
-                                              shadows: const [
-                                                BoxShadow(
-                                                  color: Color.fromARGB(
-                                                      86, 139, 139, 139),
-                                                  blurRadius: 15,
-                                                  offset: Offset(-2, 2),
-                                                ),
-                                              ],
-                                              fontSize: 17,
-                                              fontFamily: 'rounder',
-                                              overflow: TextOverflow.ellipsis,
-                                              fontWeight: FontWeight.w400,
-                                              color:
-                                                  Theme.of(context).cardColor),
+                                    children: [
+                                      Text(
+                                        playCount.toString(),
+                                        style: TextStyle(
+                                          shadows: const [
+                                            BoxShadow(
+                                              color: Color.fromARGB(
+                                                  86, 139, 139, 139),
+                                              blurRadius: 15,
+                                              offset: Offset(-2, 2),
+                                            ),
+                                          ],
+                                          fontSize: 17,
+                                          fontFamily: 'rounder',
+                                          overflow: TextOverflow.ellipsis,
+                                          fontWeight: FontWeight.w400,
+                                          color: Theme.of(context).cardColor,
                                         ),
-                                        Text(
-                                          "played",
-                                          style: TextStyle(
-                                              shadows: const [
-                                                BoxShadow(
-                                                  color: Color.fromARGB(
-                                                      34, 107, 107, 107),
-                                                  blurRadius: 15,
-                                                  offset: Offset(-2, 2),
-                                                ),
-                                              ],
-                                              fontSize: 13,
-                                              fontFamily: 'rounder',
-                                              overflow: TextOverflow.ellipsis,
-                                              fontWeight: FontWeight.w400,
-                                              color: Theme.of(context)
-                                                  .cardColor
-                                                  .withOpacity(.4)),
+                                      ),
+                                      Text(
+                                        "played",
+                                        style: TextStyle(
+                                          shadows: const [
+                                            BoxShadow(
+                                              color: Color.fromARGB(
+                                                  34, 107, 107, 107),
+                                              blurRadius: 15,
+                                              offset: Offset(-2, 2),
+                                            ),
+                                          ],
+                                          fontSize: 13,
+                                          fontFamily: 'rounder',
+                                          overflow: TextOverflow.ellipsis,
+                                          fontWeight: FontWeight.w400,
+                                          color: Theme.of(context)
+                                              .cardColor
+                                              .withOpacity(.4),
                                         ),
-                                      ],
-                                    ),
-                                  index: index);
+                                      ),
+                                    ],
+                                  ),
+                                  index: index,
+                                );
+                              } else {
+                                // Handle the case where song or song.data is null
+                                return const SizedBox(); // or provide a placeholder widget
+                              }
                             },
                           ),
                   ),

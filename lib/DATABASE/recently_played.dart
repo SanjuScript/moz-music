@@ -1,5 +1,7 @@
 // ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -11,21 +13,24 @@ class RecentlyPlayedDB {
   static bool isInitialized = false;
   static const int maxSongCount = 100; // Remove this line
 
-  static intialize(List<SongModel> songs) {
+  static intialize(List<SongModel> songs) async {
     for (SongModel song in songs) {
-      if (isDoes(song)) {
+      if (await isDoes(song)) {
         recentlyplayedSongNotifier.value.add(song);
       }
     }
     isInitialized = true;
   }
 
-  static isDoes(SongModel song) async {
-    final recentDb = await Hive.openBox('recentlyPlayed');
-    if (recentDb.values.contains(song.id)) {
-      return true;
+  static Future<bool> isDoes(SongModel song) async {
+    try {
+      final recentDb = await Hive.openBox('recentlyPlayed');
+      return recentDb.values.contains(song.id);
+    } catch (e) {
+      // Handle the exception, e.g., log it or return a default value
+      log("Is Does Error : $e");
+      return false;
     }
-    return false;
   }
 
   static Future<void> addRecentlyPlayed(SongModel song) async {
@@ -67,7 +72,7 @@ class RecentlyPlayedDB {
       final song = GetSongs.songscopy.firstWhere(
         (element) => element.id == songId,
         orElse: () =>
-            SongModel(songId), // Return a default instance of SongModel
+            SongModel({"id": songId}), // Return a default instance of SongModel
       );
 
       recentlyplayedSongNotifier.value.add(song);

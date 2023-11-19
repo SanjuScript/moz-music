@@ -1,18 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
-import 'package:music_player/DATABASE/most_played.dart';
 import 'package:music_player/DATABASE/recently_played.dart';
-import 'package:music_player/WIDGETS/bottomsheet/song_info_sheet.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
-import 'package:music_player/WIDGETS/dialogues/song_delete_dialogue.dart';
-import 'package:music_player/screens/main_music_playing_screen.dart.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../HELPER/get_audio_size_in_mb.dart';
 import '../Widgets/appbar.dart';
 import '../Widgets/song_list_maker.dart';
-import '../CONTROLLER/song_controllers.dart';
 
 class RecentlyPlayed extends StatefulWidget {
   const RecentlyPlayed({super.key});
@@ -41,7 +35,12 @@ class _RecentlyPlayedState extends State<RecentlyPlayed>
       builder: (BuildContext context, List<SongModel> value, Widget? child) {
         final temp = value.reversed.toList();
         recentSong = temp.toSet().toList();
-
+        if (value == ConnectionState.waiting) {
+          return const Center(
+            child: Text("data")
+            );
+        }
+        //data loading
         return Scaffold(
             extendBody: true,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,

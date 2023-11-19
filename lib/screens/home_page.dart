@@ -1,18 +1,14 @@
-import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
 import 'package:music_player/DATABASE/playlistDb.dart';
-import 'package:music_player/HELPER/artist_helper.dart';
-import 'package:music_player/HELPER/scroll_behaviour.dart';
 import 'package:music_player/HELPER/sort_enum.dart';
 import 'package:music_player/HELPER/strings.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
 import 'package:music_player/WIDGETS/mostly_shot_display.dart';
 import 'package:music_player/WIDGETS/recently_shot_display.dart';
 import 'package:music_player/screens/artists/artists_page.dart';
-import 'package:music_player/screens/favoritepage/favorite_button.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import '../ANIMATION/fade_animation.dart';
@@ -90,20 +86,21 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget getItemByIndex(int index, List<String> audioData) {
-    if (index == 0) {
-      return _audioDataWithoutListenable(audioData: audioData[index]);
-    } else if (index == 1) {
-      return _audioDataWithoutListenable(audioData: audioData[index]);
-    } else if (index == 2) {
-      return _audioDataWithoutListenable(audioData: audioData[index]);
-    } else if (index == 3) {
-      return _audioDataLabelWIthListenable(
-          valueListenable: FavoriteDb.favoriteSongs);
-    } else {
-      return _audioDataWithoutListenable(audioData: audioData[index]);
-    }
+ Widget getItemByIndex(int index, List<String> audioData) {
+  if (index == 0) {
+    return _audioDataWithoutListenable(audioData: audioData[index]);
+  } else if (index == 1) {
+    return _audioDataWithoutListenable(audioData: audioData[index]);
+  } else if (index == 2) {
+    return _audioDataWithoutListenable(audioData: audioData[index]);
+  } else if (index == 3) {
+    return _audioDataLabelWIthListenable(
+        valueListenable: FavoriteDb.favoriteSongs);
+  } else {
+    return _audioDataWithoutListenable(audioData: audioData[index]);
   }
+}
+
 
   void _playlist() {
     widget.playlist();
@@ -143,7 +140,7 @@ class _HomePageState extends State<HomePage>
     final favoriteData = FavoriteDb.favoriteSongsLength;
     final playlistData = PlayListDB.playListDb.length;
     List<String> audioData = [
-      allSongsData.songs.length.toString(),
+      allSongsData.currentSongCount.toString(),
       albumData.totalAlbums.toString(),
       artistData.totalArtists.toString(),
       favoriteData.toString(),
@@ -224,12 +221,12 @@ class _HomePageState extends State<HomePage>
                           boxShadow: [
                             BoxShadow(
                                 color: Theme.of(context).primaryColorDark,
-                                offset: Offset(-8, 8),
+                                offset: const Offset(-8, 8),
                                 blurRadius: 7,
                                 spreadRadius: -5),
                             BoxShadow(
                                 color: Theme.of(context).primaryColorLight,
-                                offset: Offset(7, -7),
+                                offset: const Offset(7, -7),
                                 blurRadius: 7,
                                 spreadRadius: -5),
                           ]),
@@ -294,7 +291,7 @@ class _HomePageState extends State<HomePage>
                             ),
                           ),
                         )
-                      : SizedBox.shrink();
+                      : const SizedBox.shrink();
                 }),
        RecentlyShotDisplay(),
             ValueListenableBuilder(
@@ -305,7 +302,7 @@ class _HomePageState extends State<HomePage>
                       ? Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: InkWell(
-                                               overlayColor: MaterialStatePropertyAll(Colors.transparent),
+                                               overlayColor: const MaterialStatePropertyAll(Colors.transparent),
                             onTap: _mostly,
                            
                             child: Text(
@@ -326,7 +323,7 @@ class _HomePageState extends State<HomePage>
                             ),
                           ),
                         )
-                      : SizedBox.shrink();
+                      : const SizedBox.shrink();
                 }),
           const MostlyShotDisplay(),
             Padding(
@@ -357,7 +354,7 @@ class _HomePageState extends State<HomePage>
                         .sublist(0, 10);
 
                 return ListView.builder(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   itemCount: currentSongDate.length,
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
@@ -409,7 +406,7 @@ class _HomePageState extends State<HomePage>
                                     left: 8, right: 8, top: 14, bottom: 12),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
-                                    boxShadow: []),
+                                    boxShadow: const []),
                                 child: AudioArtworkDefiner(
                                   id: currentSongDate[index].id,
                                   imgRadius: 15,

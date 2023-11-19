@@ -82,9 +82,9 @@ Future<void> main() async {
       ChangeNotifierProvider(
         create: (context) => HomePageSongProvider(),
       ),
-      ChangeNotifierProvider(
-        create: (context) => ColorProvider(),
-      ),
+      // ChangeNotifierProvider(
+      //   create: (context) => ColorProvider(),
+      // ),
       ChangeNotifierProvider(create: (context) => SongListProvider()),
     ], child: const MyApp()));
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
@@ -106,7 +106,7 @@ class MyApp extends StatelessWidget {
         '/playlistsong': (context) => const PlaylistSongDisplayScreen(),
         '/songInfo': (context) => const SongInfo(),
         '/playlistSongList': (context) => const PlayListSongListScreen(),
-        '/about': (context) => const AboutPage(),
+        '/about': (context) =>  AboutPage(),
         '/privacyPage': (context) => const PrivacyPolicyPage(),
       },
     );

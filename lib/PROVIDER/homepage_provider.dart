@@ -1,10 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../HELPER/sort_enum.dart';
 
 class HomePageSongProvider extends ChangeNotifier {
@@ -16,6 +15,9 @@ class HomePageSongProvider extends ChangeNotifier {
   Future<List<SongModel>>? _songsFuture;
   SortOption _defaultSort = SortOption.adate;
   Set<int> _removedSongs = {};
+  int _currentSongCount = 0;
+
+  int get currentSongCount => _currentSongCount;
 
   Set<int> get removedSongs => _removedSongs;
 
@@ -54,6 +56,10 @@ class HomePageSongProvider extends ChangeNotifier {
     }
 
     foundSongs = results;
+    notifyListeners();
+  }
+set currentSongCount(int count) {
+    _currentSongCount = count;
     notifyListeners();
   }
 
@@ -118,10 +124,7 @@ class HomePageSongProvider extends ChangeNotifier {
 
   Future<List<SongModel>> querySongs() async {
     final sortType = getSortType(defaultSort);
-    final status = await Permission.storage.status;
-    if (!status.isGranted) {
-      throw Exception('Permission Not Granted');
-    }
+  
     final songs = await _audioQuery.querySongs(
       sortType: sortType,
       orderType: OrderType.DESC_OR_GREATER,
@@ -136,6 +139,7 @@ class HomePageSongProvider extends ChangeNotifier {
       return !_removedSongs.contains(song.id) && // Exclude removed songs
           !displayName.contains(".opus") &&
           !displayName.contains("aud") &&
+          !displayName.contains("ptt".toUpperCase()) &&
           !displayName.contains("recordings") &&
           !displayName.contains("recording") &&
           !displayName.contains("MIDI") &&
@@ -146,8 +150,12 @@ class HomePageSongProvider extends ChangeNotifier {
     }).toList();
 
     homePageSongs = filteredSongs;
-    notifyListeners();
-    return homePageSongs;
+  
+  // Update the current song count
+  currentSongCount = homePageSongs.length;
+
+  notifyListeners();
+  return homePageSongs;
   }
 
   Future<void> handleRefresh() async {
@@ -156,43 +164,72 @@ class HomePageSongProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> checkPermissionsAndQuerySongs(
-      SortOption defaultSort, BuildContext context) async {
-    final status = await Permission.storage.request();
+  // Future<void> checkPermissionsAndQuerySongs(
+  //     SortOption defaultSort, BuildContext context) async {
+  //   final status = await Permission.storage.request();
 
+  //   if (status.isGranted) {
+  //     _permissionGranted = true;
+  //     _songsFuture = querySongs();
+  //     notifyListeners();
+  //   } else if (status.isDenied) {
+  //     // ignore: use_build_context_synchronously
+  //     return showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: const Text('Permission Denied'),
+  //           content: const Text(
+  //             'This app needs storage permission to perform certain functions. Please grant the permission in app settings.',
+  //           ),
+  //           actions: <Widget>[
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context); // Close the dialog
+  //               },
+  //               child: const Text('OK'),
+  //             ),
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context); // Close the dialog
+  //                 openAppSettings(); // Open app settings page
+  //               },
+  //               child: const Text('Open Settings'),
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //   } else {
+  //     openAppSettings();
+  //   }
+  // }
+  Future<void> checkPermissionsAndQuerySongs(
+      SortOption defaultSort, BuildContext context,
+      {bool isallowed = false}) async {
+    _permissionGranted = await _audioQuery.checkAndRequest(
+      retryRequest: isallowed,
+    );
+    if (_permissionGranted) {
+      _songsFuture = querySongs();
+      print('\x1B[31mPermission Granted\x1B[0m');
+      notifyListeners();
+    }
+  }
+
+  void _handlePermissionStatus(PermissionStatus status) {
     if (status.isGranted) {
+      // Permission is granted, load audio files
       _permissionGranted = true;
+      log(_permissionGranted.toString());
       _songsFuture = querySongs();
       notifyListeners();
     } else if (status.isDenied) {
-      // ignore: use_build_context_synchronously
-      return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Permission Denied'),
-            content: const Text(
-              'This app needs storage permission to perform certain functions. Please grant the permission in app settings.',
-            ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog
-                },
-                child: const Text('OK'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog
-                  openAppSettings(); // Open app settings page
-                },
-                child: const Text('Open Settings'),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
+      // Permission is denied
+      log('Permission is denied');
+    } else if (status.isPermanentlyDenied) {
+      // Permission is permanently denied, navigate to app settings
+      log('Permission is permanently denied');
       openAppSettings();
     }
   }
