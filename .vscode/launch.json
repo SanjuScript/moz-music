@@ -7,7 +7,7 @@
         {
             "name": "music_player",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
         },
         {
             "name": "music_player (profile mode)",

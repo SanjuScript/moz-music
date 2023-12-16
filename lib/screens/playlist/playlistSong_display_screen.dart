@@ -271,10 +271,6 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                                       GetSongs.createSongList(newlist),
                                       initialIndex: index);
                                   GetSongs.player.play();
-                                  MostlyPlayedDB.incrementPlayCount(
-                                      playlistsong[index]);
-                                  RecentlyPlayedDB.addRecentlyPlayed(
-                                      playlistsong[index]);
                                   // Add a completion listener to the audio player
                                   GetSongs.player.playerStateStream
                                       .listen((playerState) {

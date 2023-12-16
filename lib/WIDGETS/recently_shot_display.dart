@@ -18,21 +18,21 @@ class RecentlyShotDisplay extends StatelessWidget {
     return ValueListenableBuilder(
         valueListenable: RecentlyPlayedDB.recentlyplayedSongNotifier,
         builder: (BuildContext context, List<SongModel> value, Widget? child) {
-          final temp = value.reversed.toList();
+          final temp = value.toList();
           recentSong = temp.toSet().toList();
 
-          return value.length > 12
-              ? SizedBox(
+          if (value.isNotEmpty) {
+            return SizedBox(
                   height: MediaQuery.sizeOf(context).height * 0.22,
                   child: ListView.builder(
-                    physics: BouncingScrollPhysics(),
+                    physics:const BouncingScrollPhysics(),
                     itemCount: recentSong.length,
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       if (index >= 0 && index < recentSong.length) {
                         return InkWell(
-                          overlayColor: MaterialStatePropertyAll(Colors.transparent),
+                          overlayColor: const MaterialStatePropertyAll(Colors.transparent),
                           onTap: () async {
                             if (GetSongs.player.playing != true) {
                               Navigator.push(
@@ -84,7 +84,7 @@ class RecentlyShotDisplay extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                   child: AudioArtworkDefiner(
-                                    id: recentSong[index].id,
+                                    id: recentSong[index].id ?? 23,
                                     imgRadius: 15,
                                   )),
                               SizedBox(
@@ -118,8 +118,10 @@ class RecentlyShotDisplay extends StatelessWidget {
                       }
                     },
                   ),
-                )
-              : SizedBox.shrink();
+                );
+          } else {
+            return SizedBox.shrink();
+          }
         });
   }
 }

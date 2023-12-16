@@ -10,52 +10,75 @@ import 'audio_artwork_definer.dart';
 
 class MostlyShotDisplay extends StatelessWidget {
   const MostlyShotDisplay({super.key});
-
+  final int itemsPerview = 3;
   @override
   Widget build(BuildContext context) {
+    double ht = MediaQuery.sizeOf(context).height * 0.30;
+
     return ValueListenableBuilder<List<SongModel>>(
         valueListenable: MostlyPlayedDB.mostlyPlayedSongNotifier,
         builder:
             (BuildContext context, List<SongModel> mostplayed, Widget? child) {
-          return mostplayed.length > 8
-              ? SizedBox(
-                  height: MediaQuery.sizeOf(context).height * 0.30,
-                  child: PageView.builder(
-                    physics: const PageScrollPhysics(),
-                    itemCount: 3,
-                    itemBuilder: (context, pageIndex) {
-                      List<SongModel> items;
-                      if (pageIndex == 0) {
-                        items = mostplayed.sublist(0, 3);
-                      } else if (pageIndex == 1) {
-                        items = mostplayed.sublist(3, 6);
-                      } else {
-                        items = mostplayed.sublist(6, 9);
-                      }
-
-                      return ListView.builder(
+          double adjustedHeight = (mostplayed.length == 1)
+              ? ht / 3
+              : (mostplayed.length == 2)
+                  ? ht / 1.5
+                  : ht;
+          if (mostplayed.isNotEmpty) {
+            return SizedBox(
+              height: adjustedHeight,
+              child: PageView.builder(
+                allowImplicitScrolling: false,
+                reverse: false,
+                // controller: PageController(viewportFraction: .9),
+                physics: const PageScrollPhysics(),
+                itemCount: (mostplayed.length / itemsPerview).ceil(),
+                itemBuilder: (context, pageIndex) {
+                  int startIndex = pageIndex * itemsPerview;
+                  int endIndex = (pageIndex + 1) * itemsPerview;
+                  if (endIndex > mostplayed.length) {
+                    endIndex = mostplayed.length;
+                  }
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
+                      const begin = Offset(0.0, 1.0);
+                      const end = Offset(0.0, 0.0);
+                      var offsetAnimation =
+                          Tween(begin: begin, end: end).animate(animation);
+                      return SlideTransition(
+                        position: offsetAnimation,
+                        child: child,
+                      );
+                    },
+                    child: SizedBox(
+                      key: ValueKey<int>(mostplayed.length),
+                      child: ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                        itemCount: items.length,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 5),
+                        itemCount: endIndex - startIndex,
                         itemBuilder: (context, listviewindex) {
-                          final playCount = MostlyPlayedDB.getPlayCount(
-                              items[listviewindex].id);
+                          int crtindex = startIndex + listviewindex;
+                          final mostPlayedList = mostplayed[crtindex];
+                          final playCount =
+                              MostlyPlayedDB.getPlayCount(mostPlayedList.id);
 
                           return ListTile(
-                            contentPadding:
-                                const EdgeInsets.only(top: 8, right: 8, left: 8),
+                            contentPadding: const EdgeInsets.only(
+                                top: 8, right: 8, left: 8),
                             leading: SizedBox(
                               height: MediaQuery.sizeOf(context).height * 0.18,
                               width: MediaQuery.sizeOf(context).width * 0.16,
                               child: AudioArtworkDefiner(
-                                id: items[listviewindex].id,
+                                id: mostPlayedList.id,
                                 imgRadius: 10,
                                 iconSize: 25,
                               ),
                             ),
                             title: Text(
-                              items[listviewindex].title,
+                              mostPlayedList.title.toString(),
                               style: TextStyle(
                                   shadows: const [
                                     BoxShadow(
@@ -72,7 +95,7 @@ class MostlyShotDisplay extends StatelessWidget {
                             ),
                             subtitle: Text(
                               artistHelper(
-                                  items[listviewindex].artist.toString(), ''),
+                                  mostPlayedList.artist.toString(), ''),
                               style: TextStyle(
                                   shadows: const [
                                     BoxShadow(
@@ -130,7 +153,8 @@ class MostlyShotDisplay extends StatelessWidget {
                               ],
                             ),
                             onTap: () async {
-                             if (GetSongs.player.playing != true) {
+                              if (GetSongs.player.playing != true) {
+                                // ignore: unnecessary_null_comparison
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -139,23 +163,21 @@ class MostlyShotDisplay extends StatelessWidget {
                                                 GetSongs.playingSongs)));
                               }
 
+                              await GetSongs.player.setAudioSource(
+                                  GetSongs.createSongList(mostplayed),
+                                  initialIndex: crtindex);
+                              await GetSongs.player.play();
                               await RecentlyPlayedDB.addRecentlyPlayed(
-                                  items[listviewindex]);
+                                  mostPlayedList);
                               await MostlyPlayedDB.incrementPlayCount(
-                                  items[listviewindex]);
-                              GetSongs.player.setAudioSource(
-                                  GetSongs.createSongList(
-                                    items,
-                                  ),
-                                  initialIndex: listviewindex);
-                              GetSongs.player.play();
+                                  mostPlayedList);
                               GetSongs.player.playerStateStream
                                   .listen((playerState) {
                                 if (playerState.processingState ==
                                     ProcessingState.completed) {
                                   // Check if the current song is the last song in the playlist
                                   if (GetSongs.player.currentIndex ==
-                                      items.length - 1) {
+                                      mostplayed.length - 1) {
                                     // Rewind the playlist to the starting index
                                     GetSongs.player
                                         .seek(Duration.zero, index: 0);
@@ -165,11 +187,15 @@ class MostlyShotDisplay extends StatelessWidget {
                             },
                           );
                         },
-                      );
-                    },
-                  ),
-                )
-              : const SizedBox.shrink();
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
         });
   }
 }

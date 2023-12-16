@@ -17,25 +17,24 @@ class NowPlayingProvider extends ChangeNotifier {
     FavoriteDb.favoriteSongs.notifyListeners();
   }
 
-void playSong() {
-  GetSongs.player.durationStream.listen((d) {
-    if (d != null) {
-      duration = d;
+  void playSong() {
+    GetSongs.player.durationStream.listen((d) {
+      if (d != null) {
+        duration = d;
+        notifyListeners();
+      }
+    });
+    GetSongs.player.positionStream.listen((p) {
+      position = p;
       notifyListeners();
-    }
-  });
-  GetSongs.player.positionStream.listen((p) {
-    position = p;
-    notifyListeners();
-  });
-}
-
+    });
+  }
 
   void initStateHere() {
     GetSongs.player.currentIndexStream.listen((index) {
       if (index != null) {
         currentIndex = index;
-        GetSongs.currentIndes = index;
+        GetSongs.currentIndex = index;
         notifyListeners();
       }
     });

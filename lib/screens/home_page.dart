@@ -8,6 +8,7 @@ import 'package:music_player/HELPER/strings.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
 import 'package:music_player/WIDGETS/mostly_shot_display.dart';
 import 'package:music_player/WIDGETS/recently_shot_display.dart';
+import 'package:music_player/WIDGETS/suggestion_shot_list.dart';
 import 'package:music_player/screens/artists/artists_page.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
-
   void _navigate({required BuildContext context, required Widget child}) {
     Navigator.push(context, ThisIsFadeRoute(route: child));
   }
@@ -86,21 +86,20 @@ class _HomePageState extends State<HomePage>
     );
   }
 
- Widget getItemByIndex(int index, List<String> audioData) {
-  if (index == 0) {
-    return _audioDataWithoutListenable(audioData: audioData[index]);
-  } else if (index == 1) {
-    return _audioDataWithoutListenable(audioData: audioData[index]);
-  } else if (index == 2) {
-    return _audioDataWithoutListenable(audioData: audioData[index]);
-  } else if (index == 3) {
-    return _audioDataLabelWIthListenable(
-        valueListenable: FavoriteDb.favoriteSongs);
-  } else {
-    return _audioDataWithoutListenable(audioData: audioData[index]);
+  Widget getItemByIndex(int index, List<String> audioData) {
+    if (index == 0) {
+      return _audioDataWithoutListenable(audioData: audioData[index]);
+    } else if (index == 1) {
+      return _audioDataWithoutListenable(audioData: audioData[index]);
+    } else if (index == 2) {
+      return _audioDataWithoutListenable(audioData: audioData[index]);
+    } else if (index == 3) {
+      return _audioDataLabelWIthListenable(
+          valueListenable: FavoriteDb.favoriteSongs);
+    } else {
+      return _audioDataWithoutListenable(audioData: audioData[index]);
+    }
   }
-}
-
 
   void _playlist() {
     widget.playlist();
@@ -130,7 +129,7 @@ class _HomePageState extends State<HomePage>
   }
 
   final ScrollController _controller = ScrollController();
- 
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -191,8 +190,8 @@ class _HomePageState extends State<HomePage>
               height: 15,
             ),
             SizedBox(
-              height : MediaQuery.sizeOf(context).height * 0.11,
-              child:ListView.builder(
+              height: MediaQuery.sizeOf(context).height * 0.11,
+              child: ListView.builder(
                 physics: const BouncingScrollPhysics(),
                 itemCount: audioData.length,
                 shrinkWrap: true,
@@ -261,12 +260,12 @@ class _HomePageState extends State<HomePage>
                 },
               ),
             ),
-             ValueListenableBuilder(
+            ValueListenableBuilder(
                 valueListenable: RecentlyPlayedDB.recentlyplayedSongNotifier,
                 builder: (BuildContext context, List<SongModel> value,
                     Widget? child) {
-                  return value.length > 12
-                      ? Padding(
+                  if (value.isNotEmpty) {
+                    return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 5),
                           child: InkWell(
@@ -290,42 +289,47 @@ class _HomePageState extends State<HomePage>
                                   color: Theme.of(context).cardColor),
                             ),
                           ),
-                        )
-                      : const SizedBox.shrink();
+                        );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
                 }),
-       RecentlyShotDisplay(),
+            RecentlyShotDisplay(),
+            // SongSuggestionList(),
             ValueListenableBuilder(
                 valueListenable: MostlyPlayedDB.mostlyPlayedSongNotifier,
                 builder: (BuildContext context, List<SongModel> mostplayed,
                     Widget? child) {
-                  return mostplayed.length > 8
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: InkWell(
-                                               overlayColor: const MaterialStatePropertyAll(Colors.transparent),
-                            onTap: _mostly,
-                           
-                            child: Text(
-                              "Mostly Played",
-                              style: TextStyle(
-                                  shadows: const [
-                                    BoxShadow(
-                                      color: Color.fromARGB(90, 63, 63, 63),
-                                      blurRadius: 15,
-                                      offset: Offset(-2, 2),
-                                    ),
-                                  ],
-                                  fontSize: 25,
-                                  fontFamily: 'rounder',
-                                  letterSpacing: .5,
-                                  fontWeight: FontWeight.w700,
-                                  color: Theme.of(context).cardColor),
-                            ),
-                          ),
-                        )
-                      : const SizedBox.shrink();
+                  if (mostplayed.isNotEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: InkWell(
+                        overlayColor:
+                            const MaterialStatePropertyAll(Colors.transparent),
+                        onTap: _mostly,
+                        child: Text(
+                          "Mostly Played",
+                          style: TextStyle(
+                              shadows: const [
+                                BoxShadow(
+                                  color: Color.fromARGB(90, 63, 63, 63),
+                                  blurRadius: 15,
+                                  offset: Offset(-2, 2),
+                                ),
+                              ],
+                              fontSize: 25,
+                              fontFamily: 'rounder',
+                              letterSpacing: .5,
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context).cardColor),
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
                 }),
-          const MostlyShotDisplay(),
+            const MostlyShotDisplay(),
             Padding(
               padding: const EdgeInsets.only(left: 10, top: 10),
               child: Text(
@@ -350,18 +354,18 @@ class _HomePageState extends State<HomePage>
               child: Consumer<HomePageSongProvider>(
                   builder: (context, lastAddedSong, child) {
                 final currentSongDate =
-                    sortSongs(lastAddedSong.songs, SortOption.adate)
-                        .sublist(0, 10);
+                    sortSongs(lastAddedSong.homePageSongs, SortOption.adate);
 
                 return ListView.builder(
                   physics: const BouncingScrollPhysics(),
-                  itemCount: currentSongDate.length,
+                  itemCount: 10,
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    if (index < 10) {
+                  itemBuilder: (context, lastSongindex) {
+                 
                       return InkWell(
-                                           overlayColor: MaterialStateProperty.all(Colors.transparent),
+                        overlayColor:
+                            MaterialStateProperty.all(Colors.transparent),
                         onTap: () async {
                           if (GetSongs.player.playing != true) {
                             Navigator.push(
@@ -371,15 +375,11 @@ class _HomePageState extends State<HomePage>
                                         songModelList: GetSongs.playingSongs)));
                           }
 
-                          await RecentlyPlayedDB.addRecentlyPlayed(
-                              currentSongDate[index]);
-                          await MostlyPlayedDB.incrementPlayCount(
-                              currentSongDate[index]);
                           GetSongs.player.setAudioSource(
                               GetSongs.createSongList(
                                 currentSongDate,
                               ),
-                              initialIndex: index);
+                              initialIndex: lastSongindex);
                           GetSongs.player.play();
                           GetSongs.player.playerStateStream
                               .listen((playerState) {
@@ -408,14 +408,14 @@ class _HomePageState extends State<HomePage>
                                     borderRadius: BorderRadius.circular(15),
                                     boxShadow: const []),
                                 child: AudioArtworkDefiner(
-                                  id: currentSongDate[index].id,
+                                  id: currentSongDate[lastSongindex].id,
                                   imgRadius: 15,
                                 )),
                             SizedBox(
                               height: MediaQuery.sizeOf(context).height * 0.05,
                               width: MediaQuery.sizeOf(context).width * 0.25,
                               child: Text(
-                                currentSongDate[index].title,
+                                currentSongDate[lastSongindex].title,
                                 maxLines: 2,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -436,9 +436,9 @@ class _HomePageState extends State<HomePage>
                           ],
                         ),
                       );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
+                 
+                    
+                    
                   },
                 );
               }),

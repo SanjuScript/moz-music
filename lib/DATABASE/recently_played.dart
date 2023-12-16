@@ -36,7 +36,6 @@ class RecentlyPlayedDB {
   static Future<void> addRecentlyPlayed(SongModel song) async {
     final recentDb = await Hive.openBox('recentlyPlayed');
     await recentDb.add(song.id);
-
     getRecentlyPlayedSongs();
     recentlyplayedSongNotifier.notifyListeners();
   }
@@ -72,7 +71,7 @@ class RecentlyPlayedDB {
       final song = GetSongs.songscopy.firstWhere(
         (element) => element.id == songId,
         orElse: () =>
-            SongModel({"id": songId}), // Return a default instance of SongModel
+            SongModel({"_id": songId}), // Return a default instance of SongModel
       );
 
       recentlyplayedSongNotifier.value.add(song);

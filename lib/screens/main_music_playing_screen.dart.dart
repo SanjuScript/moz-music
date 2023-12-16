@@ -1,14 +1,9 @@
-import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:music_player/DATABASE/most_played.dart';
-import 'package:music_player/DATABASE/recently_played.dart';
 import 'package:music_player/CONTROLLER/song_controllers.dart';
 import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:music_player/PROVIDER/now_playing_provider.dart';
@@ -19,7 +14,6 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import '../COLORS/colors.dart';
 import '../Model/music_model.dart';
-import '../PROVIDER/color_provider.dart';
 import '../WIDGETS/bottomsheet/song_info_sheet.dart';
 import '../WIDGETS/buttons/next_prevoius_button.dart';
 import '../WIDGETS/indicators.dart';
@@ -55,30 +49,19 @@ class _NowPlayingState extends State<NowPlaying>
   }
 
   bool _shuffleMode = false;
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   Save a reference to the ancestor
-  //   _colorProvider = Provider.of<ColorProvider>(context);
-  // }
-
+  //  late BuildContext capturedContext;
   @override
   void initState() {
     super.initState();
+
     Provider.of<NowPlayingProvider>(context, listen: false).initStateHere();
     Provider.of<NowPlayingProvider>(context, listen: false).playSong();
-    // Use the reference saved in didChangeDependencies
-    // WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-    //   _colorProvider.startColorChangeTimer();
-    // });
   }
 
-  // @override
-  // void dispose() {
-  //   // Use the reference saved in didChangeDependencies
-  //     // _colorProvider.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -104,7 +87,7 @@ class _NowPlayingState extends State<NowPlaying>
     bool isDark = themeProvider.gettheme() == darkThemeMode;
     Color? dColor = isDark
         // ? colorProvider.currentColor.withOpacity(.8)
-        ? Color.fromARGB(146, 26, 15, 28)
+        ? const Color.fromARGB(146, 26, 15, 28)
         : Theme.of(context).scaffoldBackgroundColor;
 
     return WillPopScope(
@@ -455,14 +438,8 @@ class _NowPlayingState extends State<NowPlaying>
 
                         nextPrevoiusIcons(
                           context,
-                          () async {
-                            RecentlyPlayedDB.addRecentlyPlayed(
-                                GetSongs.playingSongs[
-                                    nowPlayingProviderFalse.currentIndex]);
+                          () {
                             nowPlayingProviderFalse.previousButtonHere();
-                            MostlyPlayedDB.incrementPlayCount(
-                                GetSongs.playingSongs[
-                                    nowPlayingProviderFalse.currentIndex]);
                           },
                           FontAwesomeIcons.backward,
                         ),
@@ -541,13 +518,7 @@ class _NowPlayingState extends State<NowPlaying>
                         nextPrevoiusIcons(
                           context,
                           () async {
-                            RecentlyPlayedDB.addRecentlyPlayed(
-                                GetSongs.playingSongs[
-                                    nowPlayingProviderFalse.currentIndex]);
                             nowPlayingProviderFalse.nextButtonHere();
-                            MostlyPlayedDB.incrementPlayCount(
-                                GetSongs.playingSongs[
-                                    nowPlayingProviderFalse.currentIndex]);
                           },
                           FontAwesomeIcons.forward,
                         ),

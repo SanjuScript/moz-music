@@ -5,7 +5,6 @@ import 'package:music_player/PROVIDER/album_provider.dart';
 import 'package:music_player/WIDGETS/indicators.dart';
 import 'package:music_player/Widgets/audio_artwork_definer.dart';
 import 'package:music_player/SCREENS/album/album_music_list_screen.dart';
-import 'package:music_player/Widgets/song_list_maker.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
@@ -99,7 +98,7 @@ class _AlbumListState extends State<AlbumList>
                         color: Theme.of(context).cardColor),
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 IconButton(
                     onPressed: () => changeCrossAxisCount(),
                     icon: iconWidget[selectedCrossAxisOption])
@@ -129,7 +128,7 @@ class _AlbumListState extends State<AlbumList>
                         itemCount: albumProvider.albums.length,
                         itemBuilder: (context, index) {
                           return AnimationConfiguration.staggeredGrid(
-                            duration: Duration(milliseconds: 500),
+                            duration: const Duration(milliseconds: 500),
                             position: index,
                             columnCount: selectedCrossAxisOption,
                             child: ScaleAnimation(

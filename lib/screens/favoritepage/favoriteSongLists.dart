@@ -126,9 +126,9 @@ class _FavoriteScreenState extends State<FavoriteScreen>
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
                           SongModel song = favoriteData[index];
-                          String filePath = song.data;
-                          File file = File(filePath);
-                          double fileSizeInMB = getFileSizeInMB(file);
+                          // String filePath = song.data;
+                          // File file = File(filePath);
+                          // double fileSizeInMB = getFileSizeInMB(file);
                           return songDisplay(context,
                               song: song, songs: favoriteData, index: index);
                         },

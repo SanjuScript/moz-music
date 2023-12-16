@@ -32,11 +32,19 @@ class _SearchPageState extends State<SearchPage>
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.0010),
         itemBuilder: (context, index) {
-          return songDisplay(
-            context,
-            song: foundSongs[index],
-            songs: foundSongs,
-            index: index,
+          return SlideTransition(
+             position: Tween<Offset>(begin: const Offset(0.0, 1.0), end: Offset.zero).animate(
+              CurvedAnimation(
+                parent: ModalRoute.of(context)!.animation!,
+                curve: Curves.easeInOutBack,
+              ),
+            ),
+            child: songDisplay(
+              context,
+              song: foundSongs[index],
+              songs: foundSongs,
+              index: index,
+            ),
           );
         },
         itemCount: foundSongs.length,

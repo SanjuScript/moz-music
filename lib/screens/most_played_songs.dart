@@ -1,15 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:music_player/DATABASE/most_played.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-
 import '../HELPER/get_audio_size_in_mb.dart';
 import '../WIDGETS/appbar.dart';
-
 import '../WIDGETS/dialogues/playlist_delete_dialogue.dart';
-// ignore: unused_import
-import '../WIDGETS/dialogues/song_delete_dialogue.dart';
 import '../WIDGETS/song_list_maker.dart';
 
 class MostlyPlayed extends StatefulWidget {
@@ -36,8 +31,7 @@ class _MostlyPlayedState extends State<MostlyPlayed>
     return ValueListenableBuilder(
       valueListenable: MostlyPlayedDB.mostlyPlayedSongNotifier,
       builder: (BuildContext context, List<SongModel> value, Widget? child) {
-        // final temp = value.reversed.toList();
-        // recentSong = temp.toSet().toList();
+      
 
         return Scaffold(
             extendBody: true,
@@ -83,12 +77,12 @@ class _MostlyPlayedState extends State<MostlyPlayed>
                             itemCount: value.length,
                             itemBuilder: (context, index) {
                               final song = value[index];
-                              if (song.data != null) {
-                                String filePath = song.data ??
-                                    ""; // If song.data is null, use an empty string as a default value
-                                File file = File(filePath);
+                              if (song.data.isNotEmpty == true) {
+                                // String filePath = song.data ??
+                                    // ""; // If song.data is null, use an empty string as a default value
+                                // File file = File(filePath);
 
-                                double fileSizeInMB = getFileSizeInMB(file);
+                                // double fileSizeInMB = getFileSizeInMB(file);
                                 final playCount =
                                     MostlyPlayedDB.getPlayCount(song.id);
                                 return songDisplay(

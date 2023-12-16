@@ -1,13 +1,11 @@
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:music_player/DATABASE/recently_played.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-import '../DATABASE/most_played.dart';
 
 class GetSongs {
   static AudioPlayer player = AudioPlayer();
-  static int currentIndes =
+  static int currentIndex =
       -1; // Initialize to -1 to indicate no song has played yet
   static List<SongModel> songscopy = [];
   static List<SongModel> playingSongs = [];

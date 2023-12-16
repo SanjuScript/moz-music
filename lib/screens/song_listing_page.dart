@@ -42,7 +42,8 @@ class _SongListingPageState extends State<SongListingPage>
     RecentlyPlayedDB.getRecentlyPlayedSongs();
     final homepageState =
         Provider.of<HomePageSongProvider>(context, listen: false);
-    homepageState.checkPermissionsAndQuerySongs(homepageState.defaultSort,context);
+    homepageState.checkPermissionsAndQuerySongs(
+        homepageState.defaultSort, context);
     getSortOption().then((SortOption value) {
       setState(() {
         homepageState.defaultSort = value;
@@ -158,27 +159,33 @@ class _SongListingPageState extends State<SongListingPage>
                       PopupMenuItem<String>(
                         value: 'sort',
                         child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(horizontal: -20),
                           leading: Icon(Icons.sort,
                               color: Theme.of(context).cardColor),
-                          title: Text('Sort',
-                              style: TextStyle(
-                                  color: Theme.of(context).cardColor)),
+                          title: Text(
+                            'Sort',
+                            style:
+                                TextStyle(color: Theme.of(context).cardColor),
+                          ),
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
                         ),
                       ),
                       PopupMenuItem<String>(
                         value: 'reset',
                         child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(horizontal: -20),
                           leading: Icon(Icons.restart_alt_outlined,
                               color: Theme.of(context).cardColor),
-                          title: Text('Reset song',
-                              style: TextStyle(
-                                  color: Theme.of(context).cardColor)),
+                          title: Text(
+                            'Reset Songs',
+                            style:
+                                TextStyle(color: Theme.of(context).cardColor),
+                          ),
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
                         ),
                       ),
                     ],
-                  ),
+                  )
                 ],
                 pinned: true,
               ),
@@ -305,7 +312,8 @@ class _SongListingPageState extends State<SongListingPage>
                 onPressed: () async {
                   openAppSettings().then((value) {
                     homepageState.checkPermissionsAndQuerySongs(
-                        homepageState.defaultSort,context,isallowed: true);
+                        homepageState.defaultSort, context,
+                        isallowed: true);
                   });
                 },
                 child: Text(

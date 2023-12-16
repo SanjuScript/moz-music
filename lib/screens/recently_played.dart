@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
 import 'package:music_player/DATABASE/recently_played.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import '../HELPER/get_audio_size_in_mb.dart';
 import '../Widgets/appbar.dart';
 import '../Widgets/song_list_maker.dart';
 
@@ -35,7 +33,7 @@ class _RecentlyPlayedState extends State<RecentlyPlayed>
       builder: (BuildContext context, List<SongModel> value, Widget? child) {
         final temp = value.reversed.toList();
         recentSong = temp.toSet().toList();
-        if (value == ConnectionState.waiting) {
+        if (recentSong == ConnectionState.waiting) {
           return const Center(
             child: Text("data")
             );
@@ -84,9 +82,9 @@ class _RecentlyPlayedState extends State<RecentlyPlayed>
                             physics: const BouncingScrollPhysics(),
                             itemCount: recentSong.length,
                             itemBuilder: (context, index) {
-                              String filePath = recentSong[index].data;
-                              File file = File(filePath);
-                              double fileSizeInMB = getFileSizeInMB(file);
+                              // File file = File(filePath);
+                              // String filePath = recentSong[index].data;
+                              // double fileSizeInMB = getFileSizeInMB(file);
                               return songDisplay(context,
                                   song: recentSong[index],
                                   songs: recentSong,

@@ -6,7 +6,7 @@ import 'package:music_player/Model/music_model.dart';
 import 'package:music_player/PROVIDER/album_song_list_provider.dart';
 import 'package:music_player/PROVIDER/artist_provider.dart';
 import 'package:music_player/PROVIDER/artist_song_provider.dart';
-import 'package:music_player/PROVIDER/color_provider.dart';
+import 'package:music_player/PROVIDER/device_info_provider.dart';
 import 'package:music_player/PROVIDER/homepage_provider.dart';
 import 'package:music_player/PROVIDER/miniplayer_provider.dart';
 import 'package:music_player/PROVIDER/now_playing_provider.dart';
@@ -40,6 +40,7 @@ Future<void> main() async {
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Color.fromRGBO(0, 0, 0, 0),
+      
       statusBarIconBrightness: Brightness.light));
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
@@ -48,13 +49,14 @@ Future<void> main() async {
 
     await JustAudioBackground.init(
         androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-        androidNotificationChannelName: 'Audio playback',
+        androidNotificationChannelName: 'Moz Audio playback',
         androidNotificationOngoing: true,
         androidShowNotificationBadge: true,
         preloadArtwork: true,
+        
         artDownscaleHeight: 100,
         artDownscaleWidth: 100,
-        notificationColor: Colors.purple[400]);
+        notificationColor: const Color.fromARGB(255, 169, 142, 174));
 
     runApp(MultiProvider(providers: [
       ChangeNotifierProvider(
@@ -82,9 +84,9 @@ Future<void> main() async {
       ChangeNotifierProvider(
         create: (context) => HomePageSongProvider(),
       ),
-      // ChangeNotifierProvider(
-      //   create: (context) => ColorProvider(),
-      // ),
+      ChangeNotifierProvider(
+        create: (context) => DeviceInformationProvider(),
+      ),
       ChangeNotifierProvider(create: (context) => SongListProvider()),
     ], child: const MyApp()));
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
@@ -97,6 +99,7 @@ class MyApp extends StatelessWidget {
   @override
   @override
   Widget build(BuildContext context) {
+
     final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
       home: isViewed != 0 ? const OneTimeSplashScreen() : const SplashScreen(),

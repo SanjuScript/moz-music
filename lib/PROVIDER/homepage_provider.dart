@@ -35,6 +35,7 @@ class HomePageSongProvider extends ChangeNotifier {
     saveRemovedSongs(); // Save the updated removed songs
     notifyListeners();
   }
+  
 
   void removeSongs(List<SongModel> songs) {
     homePageSongs.removeWhere((song) => songs.contains(song));
@@ -58,7 +59,8 @@ class HomePageSongProvider extends ChangeNotifier {
     foundSongs = results;
     notifyListeners();
   }
-set currentSongCount(int count) {
+
+  set currentSongCount(int count) {
     _currentSongCount = count;
     notifyListeners();
   }
@@ -124,7 +126,7 @@ set currentSongCount(int count) {
 
   Future<List<SongModel>> querySongs() async {
     final sortType = getSortType(defaultSort);
-  
+
     final songs = await _audioQuery.querySongs(
       sortType: sortType,
       orderType: OrderType.DESC_OR_GREATER,
@@ -150,12 +152,12 @@ set currentSongCount(int count) {
     }).toList();
 
     homePageSongs = filteredSongs;
-  
-  // Update the current song count
-  currentSongCount = homePageSongs.length;
 
-  notifyListeners();
-  return homePageSongs;
+    // Update the current song count
+    currentSongCount = homePageSongs.length;
+
+    notifyListeners();
+    return homePageSongs;
   }
 
   Future<void> handleRefresh() async {
@@ -164,46 +166,6 @@ set currentSongCount(int count) {
     notifyListeners();
   }
 
-  // Future<void> checkPermissionsAndQuerySongs(
-  //     SortOption defaultSort, BuildContext context) async {
-  //   final status = await Permission.storage.request();
-
-  //   if (status.isGranted) {
-  //     _permissionGranted = true;
-  //     _songsFuture = querySongs();
-  //     notifyListeners();
-  //   } else if (status.isDenied) {
-  //     // ignore: use_build_context_synchronously
-  //     return showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           title: const Text('Permission Denied'),
-  //           content: const Text(
-  //             'This app needs storage permission to perform certain functions. Please grant the permission in app settings.',
-  //           ),
-  //           actions: <Widget>[
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.pop(context); // Close the dialog
-  //               },
-  //               child: const Text('OK'),
-  //             ),
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.pop(context); // Close the dialog
-  //                 openAppSettings(); // Open app settings page
-  //               },
-  //               child: const Text('Open Settings'),
-  //             ),
-  //           ],
-  //         );
-  //       },
-  //     );
-  //   } else {
-  //     openAppSettings();
-  //   }
-  // }
   Future<void> checkPermissionsAndQuerySongs(
       SortOption defaultSort, BuildContext context,
       {bool isallowed = false}) async {
@@ -217,30 +179,17 @@ set currentSongCount(int count) {
     }
   }
 
-  void _handlePermissionStatus(PermissionStatus status) {
-    if (status.isGranted) {
-      // Permission is granted, load audio files
-      _permissionGranted = true;
-      log(_permissionGranted.toString());
-      _songsFuture = querySongs();
-      notifyListeners();
-    } else if (status.isDenied) {
-      // Permission is denied
-      log('Permission is denied');
-    } else if (status.isPermanentlyDenied) {
-      // Permission is permanently denied, navigate to app settings
-      log('Permission is permanently denied');
-      openAppSettings();
-    }
-  }
-
   HomePageSongProvider() {
     // Call loadRemovedSongs asynchronously using a microtask
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await loadRemovedSongs();
-      _songsFuture =
-          querySongs(); // Call querySongs after loading removed songs
-      notifyListeners();
+      if (_permissionGranted) {
+        _songsFuture =
+            querySongs(); // Call querySongs after loading removed songs
+        notifyListeners(); // Call querySongs after loading removed songs
+      } else {
+        log("message LLLLLL");
+      }
     });
   }
 }

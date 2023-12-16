@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:music_player/DATABASE/most_played.dart';
-import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:music_player/PROVIDER/artist_song_provider.dart';
-import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
-import '../../CONTROLLER/song_controllers.dart';
-import '../../DATABASE/recently_played.dart';
 import '../../WIDGETS/audio_artwork_definer.dart';
 import '../../WIDGETS/song_list_maker.dart';
-import '../favoritepage/favorite_button.dart';
 
 class ArtistMusicListing extends StatefulWidget {
   const ArtistMusicListing({Key? key, required this.artistModel})
