@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:music_player/DATABASE/most_played.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../CONTROLLER/song_controllers.dart';
 
@@ -34,24 +35,55 @@ class RecentlyPlayedDB {
   }
 
   static Future<void> addRecentlyPlayed(SongModel song) async {
-    final recentDb = await Hive.openBox('recentlyPlayed');
-    await recentDb.add(song.id);
-    getRecentlyPlayedSongs();
-    recentlyplayedSongNotifier.notifyListeners();
+    try {
+      final recentDb = await Hive.openBox('recentlyPlayed');
+      await recentDb.add(song.id);
+      // await MostlyPlayedDB.incrementPlayCount(song);
+      await getRecentlyPlayedSongs();
+      recentlyplayedSongNotifier.notifyListeners();
+    } catch (e) {
+      log("Add Recently Played Error : $e");
+    }
   }
 
   static Future<void> getRecentlyPlayedSongs() async {
-    final recentDb = await Hive.openBox('recentlyPlayed');
-    final recentSongItems = recentDb.values.toList();
+    try {
+      final recentDb = await Hive.openBox('recentlyPlayed');
+      final recentSongItems = recentDb.values.toList();
 
-    // Ensure that the recently played list is capped at maxSongCount
-    if (recentSongItems.length > maxSongCount) {
-      final int startIndex = recentSongItems.length - maxSongCount;
-      recentSongItems.removeRange(0, startIndex);
+      // Ensure that the recently played list is capped at maxSongCount
+      if (recentSongItems.length > maxSongCount) {
+        final int startIndex = recentSongItems.length - maxSongCount;
+        recentSongItems.removeRange(0, startIndex);
+      }
+
+      await displayRecentlyPlayed(recentSongItems);
+      recentlyplayedSongNotifier.notifyListeners();
+    } catch (e) {
+      log("Error loading recently played songs on start: $e");
     }
+  }
 
-    displayRecentlyPlayed(recentSongItems); // Pass the trimmed list
-    recentlyplayedSongNotifier.notifyListeners();
+  static Future<void> displayRecentlyPlayed(
+      List<dynamic> recentSongItems) async {
+    try {
+      final recentDb = await Hive.openBox('recentlyPlayed');
+      final List<SongModel> displayedRecentlyPlayed = [];
+
+      for (int i = 0; i < recentSongItems.length; i++) {
+        final songId = recentSongItems[i];
+        final song = GetSongs.songscopy.firstWhere(
+          (element) => element.id == songId,
+          orElse: () => SongModel({"_id": songId}),
+        );
+
+        displayedRecentlyPlayed.add(song);
+      }
+
+      recentlyplayedSongNotifier.value = displayedRecentlyPlayed;
+    } catch (e) {
+      log("Display Recently Played Error : $e");
+    }
   }
 
   static deleteAll() async {
@@ -59,22 +91,5 @@ class RecentlyPlayedDB {
     final recentDb = await Hive.openBox('recentlyPlayed');
     recentDb.clear();
     recentlyplayedSongNotifier.notifyListeners();
-  }
-
-  static Future<void> displayRecentlyPlayed(
-      List<dynamic> recentSongItems) async {
-    final recentDb = await Hive.openBox('recentlyPlayed');
-    recentlyplayedSongNotifier.value.clear();
-
-    for (int i = 0; i < recentSongItems.length; i++) {
-      final songId = recentSongItems[i];
-      final song = GetSongs.songscopy.firstWhere(
-        (element) => element.id == songId,
-        orElse: () =>
-            SongModel({"_id": songId}), // Return a default instance of SongModel
-      );
-
-      recentlyplayedSongNotifier.value.add(song);
-    }
   }
 }

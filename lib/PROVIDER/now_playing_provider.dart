@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/CONTROLLER/song_controllers.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
+import 'package:provider/provider.dart';
 
 class NowPlayingProvider extends ChangeNotifier {
   Duration duration = const Duration();
@@ -14,7 +15,6 @@ class NowPlayingProvider extends ChangeNotifier {
 
   void backButtonHere(BuildContext context) {
     Navigator.pop(context);
-    FavoriteDb.favoriteSongs.notifyListeners();
   }
 
   void playSong() {

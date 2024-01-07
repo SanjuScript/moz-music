@@ -79,6 +79,7 @@ Widget speedSelector(BuildContext context, String speedLabel, double speedValue,
       onPressed: () {
         if (GetSongs.player.playing) {
           GetSongs.player.setSpeed(speedValue);
+          // GetSongs.player.setPitch(speedValue);
           Navigator.pop(context);
         }
       },

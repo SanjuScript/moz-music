@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -132,6 +134,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+       log("Home page rebuilds");
     super.build(context);
     final allSongsData = Provider.of<HomePageSongProvider>(context);
     final albumData = Provider.of<AlbumProvider>(context);
@@ -266,30 +269,30 @@ class _HomePageState extends State<HomePage>
                     Widget? child) {
                   if (value.isNotEmpty) {
                     return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
-                          child: InkWell(
-                            overlayColor:
-                                MaterialStateProperty.all(Colors.transparent),
-                            onTap: _recenlty,
-                            child: Text(
-                              "Recently played",
-                              style: TextStyle(
-                                  shadows: const [
-                                    BoxShadow(
-                                      color: Color.fromARGB(90, 63, 63, 63),
-                                      blurRadius: 15,
-                                      offset: Offset(-2, 2),
-                                    ),
-                                  ],
-                                  fontSize: 25,
-                                  fontFamily: 'rounder',
-                                  letterSpacing: .5,
-                                  fontWeight: FontWeight.w700,
-                                  color: Theme.of(context).cardColor),
-                            ),
-                          ),
-                        );
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      child: InkWell(
+                        overlayColor:
+                            MaterialStateProperty.all(Colors.transparent),
+                        onTap: _recenlty,
+                        child: Text(
+                          "Recently played",
+                          style: TextStyle(
+                              shadows: const [
+                                BoxShadow(
+                                  color: Color.fromARGB(90, 63, 63, 63),
+                                  blurRadius: 15,
+                                  offset: Offset(-2, 2),
+                                ),
+                              ],
+                              fontSize: 25,
+                              fontFamily: 'rounder',
+                              letterSpacing: .5,
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context).cardColor),
+                        ),
+                      ),
+                    );
                   } else {
                     return const SizedBox.shrink();
                   }
@@ -354,7 +357,8 @@ class _HomePageState extends State<HomePage>
               child: Consumer<HomePageSongProvider>(
                   builder: (context, lastAddedSong, child) {
                 final currentSongDate =
-                    sortSongs(lastAddedSong.homePageSongs, SortOption.adate);
+                    lastAddedSong.getLastAddedSongs(10);
+
 
                 return ListView.builder(
                   physics: const BouncingScrollPhysics(),
@@ -362,83 +366,78 @@ class _HomePageState extends State<HomePage>
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, lastSongindex) {
-                 
-                      return InkWell(
-                        overlayColor:
-                            MaterialStateProperty.all(Colors.transparent),
-                        onTap: () async {
-                          if (GetSongs.player.playing != true) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => NowPlaying(
-                                        songModelList: GetSongs.playingSongs)));
-                          }
+                    return InkWell(
+                      overlayColor:
+                          MaterialStateProperty.all(Colors.transparent),
+                      onTap: () async {
+                        // GetSongs.playingSongs = currentSongDate;
+                        if (GetSongs.player.playing != true) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NowPlaying(
+                                      songModelList: GetSongs.playingSongs)));
+                        }
 
-                          GetSongs.player.setAudioSource(
-                              GetSongs.createSongList(
-                                currentSongDate,
-                              ),
-                              initialIndex: lastSongindex);
-                          GetSongs.player.play();
-                          GetSongs.player.playerStateStream
-                              .listen((playerState) {
-                            if (playerState.processingState ==
-                                ProcessingState.completed) {
-                              // Check if the current song is the last song in the playlist
-                              if (GetSongs.player.currentIndex ==
-                                  currentSongDate.length - 1) {
-                                // Rewind the playlist to the starting index
-                                GetSongs.player.seek(Duration.zero, index: 0);
-                              }
+                        GetSongs.player.setAudioSource(
+                            GetSongs.createSongList(
+                              lastAddedSong.getLastAddedSongs(lastAddedSong.homePageSongs.length),
+                            ),
+                            initialIndex: lastSongindex);
+                        GetSongs.player.play();
+                        GetSongs.player.playerStateStream.listen((playerState) {
+                          if (playerState.processingState ==
+                              ProcessingState.completed) {
+                            // Check if the current song is the last song in the playlist
+                            if (GetSongs.player.currentIndex ==
+                                currentSongDate.length - 1) {
+                              // Rewind the playlist to the starting index
+                              GetSongs.player.seek(Duration.zero, index: 0);
                             }
-                          });
-                          // GetSongs.songscopy = currentSongDate;
-                        },
-                        child: Column(
-                          children: [
-                            Container(
-                                width: MediaQuery.sizeOf(context).width * 0.26,
-                                height:
-                                    MediaQuery.sizeOf(context).height * 0.12,
-                                // Adjust the size as needed
-                                margin: const EdgeInsets.only(
-                                    left: 8, right: 8, top: 14, bottom: 12),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    boxShadow: const []),
-                                child: AudioArtworkDefiner(
-                                  id: currentSongDate[lastSongindex].id,
-                                  imgRadius: 15,
-                                )),
-                            SizedBox(
-                              height: MediaQuery.sizeOf(context).height * 0.05,
-                              width: MediaQuery.sizeOf(context).width * 0.25,
-                              child: Text(
-                                currentSongDate[lastSongindex].title,
-                                maxLines: 2,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    shadows: const [
-                                      BoxShadow(
-                                        color: Color.fromARGB(90, 89, 89, 89),
-                                        blurRadius: 15,
-                                        offset: Offset(-2, 2),
-                                      ),
-                                    ],
-                                    fontSize: 13,
-                                    fontFamily: 'rounder',
-                                    overflow: TextOverflow.ellipsis,
-                                    fontWeight: FontWeight.w400,
-                                    color: Theme.of(context).cardColor),
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                 
-                    
-                    
+                          }
+                        });
+                        // GetSongs.songscopy = currentSongDate;
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                              width: MediaQuery.sizeOf(context).width * 0.26,
+                              height: MediaQuery.sizeOf(context).height * 0.12,
+                              // Adjust the size as needed
+                              margin: const EdgeInsets.only(
+                                  left: 8, right: 8, top: 14, bottom: 12),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: const []),
+                              child: AudioArtworkDefiner(
+                                id: currentSongDate[lastSongindex].id,
+                                imgRadius: 15,
+                              )),
+                          SizedBox(
+                            height: MediaQuery.sizeOf(context).height * 0.05,
+                            width: MediaQuery.sizeOf(context).width * 0.25,
+                            child: Text(
+                              currentSongDate[lastSongindex].title,
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  shadows: const [
+                                    BoxShadow(
+                                      color: Color.fromARGB(90, 89, 89, 89),
+                                      blurRadius: 15,
+                                      offset: Offset(-2, 2),
+                                    ),
+                                  ],
+                                  fontSize: 13,
+                                  fontFamily: 'rounder',
+                                  overflow: TextOverflow.ellipsis,
+                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(context).cardColor),
+                            ),
+                          )
+                        ],
+                      ),
+                    );
                   },
                 );
               }),

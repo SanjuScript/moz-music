@@ -35,7 +35,6 @@ class HomePageSongProvider extends ChangeNotifier {
     saveRemovedSongs(); // Save the updated removed songs
     notifyListeners();
   }
-  
 
   void removeSongs(List<SongModel> songs) {
     homePageSongs.removeWhere((song) => songs.contains(song));
@@ -124,6 +123,12 @@ class HomePageSongProvider extends ChangeNotifier {
     _removedSongs = removedSongIds.map(int.parse).toSet();
   }
 
+  List<SongModel> getLastAddedSongs(int count) {
+    final effectiveCount = count.clamp(0, homePageSongs.length);
+    final sonrted = sortSongs(homePageSongs, SortOption.adate);
+    return sonrted.take(effectiveCount).toList();
+  }  
+
   Future<List<SongModel>> querySongs() async {
     final sortType = getSortType(defaultSort);
 
@@ -137,6 +142,7 @@ class HomePageSongProvider extends ChangeNotifier {
     // Filter out unwanted songs
     final filteredSongs = songs.where((song) {
       final displayName = song.displayName.toLowerCase();
+      final songDur = (song.duration! / 1000) >= 10;
 
       return !_removedSongs.contains(song.id) && // Exclude removed songs
           !displayName.contains(".opus") &&
@@ -148,13 +154,12 @@ class HomePageSongProvider extends ChangeNotifier {
           !displayName.contains("pxl") &&
           !displayName.contains("Record") &&
           !displayName.contains("VID") &&
-          !displayName.contains("whatsapp");
+          !displayName.contains("whatsapp") &&
+          songDur;
     }).toList();
 
     homePageSongs = filteredSongs;
-
-    // Update the current song count
-    currentSongCount = homePageSongs.length;
+    currentSongCount = filteredSongs.length;
 
     notifyListeners();
     return homePageSongs;
@@ -174,7 +179,7 @@ class HomePageSongProvider extends ChangeNotifier {
     );
     if (_permissionGranted) {
       _songsFuture = querySongs();
-      print('\x1B[31mPermission Granted\x1B[0m');
+      // print('\x1B[31mPermission Granted\x1B[0m');
       notifyListeners();
     }
   }
@@ -188,7 +193,7 @@ class HomePageSongProvider extends ChangeNotifier {
             querySongs(); // Call querySongs after loading removed songs
         notifyListeners(); // Call querySongs after loading removed songs
       } else {
-        log("message LLLLLL");
+        // log("message LLLLLL");
       }
     });
   }

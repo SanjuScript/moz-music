@@ -35,6 +35,5 @@ class MiniplayerProvider extends ChangeNotifier {
     } else {
       await GetSongs.player.play();
     }
-  }
-  
+  }  
 }

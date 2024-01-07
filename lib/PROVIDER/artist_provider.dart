@@ -9,8 +9,8 @@ class ArtistProvider extends ChangeNotifier {
   }
   Future<void> fetchArtists() async {
     final fetchedArtists = await _audioQuery.queryArtists(
-      sortType: ArtistSortType.NUM_OF_TRACKS,
-      orderType: OrderType.DESC_OR_GREATER,
+      // sortType: ArtistSortType.NUM_OF_TRACKS,
+      // orderType: OrderType.DESC_OR_GREATER,
       uriType: UriType.EXTERNAL,
       ignoreCase: true,
     );

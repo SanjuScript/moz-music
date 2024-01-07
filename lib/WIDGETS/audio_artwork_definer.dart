@@ -1,12 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:music_player/COLORS/colors.dart';
-import 'package:music_player/PROVIDER/color_provider.dart';
-import 'package:music_player/PROVIDER/theme_class_provider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'dart:typed_data';
-
-import 'package:provider/provider.dart';
 
 class AudioArtworkDefiner extends StatefulWidget {
   final int id;
@@ -90,8 +86,7 @@ class _AudioArtworkDefinerState extends State<AudioArtworkDefiner>
 
   @override
   Widget build(BuildContext context) {
-    // final _colorProvider = Provider.of<ColorProvider>(context); 
-       return FutureBuilder<Uint8List?>(
+    return FutureBuilder<Uint8List?>(
       future: _artworkFuture,
       builder: (context, snapshot) {
         return AnimatedBuilder(
@@ -112,35 +107,34 @@ class _AudioArtworkDefinerState extends State<AudioArtworkDefiner>
     if (snapshot.data != null && snapshot.data!.isNotEmpty) {
       // Provider.of<ColorProvider>(context, listen: false)
       //     .extractArtworkColors(snapshot.data!);
-  return ClipRRect(
-    borderRadius: BorderRadius.circular(widget.imgRadius),
-    clipBehavior: Clip.antiAlias,
-    child: Image.memory(
-      snapshot.data!,
-      gaplessPlayback: true,
-      fit: BoxFit.cover,
-      filterQuality: FilterQuality.high,
-      errorBuilder: (context, exception, stackTrace) {
-        return const Icon(
-          Icons.image_not_supported,
-          size: 50,
-        );
-      },
-    ),
-  );
-    } else {
-  return Container(
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: Theme.of(context).indicatorColor,
+      return ClipRRect(
         borderRadius: BorderRadius.circular(widget.imgRadius),
-      ),
-      child: Icon(
-        Icons.music_note_rounded,
-        size: widget.iconSize,
-        color: Theme.of(context).secondaryHeaderColor,
-      ));
+        clipBehavior: Clip.antiAlias,
+        child: Image.memory(
+          snapshot.data!,
+          gaplessPlayback: true,
+          fit: BoxFit.cover,
+          filterQuality: FilterQuality.high,
+          errorBuilder: (context, exception, stackTrace) {
+            return const Icon(
+              Icons.image_not_supported,
+              size: 50,
+            );
+          },
+        ),
+      );
+    } else {
+      return Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            color: Theme.of(context).indicatorColor,
+            borderRadius: BorderRadius.circular(widget.imgRadius),
+          ),
+          child: Icon(
+            Icons.music_note_rounded,
+            size: widget.iconSize,
+            color: Theme.of(context).secondaryHeaderColor,
+          ));
     }
   }
 }
- 

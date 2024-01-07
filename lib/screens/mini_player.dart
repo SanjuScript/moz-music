@@ -36,7 +36,7 @@ class MiniPlayer extends StatelessWidget {
     final wt = MediaQuery.of(context).size.width;
     return Consumer<MiniplayerProvider>(
       builder: (context, value, child) {
-        return Container(
+        return GetSongs.currentIndex == null ? SizedBox():Container(
           decoration: BoxDecoration(color: Theme.of(context).focusColor),
           child: Stack(
             fit: StackFit.loose,

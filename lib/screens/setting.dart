@@ -58,7 +58,7 @@ class _SettingsState extends State<Settings> {
       body: ListView(
         children: [
           Padding(
-            padding: const EdgeInsets.only(left:8.0,right: 8.0,top: 8.0),
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
             child: GridView.builder(
               shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -78,7 +78,7 @@ class _SettingsState extends State<Settings> {
             ),
           ),
           InkWell(
-              overlayColor: MaterialStateProperty.all(Colors.transparent),
+            overlayColor: MaterialStateProperty.all(Colors.transparent),
             onTap: () {
               showPlaylistDeleteDialogue(
                   context: context,
@@ -101,11 +101,11 @@ class _SettingsState extends State<Settings> {
               ),
             ),
           ),
-      
           Opacity(
-            opacity: .8,
-            child: Center(child: singleTexts2(text: 'App Version : $appVersion', context: context))),
-            
+              opacity: .8,
+              child: Center(
+                  child: singleTexts2(
+                      text: 'App Version : $appVersion', context: context))),
         ],
       ),
     );

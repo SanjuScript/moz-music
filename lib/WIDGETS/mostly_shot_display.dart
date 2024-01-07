@@ -167,8 +167,8 @@ class MostlyShotDisplay extends StatelessWidget {
                                   GetSongs.createSongList(mostplayed),
                                   initialIndex: crtindex);
                               await GetSongs.player.play();
-                              await RecentlyPlayedDB.addRecentlyPlayed(
-                                  mostPlayedList);
+                              // await RecentlyPlayedDB.addRecentlyPlayed(
+                              //     mostPlayedList);
                               await MostlyPlayedDB.incrementPlayCount(
                                   mostPlayedList);
                               GetSongs.player.playerStateStream

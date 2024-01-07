@@ -1,16 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:music_player/COLORS/colors.dart';
 import 'package:music_player/DATABASE/most_played.dart';
 import 'package:music_player/HELPER/artist_helper.dart';
-import 'package:music_player/PROVIDER/theme_class_provider.dart';
 import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
-import 'package:music_player/WIDGETS/dialogues/song_delete_dialogue.dart';
-import 'package:music_player/screens/most_played_songs.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:provider/provider.dart';
 import '../CONTROLLER/song_controllers.dart';
-import '../DATABASE/recently_played.dart';
 import '../screens/favoritepage/favorite_button.dart';
 import 'bottomsheet/song_info_sheet.dart';
 import 'nuemorphic_button.dart';
@@ -242,7 +236,7 @@ Widget songDisplay(BuildContext context,
         maxLines: 1,
         style: TextStyle(
           fontWeight: FontWeight.w300,
-          color: Theme.of(context).cardColor,
+          color: Theme.of(context).disabledColor,
           letterSpacing: .6,
           // fontWeight: FontWeight.bold,
           fontFamily: 'rounder',
@@ -296,10 +290,10 @@ Widget songDisplay(BuildContext context,
                   //item.data
                   initialIndex: index);
               //index
-              RecentlyPlayedDB.addRecentlyPlayed(song);
+              // RecentlyPlayedDB.addRecentlyPlayed(song);
               MostlyPlayedDB.incrementPlayCount(song);
               GetSongs.player.play();
-              RecentlyPlayedDB.intialize(songs);
+              // RecentlyPlayedDB.intialize(songs);
               GetSongs.playingSongs = songs;
             },
       trailing:

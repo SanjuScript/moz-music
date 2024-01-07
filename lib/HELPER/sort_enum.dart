@@ -35,6 +35,7 @@ enum SortOption {
         return SongSortType.DATE_ADDED;
     }
   }
+
     List<SongModel> sortSongs(List<SongModel> songs, SortOption sortOption) {
     switch (sortOption) {
       case SortOption.atitle:
@@ -72,6 +73,7 @@ enum SortOption {
     }
     return songs;
   }
+  
   Future<void> saveSortOption(SortOption value) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('sortOption', value.index);

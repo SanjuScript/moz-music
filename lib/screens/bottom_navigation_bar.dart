@@ -1,5 +1,8 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:music_player/PROVIDER/bottom_nav_provider.dart';
 import 'package:music_player/SCREENS/home_page.dart';
 import 'package:music_player/SCREENS/playlist/playlist_screen.dart';
 import 'package:music_player/PROVIDER/sleep_timer_provider.dart';
@@ -25,28 +28,22 @@ class BottomNav extends StatefulWidget {
 class _BottomNavState extends State<BottomNav> {
   int selectedIndex = 1;
   late PageController pageController;
-
   late List<Widget> pages = [];
-
   void onPageChange(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
+    final provider = context.read<BottomNavProvider>();
+    provider.selectedIndex = index;
   }
 
   void navigateToPage(int index) {
-    pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
+    final provider = context.read<BottomNavProvider>();
+    provider.navigateToPage(pageController, index);
   }
 
   @override
   void initState() {
     super.initState();
-
-    pageController = PageController(initialPage: selectedIndex);
+    final provider = context.read<BottomNavProvider>();
+    pageController = provider.createPageController();
     pages = [
       _homepage(),
       const SongListingPage(),
@@ -80,6 +77,7 @@ class _BottomNavState extends State<BottomNav> {
 
   @override
   Widget build(BuildContext context) {
+    log('Bottom Nav rebuilded');
     return WillPopScope(
       onWillPop: () async {
         if (selectedIndex != 0) {
@@ -155,6 +153,7 @@ class _BottomNavState extends State<BottomNav> {
           valueListenable: FavoriteDb.favoriteSongs,
           builder:
               (BuildContext context, List<SongModel> music, Widget? child) {
+            final provider = context.watch<BottomNavProvider>();
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -181,14 +180,15 @@ class _BottomNavState extends State<BottomNav> {
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,
                       ),
-                      currentIndex: selectedIndex,
+                      currentIndex: provider.selectedIndex,
                       onTap: (int index) {
+                        provider.selectedIndex = index;
                         navigateToPage(index);
-                        setState(() {
-                          selectedIndex = index;
-                        });
+                        // setState(() {
+                        //   selectedIndex = index;
+                        // });
                         // ignore: invalid_use_of_protected_member,
-                        FavoriteDb.favoriteSongs.notifyListeners();
+                        // FavoriteDb.favoriteSongs.notifyListeners();
                       },
                       items: <BottomNavigationBarItem>[
                         bottomNavBarMethod(

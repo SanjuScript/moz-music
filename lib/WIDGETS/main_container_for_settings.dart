@@ -25,7 +25,7 @@ class SettingsContainer extends StatelessWidget {
             ].cast(),
           ),
           borderRadius: BorderRadius.circular(15),
-          boxShadow: [
+          boxShadow:  const [
             // BoxShadow(
             //     color: Theme.of(context).primaryColorDark,
             //     offset: const Offset(-6, 6),

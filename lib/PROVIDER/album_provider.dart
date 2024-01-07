@@ -9,8 +9,8 @@ class AlbumProvider extends ChangeNotifier {
   }
   Future<void> fetchAlbums() async {
     final fetchedAlbums = await _audioQuery.queryAlbums(
-      sortType: AlbumSortType.NUM_OF_SONGS,
-      orderType: OrderType.DESC_OR_GREATER,
+      // sortType: AlbumSortType.,
+      // orderType: OrderType.DESC_OR_GREATER,
       uriType: UriType.EXTERNAL,
       ignoreCase: true,
     );

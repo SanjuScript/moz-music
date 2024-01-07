@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 
-final lightThemeMode = ThemeData(
+  final lightThemeMode = ThemeData(
   useMaterial3: true,
   indicatorColor: const Color(0xffE7EAF3),
   scaffoldBackgroundColor: const Color(0xffffffff),
   shadowColor: const Color.fromARGB(163, 216, 215, 215),
   dividerColor: Colors.white,
   cardColor: const Color(0xff333c67),
+  disabledColor: const Color(0xff333c67),
   hintColor: const Color(0xff333c67),
-  // hoverColor: Colors.white,
+  hoverColor: const Color(0xffffffff),
   splashColor: const Color.fromARGB(255, 255, 255, 255),
   appBarTheme: AppBarTheme(
     backgroundColor: Colors.grey[300],
   ),
+
   unselectedWidgetColor: const Color(0xff333c67),
   secondaryHeaderColor: const Color(0xffD0D2E7),
   focusColor: const Color.fromARGB(255, 225, 213, 244),
@@ -22,7 +24,7 @@ final lightThemeMode = ThemeData(
   primaryColorLight: const Color.fromARGB(114, 179, 157, 219),
 );
 
-final darkThemeMode = ThemeData(
+ final  darkThemeMode = ThemeData(
   useMaterial3: true,
   primaryColorDark: const Color.fromARGB(159, 28, 15, 56),
   primaryColorLight: const Color.fromARGB(113, 31, 17, 57),
@@ -32,13 +34,13 @@ final darkThemeMode = ThemeData(
   unselectedWidgetColor: const Color.fromARGB(255, 166, 166, 166),
   indicatorColor: const Color(0xff343434),
   scaffoldBackgroundColor: const Color.fromARGB(255, 0, 0, 0),
-  hintColor: const Color.fromARGB(255, 228, 229, 229),
+  hintColor:  Color.fromARGB(235, 244, 244, 244),
+    disabledColor: Color.fromARGB(235, 244, 244, 244),
   shadowColor:
       const Color.fromARGB(0, 0, 0, 0), // Use the dynamic shadow color variable
   dividerColor: const Color.fromARGB(41, 202, 202, 202),
   cardColor: const Color.fromARGB(255, 228, 229, 229),
-  // hintColor: const Color.fromARGB(255, 46, 53, 53),
-  // hoverColor: Colors.black,
+  hoverColor: const Color.fromARGB(146, 26, 15, 28),
   splashColor: const Color.fromARGB(255, 39, 39, 39),
   dialogTheme: const DialogTheme(
     backgroundColor: Color(0xFF1F1F1F),
@@ -55,6 +57,5 @@ final darkThemeMode = ThemeData(
     backgroundColor: Color(0xff1F1F1F),
   ),
 );
-
     //greem Color.fromARGB(255, 2, 212, 65),
     //blue  Color.fromARGB(255, 2, 75, 212),

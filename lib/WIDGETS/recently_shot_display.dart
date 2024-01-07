@@ -19,7 +19,7 @@ class RecentlyShotDisplay extends StatelessWidget {
         valueListenable: RecentlyPlayedDB.recentlyplayedSongNotifier,
         builder: (BuildContext context, List<SongModel> value, Widget? child) {
           final temp = value.toList();
-          recentSong = temp.toSet().toList();
+          recentSong = temp.reversed.toSet().toList();
 
           if (value.isNotEmpty) {
             return SizedBox(
@@ -43,8 +43,8 @@ class RecentlyShotDisplay extends StatelessWidget {
                                               GetSongs.playingSongs)));
                             }
 
-                            await RecentlyPlayedDB.addRecentlyPlayed(
-                                recentSong[index]);
+                            // await RecentlyPlayedDB.addRecentlyPlayed(
+                            //     recentSong[index]);
                             await MostlyPlayedDB.incrementPlayCount(
                                 recentSong[index]);
                              if (index >= 0 && index < recentSong.length) {
@@ -84,7 +84,7 @@ class RecentlyShotDisplay extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                   child: AudioArtworkDefiner(
-                                    id: recentSong[index].id ?? 23,
+                                    id: recentSong[index].id,
                                     imgRadius: 15,
                                   )),
                               SizedBox(
@@ -114,13 +114,13 @@ class RecentlyShotDisplay extends StatelessWidget {
                           ),
                         );
                       } else {
-                        return SizedBox();
+                        return const SizedBox();
                       }
                     },
                   ),
                 );
           } else {
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
           }
         });
   }

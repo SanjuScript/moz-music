@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:music_player/PROVIDER/homepage_provider.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +35,9 @@ class _SearchPageState extends State<SearchPage>
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.0010),
         itemBuilder: (context, index) {
           return SlideTransition(
-             position: Tween<Offset>(begin: const Offset(0.0, 1.0), end: Offset.zero).animate(
+            position:
+                Tween<Offset>(begin: const Offset(0.0, 1.0), end: Offset.zero)
+                    .animate(
               CurvedAnimation(
                 parent: ModalRoute.of(context)!.animation!,
                 curve: Curves.easeInOutBack,
@@ -60,6 +64,7 @@ class _SearchPageState extends State<SearchPage>
 
   @override
   Widget build(BuildContext context) {
+    log('search page rebuilds');
     super.build(context);
     return Scaffold(
       appBar: AppBar(
@@ -86,11 +91,10 @@ class _SearchPageState extends State<SearchPage>
                   borderSide: BorderSide.none),
               hintText: 'Artists, songs, or albums',
               hintStyle: TextStyle(
-                fontFamily: 'rounder',
-                color: Theme.of(context).cardColor,
-                letterSpacing: .6,
-                fontWeight: FontWeight.normal
-              ),
+                  fontFamily: 'rounder',
+                  color: Theme.of(context).cardColor,
+                  letterSpacing: .6,
+                  fontWeight: FontWeight.normal),
               prefixIcon: Icon(
                 Icons.search,
                 color: Theme.of(context).cardColor,

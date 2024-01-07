@@ -37,7 +37,7 @@ class MostlyPlayedDB {
     mostlyPlayedDb.put(song.id, currentPlayCount + 1);
   }
 
-  getMostlyPlayedSongs();
+ await getMostlyPlayedSongs();
   mostlyPlayedSongNotifier.notifyListeners();
 }
 

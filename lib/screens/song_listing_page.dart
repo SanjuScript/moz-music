@@ -1,4 +1,6 @@
 // ignore_for_file: unrelated_type_equality_checks
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -39,25 +41,27 @@ class _SongListingPageState extends State<SongListingPage>
   @override
   void initState() {
     super.initState();
+    _setup();
+
+    // GetSongs.updateSong();
+  }
+
+  void _setup() {
     RecentlyPlayedDB.getRecentlyPlayedSongs();
     final homepageState =
         Provider.of<HomePageSongProvider>(context, listen: false);
     homepageState.checkPermissionsAndQuerySongs(
         homepageState.defaultSort, context);
     getSortOption().then((SortOption value) {
-      setState(() {
-        homepageState.defaultSort = value;
-      });
+      homepageState.defaultSort = value;
     });
     // GetSongs.updateSong();
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context); // Make sure to call super.build(context)
-
-    SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    log("SOng listing page rebuilds");
+    super.build(context);
     final homepageState = Provider.of<HomePageSongProvider>(context);
     final removehomepageState =
         Provider.of<HomePageSongProvider>(context, listen: false);
@@ -96,7 +100,7 @@ class _SongListingPageState extends State<SongListingPage>
                         fontFamily: 'rounder',
                         fontWeight: FontWeight.w500,
                         fontSize: MediaQuery.of(context).size.width * 0.06,
-                        color: Theme.of(context).cardColor,
+                        color: Theme.of(context).disabledColor,
                         letterSpacing: .1,
                       ),
                     ),
