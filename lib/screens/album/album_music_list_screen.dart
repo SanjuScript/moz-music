@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
+import 'package:music_player/WIDGETS/audio_for_others.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import '../../PROVIDER/album_song_list_provider.dart';
@@ -78,7 +79,7 @@ class _AlbumMusicListingState extends State<AlbumMusicListing> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.09,
                             width: MediaQuery.of(context).size.height * 0.09,
-                            child: AudioArtworkDefiner(
+                            child: AudioArtworkDefinerForOthers(
                               id: widget.albumModel.id,
                               imgRadius: 10,
                               type: ArtworkType.ALBUM,

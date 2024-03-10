@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio_background/just_audio_background.dart';
@@ -8,11 +9,13 @@ import 'package:music_player/DATABASE/favorite_db.dart';
 import 'package:music_player/DATABASE/most_played.dart';
 import 'package:music_player/DATABASE/playlistDb.dart';
 import 'package:music_player/DATABASE/recently_played.dart';
+// import 'package:music_player/HELPER/audio_handler.dart';
 import 'package:music_player/Model/music_model.dart';
 import 'package:music_player/PROVIDER/album_song_list_provider.dart';
 import 'package:music_player/PROVIDER/artist_provider.dart';
 import 'package:music_player/PROVIDER/artist_song_provider.dart';
 import 'package:music_player/PROVIDER/bottom_nav_provider.dart';
+import 'package:music_player/PROVIDER/color_extraction.dart';
 import 'package:music_player/PROVIDER/device_info_provider.dart';
 import 'package:music_player/PROVIDER/homepage_provider.dart';
 import 'package:music_player/PROVIDER/miniplayer_provider.dart';
@@ -32,9 +35,11 @@ import 'COLORS/colors.dart';
 import 'PROVIDER/album_provider.dart';
 
 int? isViewed;
+// MozMusicHandler mozMusicHandler = MozMusicHandler();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
+
   isViewed = prefs.getInt('onBoard');
   await Hive.initFlutter();
   if (!Hive.isAdapterRegistered(MusicModelAdapter().typeId)) {
@@ -67,6 +72,14 @@ Future<void> main() async {
       artDownscaleWidth: 100,
       notificationColor: const Color.fromARGB(255, 169, 142, 174));
 
+// mozMusicHandler =  await AudioService.init(
+//     builder: () => MozMusicHandler(),
+//     config: const AudioServiceConfig(
+//       // androidNotificationChannelId: 'com.musicapp.example',
+//       androidNotificationChannelName: 'Audio Playback',
+//       androidNotificationOngoing: true,
+//     ),
+//   );
   SharedPreferences.getInstance().then(
     (prefs) async {
       var darkModeON = prefs.getBool('darkMode') ?? true;
@@ -75,8 +88,9 @@ Future<void> main() async {
         MultiProvider(
           providers: [
             ChangeNotifierProvider(
-              create: ((context) =>
-                  ThemeProvider(darkModeON ? lightThemeMode : darkThemeMode)),
+              create: ((context) => ThemeProvider(darkModeON
+                  ? CustomThemes.lightThemeMode
+                  : CustomThemes.darkThemeMode)),
             ),
             ChangeNotifierProvider(
               create: ((context) => SleepTimeProvider()),
@@ -108,6 +122,9 @@ Future<void> main() async {
             ChangeNotifierProvider(
               create: ((context) => BottomNavProvider()),
             ),
+            ChangeNotifierProvider(
+              create: ((context) => ArtworkColorProvider()),
+            ),
           ],
           child: const MyApp(),
         ),
@@ -134,7 +151,7 @@ class MyApp extends StatelessWidget {
             SystemChrome.setSystemUIOverlayStyle(
               SystemUiOverlayStyle(
                 statusBarIconBrightness:
-                    themeProvider.gettheme() == darkThemeMode
+                    themeProvider.gettheme() == CustomThemes.darkThemeMode
                         ? Brightness.light
                         : Brightness.dark,
                 // ... other style configurations

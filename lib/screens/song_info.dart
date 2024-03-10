@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:music_player/HELPER/get_audio_size_in_mb.dart';
 import 'package:music_player/HELPER/minute_converter.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
+import 'package:music_player/WIDGETS/audio_for_others.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class SongInfo extends StatefulWidget {
@@ -63,7 +64,7 @@ class _SongInfoState extends State<SongInfo> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * .12,
                     width: MediaQuery.of(context).size.width * 0.27,
-                    child: AudioArtworkDefiner(
+                    child: AudioArtworkDefinerForOthers(
                       id: id,
                       imgRadius: 15,
                     ),

@@ -8,6 +8,8 @@ import 'package:music_player/DATABASE/playlistDb.dart';
 import 'package:music_player/HELPER/sort_enum.dart';
 import 'package:music_player/HELPER/strings.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
+import 'package:music_player/WIDGETS/audio_for_others.dart';
+import 'package:music_player/WIDGETS/buttons/home_button.dart';
 import 'package:music_player/WIDGETS/mostly_shot_display.dart';
 import 'package:music_player/WIDGETS/recently_shot_display.dart';
 import 'package:music_player/WIDGETS/suggestion_shot_list.dart';
@@ -203,35 +205,7 @@ class _HomePageState extends State<HomePage>
                   return InkWell(
                     overlayColor: MaterialStateProperty.all(Colors.transparent),
                     onTap: navigationController[index],
-                    child: Container(
-                      width: MediaQuery.sizeOf(context).width *
-                          0.28, // Adjust the size as needed
-                      margin: const EdgeInsets.only(
-                          left: 8, right: 8, top: 8, bottom: 12),
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              // Colors.deepPurple[300],
-                              // Colors.deepPurple[500],
-                              Colors.deepPurple[300],
-                              Colors.deepPurple[500],
-                            ].cast(),
-                          ),
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Theme.of(context).primaryColorDark,
-                                offset: const Offset(-8, 8),
-                                blurRadius: 7,
-                                spreadRadius: -5),
-                            BoxShadow(
-                                color: Theme.of(context).primaryColorLight,
-                                offset: const Offset(7, -7),
-                                blurRadius: 7,
-                                spreadRadius: -5),
-                          ]),
+                    child: HomePageButtons(
                       child: FittedBox(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -362,7 +336,7 @@ class _HomePageState extends State<HomePage>
 
                 return ListView.builder(
                   physics: const BouncingScrollPhysics(),
-                  itemCount: 10,
+                  itemCount: lastAddedSong.currentSongCount < 10 ? lastAddedSong.currentSongCount : 10,
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, lastSongindex) {
@@ -409,7 +383,7 @@ class _HomePageState extends State<HomePage>
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                   boxShadow: const []),
-                              child: AudioArtworkDefiner(
+                              child: AudioArtworkDefinerForOthers(
                                 id: currentSongDate[lastSongindex].id,
                                 imgRadius: 15,
                               )),

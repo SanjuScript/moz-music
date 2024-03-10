@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:music_player/DATABASE/playlistDb.dart';
 import 'package:music_player/SCREENS/playlist/playList_song_listpage.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
+import 'package:music_player/WIDGETS/audio_for_others.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_creation_dialogue.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
 import 'package:music_player/WIDGETS/playlist_box.dart';
@@ -139,7 +140,7 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                                     text: data.name,
                                   )
                                 : PlaylistCreationBox(
-                                    artwork: AudioArtworkDefiner(
+                                    artwork: AudioArtworkDefinerForOthers(
                                         size: 500,
                                         imgRadius: 6,
                                         id: data.songId.last),

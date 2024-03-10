@@ -6,7 +6,8 @@ class Nuemorphic extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final bool shadowVisibility;
   final EdgeInsetsGeometry? margin;
-  
+  final Color color;
+
   final bool shadowColorVisiblity;
   const Nuemorphic(
       {super.key,
@@ -14,6 +15,7 @@ class Nuemorphic extends StatelessWidget {
       required this.child,
       this.borderRadius,
       this.shadowColorVisiblity = false,
+      this.color = const Color(0xffffffff),
       this.padding,
       this.shadowVisibility = true});
 
@@ -25,7 +27,7 @@ class Nuemorphic extends StatelessWidget {
       height: 100,
       width: 100,
       decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
+          color: color,
           borderRadius: borderRadius,
           boxShadow: shadowVisibility
               ? [

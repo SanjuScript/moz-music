@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:music_player/PROVIDER/artist_provider.dart';
 import 'package:music_player/SCREENS/artists/artist_song_listing.dart';
+import 'package:music_player/WIDGETS/audio_for_others.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -157,7 +158,7 @@ class _ArtistListState extends State<ArtistList>
                                           width:
                                               MediaQuery.sizeOf(context).width *
                                                   0.55,
-                                          child: AudioArtworkDefiner(
+                                          child: AudioArtworkDefinerForOthers(
                                             id: albumProvider
                                                 .artists[index].id,
                                             imgRadius: 15,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:music_player/WIDGETS/audio_for_others.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 import '../CONTROLLER/song_controllers.dart';
@@ -83,7 +84,7 @@ class RecentlyShotDisplay extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  child: AudioArtworkDefiner(
+                                  child: AudioArtworkDefinerForOthers(
                                     id: recentSong[index].id,
                                     imgRadius: 15,
                                   )),

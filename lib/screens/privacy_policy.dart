@@ -44,7 +44,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                     'The following terminology applies to these Terms and Conditions, Privacy Statement and Disclaimer Notice and all Agreements:',
                     style: TextStyle(
                       fontSize: MediaQuery.of(context).size.width * 0.040,
-                      color: themeProvider.gettheme() == darkThemeMode
+                      color: themeProvider.gettheme() == CustomThemes.darkThemeMode
                           ? Colors.white
                           : Colors.black,
                     ),

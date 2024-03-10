@@ -10,7 +10,7 @@ class PrivacypolicyShown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool darkMode = Provider.of<ThemeProvider>(context).theme == darkThemeMode;
+    bool darkMode = Provider.of<ThemeProvider>(context).theme == CustomThemes.darkThemeMode;
 
     return SettingsContainer(
       child: Column(

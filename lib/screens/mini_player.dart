@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:music_player/PROVIDER/miniplayer_provider.dart';
 import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
+import 'package:music_player/WIDGETS/audio_for_others.dart';
 import 'package:music_player/WIDGETS/nuemorphic_button.dart';
 import 'package:music_player/Widgets/audio_artwork_definer.dart';
 import 'package:provider/provider.dart';
@@ -59,7 +60,7 @@ class MiniPlayer extends StatelessWidget {
                       child: Nuemorphic(
                         borderRadius: BorderRadius.circular(100),
                         shadowVisibility: false,
-                        child: AudioArtworkDefiner(
+                        child: AudioArtworkDefinerForOthers(
                           iconSize: 25,
                           id: GetSongs
                               .playingSongs[GetSongs.player.currentIndex!].id,

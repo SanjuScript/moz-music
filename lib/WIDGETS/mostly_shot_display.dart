@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:music_player/WIDGETS/audio_for_others.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:palette_generator/palette_generator.dart';
 import '../CONTROLLER/song_controllers.dart';
 import '../DATABASE/most_played.dart';
 import '../DATABASE/recently_played.dart';
@@ -38,6 +42,7 @@ class MostlyShotDisplay extends StatelessWidget {
                   int endIndex = (pageIndex + 1) * itemsPerview;
                   if (endIndex > mostplayed.length) {
                     endIndex = mostplayed.length;
+                    // Map<String, Completer<PaletteGenerator>> ll = {};
                   }
                   return AnimatedSwitcher(
                     duration: const Duration(milliseconds: 500),
@@ -71,7 +76,7 @@ class MostlyShotDisplay extends StatelessWidget {
                             leading: SizedBox(
                               height: MediaQuery.sizeOf(context).height * 0.18,
                               width: MediaQuery.sizeOf(context).width * 0.16,
-                              child: AudioArtworkDefiner(
+                              child: AudioArtworkDefinerForOthers(
                                 id: mostPlayedList.id,
                                 imgRadius: 10,
                                 iconSize: 25,

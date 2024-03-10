@@ -55,6 +55,11 @@ dependencies:
   device_info_plus: ^9.1.0
   rxdart: ^0.27.7
   url_launcher: ^6.2.2
+  palette_generator: ^0.3.3+3
+  dismissible_page: ^1.0.2
+  audio_service: ^0.18.12
+ 
+  
 
 
 

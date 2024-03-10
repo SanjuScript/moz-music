@@ -7,6 +7,7 @@ import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:music_player/Model/music_model.dart';
 import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
+import 'package:music_player/WIDGETS/audio_for_others.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../../DATABASE/playlistDb.dart';
@@ -196,7 +197,7 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                           height: MediaQuery.of(context).size.height * 0.09,
                           width: MediaQuery.of(context).size.height * 0.09,
                           margin: const EdgeInsets.symmetric(horizontal: 15),
-                          child: AudioArtworkDefiner(
+                          child: AudioArtworkDefinerForOthers(
                             id: playlistsong.first.id,
                             imgRadius: 15,
                           )),

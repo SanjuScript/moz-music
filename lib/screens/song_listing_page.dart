@@ -1,11 +1,11 @@
 // ignore_for_file: unrelated_type_equality_checks
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:lottie/lottie.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
+import 'package:music_player/HELPER/bluetooth_function.dart';
 import 'package:music_player/PROVIDER/homepage_provider.dart';
 import 'package:music_player/WIDGETS/drawer_widget.dart';
 import 'package:music_player/SCREENS/search_music_screen.dart';
@@ -42,6 +42,8 @@ class _SongListingPageState extends State<SongListingPage>
   void initState() {
     super.initState();
     _setup();
+    // BluetoothFunction.requestBluetoothPermission();
+    // Permission
 
     // GetSongs.updateSong();
   }
@@ -60,7 +62,7 @@ class _SongListingPageState extends State<SongListingPage>
 
   @override
   Widget build(BuildContext context) {
-    log("SOng listing page rebuilds");
+    log("Song listing page rebuilds");
     super.build(context);
     final homepageState = Provider.of<HomePageSongProvider>(context);
     final removehomepageState =

@@ -30,7 +30,7 @@ class _ChangeThemeButtonWidgetState extends State<ChangeThemeButtonWidget> {
 
   void _loadTheme() async {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    _darkTheme = (themeProvider.gettheme() == lightThemeMode);
+    _darkTheme = (themeProvider.gettheme() == CustomThemes.lightThemeMode);
   }
 
   void _toggleTheme(ThemeProvider themeProvider) {
@@ -43,7 +43,7 @@ class _ChangeThemeButtonWidgetState extends State<ChangeThemeButtonWidget> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    _darkTheme = (themeProvider.gettheme() == lightThemeMode);
+    _darkTheme = (themeProvider.gettheme() == CustomThemes.lightThemeMode);
     if (widget.changeICon) {
       return Switch(
           value: _darkTheme,
@@ -68,8 +68,8 @@ class _ChangeThemeButtonWidgetState extends State<ChangeThemeButtonWidget> {
 
   void onThemeChanged(bool value, ThemeProvider themeProvider) async {
     value
-        ? themeProvider.setTheme(lightThemeMode)
-        : themeProvider.setTheme(darkThemeMode);
+        ? themeProvider.setTheme(CustomThemes.lightThemeMode)
+        : themeProvider.setTheme(CustomThemes.darkThemeMode);
     var prefs = await SharedPreferences.getInstance();
     prefs.setBool('darkMode', value);
   }

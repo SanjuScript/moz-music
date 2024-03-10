@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:music_player/DATABASE/most_played.dart';
 import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
+import 'package:music_player/WIDGETS/audio_for_others.dart';
+import 'package:music_player/screens/NewUi.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../CONTROLLER/song_controllers.dart';
 import '../screens/favoritepage/favorite_button.dart';
@@ -129,7 +131,7 @@ class SongListViewerForSections extends StatelessWidget {
                 child: CircleAvatar(
                   child: Nuemorphic(
                     shadowVisibility: false,
-                    child: AudioArtworkDefiner(
+                    child: AudioArtworkDefinerForOthers(
                       id: id,
                       type: artwork,
                       isRectangle: true,
@@ -224,7 +226,7 @@ Widget songDisplay(BuildContext context,
       leading: SizedBox(
         height: MediaQuery.sizeOf(context).height * 0.25,
         width: MediaQuery.sizeOf(context).width * 0.16,
-        child: AudioArtworkDefiner(
+        child: AudioArtworkDefinerForOthers(
           id: song.id,
           imgRadius: 8,
           iconSize: 30,
@@ -246,12 +248,13 @@ Widget songDisplay(BuildContext context,
       onLongPress: () {
         bottomDetailsSheet(
           context: context,
-          enableRemoveButon: true,
+          enableRemoveButton: true,
+          // enableRemoveButon: true,
           remove: remove,
           artist: song.artist.toString(),
           title: song.title,
           composer: song.composer.toString(),
-          genre: song.genre.toString(),
+          // g: song.genre.toString(),
           song: song,
           filePath: song.data,
           file: File(song.data),

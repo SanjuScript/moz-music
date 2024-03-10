@@ -49,7 +49,7 @@ void showSongDeleteDialogue(BuildContext context, SongModel song) {
               child: Opacity(
                 opacity: animationValue,
                 child: Theme(
-                  data: darkThemeMode.copyWith(
+                  data: CustomThemes.darkThemeMode.copyWith(
                     dialogTheme: Theme.of(context).dialogTheme,
                   ),
                   child: AlertDialog(
