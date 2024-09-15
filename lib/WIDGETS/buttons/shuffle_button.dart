@@ -20,9 +20,9 @@ Widget shuffleButton(BuildContext context, bool isEnabled, double wt) {
     onPressed: () async {
       final enable = !isEnabled;
       if (enable) {
-        await GetSongs.player.shuffle();
+        await MozController.player.shuffle();
       }
-      await GetSongs.player.setShuffleModeEnabled(enable);
+      await MozController.player.setShuffleModeEnabled(enable);
 
       // Save shuffle mode state in SharedPreferences
       // await saveShuffleModeState(en);

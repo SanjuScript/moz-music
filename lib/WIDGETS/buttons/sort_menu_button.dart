@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import '../../HELPER/sort_enum.dart';
+
 class SortOptionBottomSheet extends StatelessWidget {
   final SortOption selectedOption;
   final ValueChanged<SortOption> onSelected;
@@ -12,29 +15,36 @@ class SortOptionBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-        color: Theme.of(context).splashColor,
-      ),
-      child: Scrollbar(
-        interactive: true,
-        radius: const Radius.circular(20),
-        thickness: 10,
-        child: ListView.builder(
-          itemCount: SortOption.values.length,
-          itemBuilder: (context, index) {
-            final option = SortOption.values[index];
-            final title = _getTitleForSortOption(option);
-            return ListTile(
-              title: buildListTileTitle(context, option, title),
-              onTap: () {
-                onSelected(option);
-                Navigator.pop(context);
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            color: Theme.of(context).dialogBackgroundColor,
+          ),
+          child: Scrollbar(
+            
+            interactive: true,
+            radius: const Radius.circular(20),
+            thickness: 5,
+            child: ListView.builder(
+              itemCount: SortOption.values.length,
+              itemBuilder: (context, index) {
+                final option = SortOption.values[index];
+                final title = _getTitleForSortOption(option);
+                return ListTile(
+                  
+                  title: buildListTileTitle(context, option, title),
+                  onTap: () {
+                    onSelected(option);
+                    Navigator.pop(context);
+                  },
+                );
               },
-            );
-          },
+            ),
+          ),
         ),
       ),
     );

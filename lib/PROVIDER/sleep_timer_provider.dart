@@ -22,7 +22,7 @@ class SleepTimeProvider extends ChangeNotifier {
       } else {
         stopTimer();
        if(minute != 0){
-         GetSongs.player.stop();
+         MozController.player.stop();
        }
       }
     });

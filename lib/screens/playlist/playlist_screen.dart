@@ -1,4 +1,6 @@
 // ignore_for_file: deprecated_member_use, invalid_use_of_protected_member
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:music_player/DATABASE/playlistDb.dart';
@@ -55,6 +57,7 @@ class _PlaylistScreenState extends State<PlaylistScreen>
             controller: _scrollController,
             physics: const BouncingScrollPhysics(),
             child: TopAppBar(
+              showImportButton: true,
               nxt: true,
               isPop: musicList.isEmpty ? false : true,
               onSelected: (p0) {
@@ -63,6 +66,8 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                       context: context,
                       text1: "Delete All Playlists",
                       onPress: deletePlaylistsOntap);
+                } else if (p0 == 'import') {
+                  log("Import button pressed");
                 }
               },
               firstString: "Playlists",
@@ -121,6 +126,8 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                             },
                             child: data.songId.isEmpty
                                 ? PlaylistCreationBox(
+                                    datas: data.songId,
+                                    name: data.name,
                                     artwork: Container(
                                         clipBehavior: Clip.antiAlias,
                                         decoration: BoxDecoration(
@@ -148,6 +155,8 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                                         "${data.songId.length.toString()} songs",
                                     isArtworkAvailable: true,
                                     text: data.name,
+                                    datas: data.songId,
+                                    name: data.name,
                                   ));
                       }),
                       itemCount: musicList.length,

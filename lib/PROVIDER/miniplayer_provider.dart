@@ -3,7 +3,7 @@ import 'package:music_player/CONTROLLER/song_controllers.dart';
 
 class MiniplayerProvider extends ChangeNotifier {
   void checkMounted() async {
-    GetSongs.player.currentIndexStream.listen((index) {
+    MozController.player.currentIndexStream.listen((index) {
       if (index != null) {
         notifyListeners();
       }
@@ -11,29 +11,29 @@ class MiniplayerProvider extends ChangeNotifier {
   }
 
   Future<void> playPauseButton(BuildContext context) async {
-    if (GetSongs.player.playing) {
-      await GetSongs.player.pause();
+    if (MozController.player.playing) {
+      await MozController.player.pause();
     } else {
-      await GetSongs.player.play();
+      await MozController.player.play();
       notifyListeners();
     }
   }
 
   Future<void> previousButton(BuildContext context) async {
-    if (GetSongs.player.hasPrevious) {
-      await GetSongs.player.seekToPrevious();
-      await GetSongs.player.play();
+    if (MozController.player.hasPrevious) {
+      await MozController.player.seekToPrevious();
+      await MozController.player.play();
     } else {
-      await GetSongs.player.play();
+      await MozController.player.play();
     }
   }
 
   Future<void> nextButton(BuildContext context) async {
-    if (GetSongs.player.hasNext) {
-      await GetSongs.player.seekToNext();
-      await GetSongs.player.play();
+    if (MozController.player.hasNext) {
+      await MozController.player.seekToNext();
+      await MozController.player.play();
     } else {
-      await GetSongs.player.play();
+      await MozController.player.play();
     }
   }  
 }

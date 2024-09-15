@@ -12,12 +12,12 @@ import 'package:music_player/SCREENS/search_music_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import '../ANIMATION/slide_animation.dart';
-import '../CONTROLLER/song_controllers.dart';
-import '../DATABASE/recently_played.dart';
-import '../HELPER/sort_enum.dart';
-import '../WIDGETS/buttons/sort_menu_button.dart';
-import '../WIDGETS/song_list_maker.dart';
+import '../../ANIMATION/slide_animation.dart';
+import '../../CONTROLLER/song_controllers.dart';
+import '../../DATABASE/recently_played.dart';
+import '../../HELPER/sort_enum.dart';
+import '../../WIDGETS/buttons/sort_menu_button.dart';
+import '../../WIDGETS/song_list_maker.dart';
 
 List<SongModel> startSong = [];
 
@@ -49,7 +49,7 @@ class _SongListingPageState extends State<SongListingPage>
   }
 
   void _setup() {
-    RecentlyPlayedDB.getRecentlyPlayedSongs();
+    // RecentlyPlayedDB.getRecentlyPlayedSongs();
     final homepageState =
         Provider.of<HomePageSongProvider>(context, listen: false);
     homepageState.checkPermissionsAndQuerySongs(
@@ -145,7 +145,7 @@ class _SongListingPageState extends State<SongListingPage>
                     onSelected: (value) {
                       if (value == 'sort') {
                         showModalBottomSheet<void>(
-                          backgroundColor: Theme.of(context).splashColor,
+                          backgroundColor:Colors.transparent,
                           context: context,
                           builder: (context) {
                             return SortOptionBottomSheet(
@@ -236,11 +236,12 @@ class _SongListingPageState extends State<SongListingPage>
                     );
                   } else {
                     startSong = snapshot.data!;
-                    GetSongs.songscopy =
+                    MozController.songscopy =
                         sortSongs(snapshot.data!, homepageState.defaultSort);
 
-                    if (!FavoriteDb.isInitialized) {
+                    if (!FavoriteDb.isInitialized || !RecentDb.isInitialized) {
                       FavoriteDb.intialize(snapshot.data!);
+                      RecentDb.initialize(snapshot.data!);
                     }
 
                     // if (!RecentlyPlayedDB.isInitialized) {
@@ -249,6 +250,7 @@ class _SongListingPageState extends State<SongListingPage>
 
                     final sortedSongs =
                         sortSongs(snapshot.data!, homepageState.defaultSort);
+                        
                     return AnimationLimiter(
                       child: Stack(
                         children: [
@@ -272,13 +274,17 @@ class _SongListingPageState extends State<SongListingPage>
                                     duration:
                                         const Duration(milliseconds: 2500),
                                     curve: Curves.fastLinearToSlowEaseIn,
-                                    child: songDisplay(context, song: song,
+                                    child: SongDisplay(
+                                        song: song,
                                         remove: () {
-                                      setState(() {
-                                        removehomepageState.removeSong(song);
-                                      });
-                                      Navigator.pop(context);
-                                    }, songs: sortedSongs, index: index),
+                                          setState(() {
+                                            removehomepageState
+                                                .removeSong(song);
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                        songs: sortedSongs,
+                                        index: index),
                                   ),
                                 ),
                               );

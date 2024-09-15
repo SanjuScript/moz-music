@@ -14,7 +14,6 @@ class PlayListDB {
   static Future<void> playlistAdd(MusicModel value) async {
     final playListDb = Hive.box<MusicModel>('playlistDB');
     await playListDb.add(value);
-
     playlistnotifier.value.add(value);
   }
 
@@ -57,7 +56,7 @@ class PlayListDB {
     final musicDb = Hive.box<int>('FavoriteDB');
 
     await musicDb.clear();
-    RecentlyPlayedDB.deleteAll();
+    RecentDb.deleteAll();
     await playListDb.clear();
 
     FavoriteDb.favoriteSongs.value.clear();

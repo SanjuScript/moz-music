@@ -179,7 +179,6 @@ class HomePageSongProvider extends ChangeNotifier {
     );
     if (_permissionGranted) {
       _songsFuture = querySongs();
-      // print('\x1B[31mPermission Granted\x1B[0m');
       notifyListeners();
     }
   }
@@ -190,8 +189,8 @@ class HomePageSongProvider extends ChangeNotifier {
       await loadRemovedSongs();
       if (_permissionGranted) {
         _songsFuture =
-            querySongs(); // Call querySongs after loading removed songs
-        notifyListeners(); // Call querySongs after loading removed songs
+            querySongs(); 
+        notifyListeners();
       } else {
         // log("message LLLLLL");
       }

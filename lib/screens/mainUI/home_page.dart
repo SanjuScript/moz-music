@@ -16,15 +16,15 @@ import 'package:music_player/WIDGETS/suggestion_shot_list.dart';
 import 'package:music_player/screens/artists/artists_page.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
-import '../ANIMATION/fade_animation.dart';
-import '../CONTROLLER/song_controllers.dart';
-import '../DATABASE/most_played.dart';
-import '../DATABASE/recently_played.dart';
-import '../PROVIDER/album_provider.dart';
-import '../PROVIDER/artist_provider.dart';
-import '../PROVIDER/homepage_provider.dart';
-import 'album/album_list.dart';
-import 'main_music_playing_screen.dart.dart';
+import '../../ANIMATION/fade_animation.dart';
+import '../../CONTROLLER/song_controllers.dart';
+import '../../DATABASE/most_played.dart';
+import '../../DATABASE/recently_played.dart';
+import '../../PROVIDER/album_provider.dart';
+import '../../PROVIDER/artist_provider.dart';
+import '../../PROVIDER/homepage_provider.dart';
+import '../album/album_list.dart';
+import '../main_music_playing_screen.dart.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage(
@@ -128,15 +128,14 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    MostlyPlayedDB.getMostlyPlayedSongs();
-    RecentlyPlayedDB.getRecentlyPlayedSongs();
+    // RecentDb.initialize(GetSong);
   }
 
   final ScrollController _controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-       log("Home page rebuilds");
+    log("Home page rebuilds");
     super.build(context);
     final allSongsData = Provider.of<HomePageSongProvider>(context);
     final albumData = Provider.of<AlbumProvider>(context);
@@ -238,7 +237,7 @@ class _HomePageState extends State<HomePage>
               ),
             ),
             ValueListenableBuilder(
-                valueListenable: RecentlyPlayedDB.recentlyplayedSongNotifier,
+                valueListenable: RecentDb.recentSongs,
                 builder: (BuildContext context, List<SongModel> value,
                     Widget? child) {
                   if (value.isNotEmpty) {
@@ -272,40 +271,32 @@ class _HomePageState extends State<HomePage>
                   }
                 }),
             RecentlyShotDisplay(),
-            // SongSuggestionList(),
-            ValueListenableBuilder(
-                valueListenable: MostlyPlayedDB.mostlyPlayedSongNotifier,
-                builder: (BuildContext context, List<SongModel> mostplayed,
-                    Widget? child) {
-                  if (mostplayed.isNotEmpty) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: InkWell(
-                        overlayColor:
-                            const MaterialStatePropertyAll(Colors.transparent),
-                        onTap: _mostly,
-                        child: Text(
-                          "Mostly Played",
-                          style: TextStyle(
-                              shadows: const [
-                                BoxShadow(
-                                  color: Color.fromARGB(90, 63, 63, 63),
-                                  blurRadius: 15,
-                                  offset: Offset(-2, 2),
-                                ),
-                              ],
-                              fontSize: 25,
-                              fontFamily: 'rounder',
-                              letterSpacing: .5,
-                              fontWeight: FontWeight.w700,
-                              color: Theme.of(context).cardColor),
-                        ),
+            !PlayCountService.isMostPlayedSongIdsEmpty
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: InkWell(
+                      overlayColor:
+                          const MaterialStatePropertyAll(Colors.transparent),
+                      onTap: _mostly,
+                      child: Text(
+                        "Mostly Played",
+                        style: TextStyle(
+                            shadows: const [
+                              BoxShadow(
+                                color: Color.fromARGB(90, 63, 63, 63),
+                                blurRadius: 15,
+                                offset: Offset(-2, 2),
+                              ),
+                            ],
+                            fontSize: 25,
+                            fontFamily: 'rounder',
+                            letterSpacing: .5,
+                            fontWeight: FontWeight.w700,
+                            color: Theme.of(context).cardColor),
                       ),
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                }),
+                    ),
+                  )
+                : const SizedBox.shrink(),
             const MostlyShotDisplay(),
             Padding(
               padding: const EdgeInsets.only(left: 10, top: 10),
@@ -330,13 +321,13 @@ class _HomePageState extends State<HomePage>
               height: MediaQuery.sizeOf(context).height * 0.22,
               child: Consumer<HomePageSongProvider>(
                   builder: (context, lastAddedSong, child) {
-                final currentSongDate =
-                    lastAddedSong.getLastAddedSongs(10);
-
+                final currentSongDate = lastAddedSong.getLastAddedSongs(10);
 
                 return ListView.builder(
                   physics: const BouncingScrollPhysics(),
-                  itemCount: lastAddedSong.currentSongCount < 10 ? lastAddedSong.currentSongCount : 10,
+                  itemCount: lastAddedSong.currentSongCount < 10
+                      ? lastAddedSong.currentSongCount
+                      : 10,
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, lastSongindex) {
@@ -344,33 +335,34 @@ class _HomePageState extends State<HomePage>
                       overlayColor:
                           MaterialStateProperty.all(Colors.transparent),
                       onTap: () async {
-                        // GetSongs.playingSongs = currentSongDate;
-                        if (GetSongs.player.playing != true) {
+                        // MozController.playingSongs = currentSongDate;
+                        if (MozController.player.playing != true) {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => NowPlaying(
-                                      songModelList: GetSongs.playingSongs)));
+                                      songModelList: MozController.playingSongs)));
                         }
 
-                        GetSongs.player.setAudioSource(
-                            GetSongs.createSongList(
-                              lastAddedSong.getLastAddedSongs(lastAddedSong.homePageSongs.length),
+                        MozController.player.setAudioSource(
+                          await  MozController.createSongList(
+                              lastAddedSong.getLastAddedSongs(
+                                  lastAddedSong.homePageSongs.length),
                             ),
                             initialIndex: lastSongindex);
-                        GetSongs.player.play();
-                        GetSongs.player.playerStateStream.listen((playerState) {
+                        MozController.player.play();
+                        MozController.player.playerStateStream.listen((playerState) {
                           if (playerState.processingState ==
                               ProcessingState.completed) {
                             // Check if the current song is the last song in the playlist
-                            if (GetSongs.player.currentIndex ==
+                            if (MozController.player.currentIndex ==
                                 currentSongDate.length - 1) {
                               // Rewind the playlist to the starting index
-                              GetSongs.player.seek(Duration.zero, index: 0);
+                              MozController.player.seek(Duration.zero, index: 0);
                             }
                           }
                         });
-                        // GetSongs.songscopy = currentSongDate;
+                        // MozController.songscopy = currentSongDate;
                       },
                       child: Column(
                         children: [

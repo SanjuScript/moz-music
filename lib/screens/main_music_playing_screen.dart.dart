@@ -1,33 +1,31 @@
 import 'dart:developer';
-import 'dart:io';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/CONTROLLER/song_controllers.dart';
+import 'package:music_player/DATABASE/favorite_db.dart';
 import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:music_player/PROVIDER/color_extraction.dart';
 import 'package:music_player/PROVIDER/now_playing_provider.dart';
 import 'package:music_player/PROVIDER/theme_class_provider.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
+import 'package:music_player/WIDGETS/bouncing_widget.dart';
 import 'package:music_player/WIDGETS/buttons/home_button.dart';
 import 'package:music_player/WIDGETS/buttons/play_pause_button.dart';
 import 'package:music_player/WIDGETS/buttons/repeat_button.dart';
 import 'package:music_player/WIDGETS/buttons/shuffle_button.dart';
 import 'package:music_player/WIDGETS/buttons/theme_button_widget.dart';
+import 'package:music_player/WIDGETS/dialogues/playlist_easy_access.dart';
 import 'package:music_player/screens/favoritepage/favorite_music_playing.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import '../COLORS/colors.dart';
-import '../Model/music_model.dart';
 import '../WIDGETS/bottomsheet/song_info_sheet.dart';
 import '../WIDGETS/buttons/next_prevoius_button.dart';
-import '../WIDGETS/indicators.dart';
 import '../WIDGETS/dialogues/speed_dialogue.dart';
 import '../WIDGETS/nuemorphic_button.dart';
-import '../ANIMATION/slide_animation.dart';
-import 'playlist/playlist_screen.dart';
 
 class NowPlaying extends StatefulWidget {
   final List<SongModel> songModelList;
@@ -43,15 +41,6 @@ class NowPlaying extends StatefulWidget {
 class _NowPlayingState extends State<NowPlaying>
     with AutomaticKeepAliveClientMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  void addSongToPlaylist(
-      BuildContext context, SongModel data, datas, int index) {
-    if (!datas.isValueIn(data.id)) {
-      datas.add(data.id);
-    } else {
-      datas.deleteData(widget.songModelList[index].id);
-    }
-  }
 
   @override
   void initState() {
@@ -83,7 +72,7 @@ class _NowPlayingState extends State<NowPlaying>
     final artworkColor =
         Provider.of<ArtworkColorProvider>(context).dominantColor;
     final themeProvider = Provider.of<ThemeProvider>(context);
-    bool isDark = themeProvider.gettheme() == CustomThemes.darkThemeMode;
+    bool isDark = themeProvider.getTheme() == CustomThemes.darkThemeMode;
 
     return PopScope(
       onPopInvoked: (didPop) {
@@ -98,18 +87,9 @@ class _NowPlayingState extends State<NowPlaying>
           onVerticalDragUpdate: (details) {
             if (details.primaryDelta != null && details.primaryDelta! < -10) {
               bottomDetailsSheet(
-                id: widget.songModelList[GetSongs.currentIndex].id,
                 context: context,
-                artist: widget.songModelList[GetSongs.currentIndex].artist
-                    .toString(),
-                title: widget.songModelList[GetSongs.currentIndex].title,
-                composer: widget.songModelList[GetSongs.currentIndex].composer
-                    .toString(),
-                // genre: widget.songModelList[GetSongs.currentIndex].genre
-                //     .toString(),
-                song: widget.songModelList[GetSongs.currentIndex],
-                filePath: widget.songModelList[GetSongs.currentIndex].data,
-                file: File(widget.songModelList[GetSongs.currentIndex].data),
+                song: widget.songModelList,
+                index: MozController.currentIndex,
                 isPlaylistShown: true,
                 onTap: () {
                   showPlaylistdialog(context);
@@ -157,34 +137,43 @@ class _NowPlayingState extends State<NowPlaying>
                           "PLAYING NOW",
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontFamily: 'rounder',
-                              fontSize: wt * 0.04,
-                              letterSpacing: .6,
-                              // color: const Color(0xff333c67),
-                              color: Theme.of(context).unselectedWidgetColor),
+                            fontFamily: 'hando',
+                            fontSize: wt * 0.04,
+                            letterSpacing: 3.6,
+                            // color: const Color(0xff333c67),
+                            color: Theme.of(context)
+                                .unselectedWidgetColor
+                                .withOpacity(.7),
+                          ),
                         ),
                         const ChangeThemeButtonWidget(),
                       ],
                     ),
                   ),
                   Container(
-                      padding: const EdgeInsets.all(3),
-                      width: wt * 0.87,
-                      height: ht * 0.38,
-                      decoration: const BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                      ),
-                      child: Consumer<NowPlayingProvider>(
-                        builder: (context, value, child) {
-                          return AudioArtworkDefiner(
+                    padding: const EdgeInsets.all(3),
+                    width: wt * 0.87,
+                    height: ht * 0.38,
+                    decoration: const BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                    ),
+                    child: Consumer<NowPlayingProvider>(
+                      builder: (context, value, child) {
+                        return BouncableEffect(
+                          onDoubletap: true,
+                          songModel: widget.songModelList[value.currentIndex],
+                          child: AudioArtworkDefiner(
                             id: widget.songModelList[value.currentIndex].id,
                             size: 500,
                             // enableAnimation: true,
+                          
                             imgRadius: 15,
-                          );
-                        },
-                      )),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                   SizedBox(
                     height: ht * 0.02,
                   ),
@@ -266,7 +255,9 @@ class _NowPlayingState extends State<NowPlaying>
                               thumbColor: Colors.deepPurple[400],
                               thumbRadius: ht * 0.005,
                               thumbGlowRadius: wt * 0.07,
-                              baseBarColor: Colors.transparent,
+                              baseBarColor: isDark
+                                  ? Colors.deepPurple[400]!.withOpacity(.1)
+                                  : Colors.transparent,
                               progress: value.position,
                               total: value.duration,
                               timeLabelTextStyle: TextStyle(
@@ -285,8 +276,6 @@ class _NowPlayingState extends State<NowPlaying>
                     ),
                   ),
 
-                  //Space
-
                   SizedBox(
                     height: ht * 0.02,
                   ),
@@ -302,35 +291,13 @@ class _NowPlayingState extends State<NowPlaying>
                             return InkWell(
                                 onTap: () {
                                   bottomDetailsSheet(
-                                    id: widget
-                                        .songModelList[value.currentIndex].id,
-                                    context: context,
-                                    artist: widget
-                                        .songModelList[value.currentIndex]
-                                        .artist
-                                        .toString(),
-                                    title: widget
-                                        .songModelList[value.currentIndex]
-                                        .title,
-                                    composer: widget
-                                        .songModelList[value.currentIndex]
-                                        .composer
-                                        .toString(),
-                                    // genre: widget
-                                    //     .songModelList[value.currentIndex]
-                                    //     .genre
-                                    //     .toString(),
-                                    song: widget
-                                        .songModelList[value.currentIndex],
-                                    filePath: widget
-                                        .songModelList[value.currentIndex].data,
-                                    file: File(widget
-                                        .songModelList[value.currentIndex]
-                                        .data),
+                                    song: widget.songModelList,
+                                    index: value.currentIndex,
                                     isPlaylistShown: true,
                                     onTap: () {
                                       showPlaylistdialog(context);
                                     },
+                                    context: context,
                                   );
                                 },
                                 child: Icon(
@@ -340,16 +307,13 @@ class _NowPlayingState extends State<NowPlaying>
                                 ));
                           }),
 
-                          //Lopp Mode Button here
-
                           StreamBuilder<LoopMode>(
-                            stream: GetSongs.player.loopModeStream,
+                            stream: MozController.player.loopModeStream,
                             builder: (context, snapshot) {
                               return repeatButton(
                                   context, snapshot.data ?? LoopMode.off, wt);
                             },
                           ),
-                          //Favorite Button Here
 
                           Consumer<NowPlayingProvider>(
                             builder: (context, value, child) {
@@ -358,8 +322,6 @@ class _NowPlayingState extends State<NowPlaying>
                                       widget.songModelList[value.currentIndex]);
                             },
                           ),
-
-                          //Speed Controll Button Here
 
                           InkWell(
                             radius: 50,
@@ -375,7 +337,7 @@ class _NowPlayingState extends State<NowPlaying>
                             child: Icon(
                               Icons.speed,
                               size: wt * 0.07,
-                              color: GetSongs.player.speed != 1.0
+                              color: MozController.player.speed != 1.0
                                   ? Colors.deepPurple[400]
                                   : const Color(0xff9CADC0),
                             ),
@@ -389,7 +351,7 @@ class _NowPlayingState extends State<NowPlaying>
                       children: <Widget>[
                         //Skip TO Previous Song
                         StreamBuilder<bool>(
-                          stream: GetSongs.player.shuffleModeEnabledStream,
+                          stream: MozController.player.shuffleModeEnabledStream,
                           builder: (context, snapshot) {
                             bool isEnabled = snapshot.data ?? false;
                             return shuffleButton(context, isEnabled, wt);
@@ -406,17 +368,14 @@ class _NowPlayingState extends State<NowPlaying>
                           FontAwesomeIcons.backward,
                         ),
 
-                        // Play And Pause Song Button
-
-                        //Skip To Next Song
                         StreamBuilder<PlayerState>(
-                          stream: GetSongs.player.playerStateStream,
+                          stream: MozController.player.playerStateStream,
                           builder: (_, snapshot) {
                             return SizedBox(
                                 height: ht * 0.13,
                                 width: wt * 0.13,
                                 child: playPauseButton(
-                                    context, GetSongs.player.playing, wt));
+                                    context, MozController.player.playing, wt));
                           },
                         ),
 
@@ -440,153 +399,7 @@ class _NowPlayingState extends State<NowPlaying>
     );
   }
 
-  showPlaylistdialog(BuildContext context) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return Theme(
-          data: CustomThemes.darkThemeMode.copyWith(
-            dialogTheme: Theme.of(context).dialogTheme,
-          ),
-          child: Theme(
-            data: CustomThemes.darkThemeMode
-                .copyWith(dialogTheme: Theme.of(context).dialogTheme),
-            child: Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "Playlists",
-                      style: TextStyle(
-                        fontFamily: 'coolvetica',
-                        fontSize: 20,
-                        color: Theme.of(context).cardColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    const Divider(),
-                    const SizedBox(height: 8),
-                    ValueListenableBuilder(
-                      valueListenable:
-                          Hive.box<MusicModel>('playlistDB').listenable(),
-                      builder: (BuildContext context, Box<MusicModel> value,
-                          Widget? child) {
-                        if (Hive.box<MusicModel>('playlistDB').isEmpty) {
-                          return Column(
-                            children: [
-                              songEmpty(context, "No Playlist Found", () {},
-                                  isSetting: false),
-                              const SizedBox(height: 16),
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    SearchAnimationNavigation(
-                                        const PlaylistScreen()),
-                                  );
-                                },
-                                icon: const Icon(
-                                  Icons.add_circle,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            ],
-                          );
-                        } else {
-                          return Consumer<NowPlayingProvider>(
-                            builder: (context, nowValue, child) {
-                              final itemCount = value.length;
-                              return SizedBox(
-                                height: itemCount > 8
-                                    ? 320
-                                    : null, // Set a specific height if itemCount > 8
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  children: [
-                                    ListView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: itemCount,
-                                      itemBuilder: (context, index) {
-                                        final data =
-                                            value.values.toList()[index];
-                                        return Dismissible(
-                                          key: Key(data
-                                              .name), // Use a unique key for each playlist
-                                          direction:
-                                              DismissDirection.startToEnd,
-                                          background: Container(
-                                            alignment: Alignment.centerLeft,
-                                            color: Colors.grey[400]!
-                                                .withOpacity(.5),
-                                            child: const Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 16),
-                                              child: Icon(
-                                                Icons.delete,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                          onDismissed: (direction) {
-                                            value.deleteAt(index);
-                                          },
-                                          child: ListTile(
-                                            title: Text(
-                                              data.name.toUpperCase(),
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Theme.of(context)
-                                                      .unselectedWidgetColor),
-                                            ),
-                                            trailing: IconButton(
-                                              icon: data.isValueIn(widget
-                                                      .songModelList[
-                                                          nowValue.currentIndex]
-                                                      .id)
-                                                  ? const Icon(Icons.done)
-                                                  : const Icon(
-                                                      Icons.add_circle),
-                                              onPressed: () {
-                                                addSongToPlaylist(
-                                                  context,
-                                                  widget.songModelList[
-                                                      nowValue.currentIndex],
-                                                  data,
-                                                  nowValue.currentIndex,
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
+  void showPlaylistdialog(BuildContext context) {
+    PlaylistEasyAccess.show(context: context, getList: widget.songModelList);
   }
 }

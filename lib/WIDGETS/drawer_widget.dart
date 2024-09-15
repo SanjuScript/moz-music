@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:music_player/SCREENS/settings/about.dart';
 import 'package:music_player/Widgets/buttons/theme_button_widget.dart';
 import 'package:provider/provider.dart';
 import '../ANIMATION/slide_animation.dart';
@@ -6,11 +7,11 @@ import '../COLORS/colors.dart';
 import '../DATABASE/most_played.dart';
 import '../PROVIDER/theme_class_provider.dart';
 import '../SCREENS/playlist/playlist_screen.dart';
-import '../screens/about.dart';
+// import '../screens/about.dart';
 import '../SCREENS/favoritepage/favoriteSongLists.dart';
-import '../SCREENS/privacy_policy.dart';
+import '../SCREENS/settings/privacy_policy.dart';
 import '../SCREENS/search_music_screen.dart';
-import '../SCREENS/setting.dart';
+import '../SCREENS/settings/setting.dart';
 import 'bottomsheet/sleep_timer_sheet.dart';
 
 Widget drawerWidget(
@@ -85,7 +86,7 @@ Widget drawerWidget(
                     context: context,
                     leadingIcon: Icons.contact_page,
                     onTap: () {
-                      navigation( AboutPage(), context, scaffoldKey);
+                      navigation(const AboutPage(), context, scaffoldKey);
                     },
                     text: 'About'),
                 listDrawerItems(

@@ -1,13 +1,10 @@
-// import 'dart:developer';
-
-// ignore_for_file: invalid_use_of_protected_member
 import 'package:flutter/material.dart';
 import 'package:music_player/DATABASE/playlistDb.dart';
 import 'package:music_player/Model/music_model.dart';
 import 'package:music_player/PROVIDER/homepage_provider.dart';
+import 'package:music_player/WIDGETS/song_list_maker.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
-import '../../Widgets/song_list_maker.dart';
 
 class PlayListSongListScreen extends StatefulWidget {
   const PlayListSongListScreen({Key? key}) : super(key: key);
@@ -50,7 +47,7 @@ class _PlayListSongListScreenState extends State<PlayListSongListScreen>
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
         itemBuilder: (context, index) {
-          return songDisplay(context,
+          return SongDisplay(
               disableOnTap: true,
               isTrailingChange: true,
               song: foundSongs[index],

@@ -42,7 +42,7 @@ class CustomThemes {
     shadowColor: const Color.fromARGB(
         0, 0, 0, 0), // Use the dynamic shadow color variable
     dividerColor: const Color.fromARGB(41, 202, 202, 202),
-    cardColor: const Color.fromARGB(255, 228, 229, 229),
+    cardColor: Color.fromARGB(255, 215, 215, 215),
     hoverColor: const Color.fromARGB(146, 26, 15, 28),
     splashColor: const Color.fromARGB(255, 39, 39, 39),
     dialogTheme: const DialogTheme(

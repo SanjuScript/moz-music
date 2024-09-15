@@ -135,7 +135,7 @@ class _AlbumMusicListingState extends State<AlbumMusicListing> {
                     ListView.builder(
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
-                        return songDisplay(context,
+                        return SongDisplay(
                             song: songs[index], songs: songs, index: index);
                       },
                       physics: const BouncingScrollPhysics(),

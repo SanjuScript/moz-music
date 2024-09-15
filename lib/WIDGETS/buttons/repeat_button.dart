@@ -31,7 +31,7 @@ Widget repeatButton(BuildContext context, LoopMode loopMode, double wt) {
     splashRadius: 30,
     icon: icons[index],
     onPressed: () {
-      GetSongs.player.setLoopMode(
+      MozController.player.setLoopMode(
           cycleModes[(cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
     },
   );

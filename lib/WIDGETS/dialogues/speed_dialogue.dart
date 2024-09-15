@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../CONTROLLER/song_controllers.dart';
 
 class SpeedDialog extends StatefulWidget {
+  const SpeedDialog({super.key});
+
   @override
-  _SpeedDialogState createState() => _SpeedDialogState();
+  State<SpeedDialog> createState() => _SpeedDialogState();
 }
 
 class _SpeedDialogState extends State<SpeedDialog> with TickerProviderStateMixin {
@@ -32,7 +34,7 @@ class _SpeedDialogState extends State<SpeedDialog> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    double selectedSpeed = GetSongs.player.playing ? GetSongs.player.speed : 1.0;
+    double selectedSpeed = MozController.player.playing ? MozController.player.speed : 1.0;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -94,8 +96,8 @@ class _SpeedDialogState extends State<SpeedDialog> with TickerProviderStateMixin
       width: double.infinity,
       child: TextButton(
         onPressed: () {
-          if (GetSongs.player.playing) {
-            GetSongs.player.setSpeed(speedValue);
+          if (MozController.player.playing) {
+            MozController.player.setSpeed(speedValue);
             Navigator.pop(context);
           }
         },

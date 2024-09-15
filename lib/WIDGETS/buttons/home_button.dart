@@ -38,7 +38,7 @@ class HomePageButtons extends StatelessWidget {
             color: color.withOpacity(.9),
             border: Border.all(color: color, width: 2),
             borderRadius: BorderRadius.circular(15),
-            boxShadow: theme.gettheme() == CustomThemes.lightThemeMode ? [
+            boxShadow: theme.getTheme() == CustomThemes.lightThemeMode ? [
               BoxShadow(
                   color: color.withOpacity(.9),
                   spreadRadius: 2,

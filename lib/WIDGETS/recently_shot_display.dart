@@ -17,10 +17,10 @@ class RecentlyShotDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: RecentlyPlayedDB.recentlyplayedSongNotifier,
+        valueListenable: RecentDb.recentSongs,
         builder: (BuildContext context, List<SongModel> value, Widget? child) {
           final temp = value.toList();
-          recentSong = temp.reversed.toSet().toList();
+          recentSong = temp.toSet().toList();
 
           if (value.isNotEmpty) {
             return SizedBox(
@@ -35,41 +35,41 @@ class RecentlyShotDisplay extends StatelessWidget {
                         return InkWell(
                           overlayColor: const MaterialStatePropertyAll(Colors.transparent),
                           onTap: () async {
-                            if (GetSongs.player.playing != true) {
+                            if (MozController.player.playing != true) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => NowPlaying(
                                           songModelList:
-                                              GetSongs.playingSongs)));
+                                              MozController.playingSongs)));
                             }
 
                             // await RecentlyPlayedDB.addRecentlyPlayed(
                             //     recentSong[index]);
-                            await MostlyPlayedDB.incrementPlayCount(
-                                recentSong[index]);
+                            // await MostlyPlayedDB.incrementPlayCount(
+                            //     recentSong[index]);
                              if (index >= 0 && index < recentSong.length) {
-                              GetSongs.player.setAudioSource(
-                                GetSongs.createSongList(
+                              MozController.player.setAudioSource(
+                               await MozController.createSongList(
                                   recentSong,
                                 ),
                                 initialIndex: index,
                               );
                             }
-                            GetSongs.player.play();
-                            GetSongs.player.playerStateStream
+                            MozController.player.play();
+                            MozController.player.playerStateStream
                                 .listen((playerState) {
                               if (playerState.processingState ==
                                   ProcessingState.completed) {
                                 // Check if the current song is the last song in the playlist
-                                if (GetSongs.player.currentIndex ==
+                                if (MozController.player.currentIndex ==
                                     recentSong.length - 1) {
                                   // Rewind the playlist to the starting index
-                                  GetSongs.player.seek(Duration.zero, index: 0);
+                                  MozController.player.seek(Duration.zero, index: 0);
                                 }
                               }
                             });
-                            GetSongs.songscopy = recentSong;
+                            MozController.songscopy = recentSong;
                           },
                           child: Column(
                             children: [

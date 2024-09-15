@@ -1,90 +1,38 @@
-import 'package:flutter/material.dart';
+import 'dart:developer';
 import 'package:hive/hive.dart';
-import 'package:on_audio_query/on_audio_query.dart';
-import '../CONTROLLER/song_controllers.dart';
+import 'package:music_player/MODEL/song_play_count.dart';
 
-class MostlyPlayedDB {
-  static ValueNotifier<List<SongModel>> mostlyPlayedSongNotifier =
-      ValueNotifier([]);
-  static bool isInitialized = false;
-  static const int maxSongCount = 100;
-  static List<dynamic> mostlyPlayed = [];
+class PlayCountService {
+  static final Box<SongPlayCount> _playCountBox =
+      Hive.box<SongPlayCount>('play_counts');
+  static void addOrUpdatePlayCount(String songId) {
+    var songPlayCount = _playCountBox.get(songId);
+    songPlayCount ??= SongPlayCount(songId: songId);
+    songPlayCount.playCount += 1;
+    _playCountBox.put(songId, songPlayCount);
+    log("Added :$songId");
+  }
 
-  static initialize(List<SongModel> songs) {
-    for (SongModel song in songs) {
-      if (isMostlyPlayed(song)) {
-        mostlyPlayedSongNotifier.value.add(song);
-      }
+  static int getPlayCount(String songId) {
+    var songPlayCount = _playCountBox.get(songId);
+    return songPlayCount?.playCount ?? 0;
+  }
+
+  static List<String> getMostPlayedSongIds() {
+    List<SongPlayCount> playCounts = _playCountBox.values.toList();
+    playCounts.sort((a, b) => b.playCount.compareTo(a.playCount));
+
+    List<String> mostPlayedSongIds = [];
+    for (var playCount in playCounts) {
+      mostPlayedSongIds.add(playCount.songId);
     }
-    isInitialized = true;
+    log(mostPlayedSongIds.toString());
+    return mostPlayedSongIds;
   }
-
-  static isMostlyPlayed(SongModel song) async {
-    final mostlyPlayedDb = await Hive.openBox('mostlyPlayed');
-    if (mostlyPlayedDb.values.contains(song.id)) {
-      return true;
-    }
-    return false;
+    static bool get isMostPlayedSongIdsEmpty {
+    return _playCountBox.isEmpty;
   }
-
-  static Future<void> incrementPlayCount(SongModel song) async {
-  final mostlyPlayedDb = await Hive.openBox('mostlyPlayed');
-  int currentPlayCount = mostlyPlayedDb.get(song.id) ?? 0;
-
-  if (currentPlayCount >= 500) {
-    mostlyPlayedDb.put(song.id, 0); // Reset play count to 0
-  } else {
-    mostlyPlayedDb.put(song.id, currentPlayCount + 1);
+  static int get currentlength {
+    return _playCountBox.length;
   }
-
- await getMostlyPlayedSongs();
-  mostlyPlayedSongNotifier.notifyListeners();
-}
-
-
- static int getPlayCount(int songId) {
-  final mostlyPlayedDb = Hive.box('mostlyPlayed');
-  return mostlyPlayedDb.get(songId) ?? 0;
-}
-
-  static Future<void> getMostlyPlayedSongs() async {
-    final mostlyPlayedDb = await Hive.openBox('mostlyPlayed');
-    mostlyPlayed = mostlyPlayedDb.values.toList();
-    displayMostlyPlayed();
-    mostlyPlayedSongNotifier.notifyListeners();
-  }
-
-  static deleteAll() async {
-    MostlyPlayedDB.mostlyPlayedSongNotifier.value.clear();
-    final mostlyPlayedDb = await Hive.openBox('mostlyPlayed');
-    mostlyPlayedDb.clear();
-    mostlyPlayedSongNotifier.notifyListeners();
-  }
-
-static Future<void> displayMostlyPlayed() async {
-  final mostlyPlayedDb = await Hive.openBox('mostlyPlayed');
-  final mostlyPlayedSongItems = mostlyPlayedDb.toMap();
-
-  final List<int> sortedSongIds = mostlyPlayedSongItems.keys
-      .cast<int>()
-      .toList()
-    ..sort((a, b) =>
-        mostlyPlayedSongItems[b].compareTo(mostlyPlayedSongItems[a]));
-
-  final List<SongModel> sortedSongs = sortedSongIds.map((songId) {
-    return GetSongs.songscopy.firstWhere(
-      (element) => element.id == songId,
-      orElse: () => SongModel({
-        "_id": songId
-      }), // Create a SongModel instance with the proper parameter
-    );
-  }).toList();
-
-  mostlyPlayedSongNotifier.value.clear();
-  mostlyPlayedSongNotifier.value.addAll(sortedSongs); // Use addAll to update the list
-
-  mostlyPlayed.clear();
-  mostlyPlayed.addAll(sortedSongs); // Update the mostlyPlayed list too
-}
-
 }

@@ -21,8 +21,8 @@ class MiniPlayer extends StatelessWidget {
 
   Stream<DurationState> get _durationStateStream =>
       Rx.combineLatest2<Duration, Duration?, DurationState>(
-          GetSongs.player.positionStream,
-          GetSongs.player.durationStream,
+          MozController.player.positionStream,
+          MozController.player.durationStream,
           (position, duration) => DurationState(
               position: position, total: duration ?? Duration.zero));
 
@@ -37,7 +37,7 @@ class MiniPlayer extends StatelessWidget {
     final wt = MediaQuery.of(context).size.width;
     return Consumer<MiniplayerProvider>(
       builder: (context, value, child) {
-        return GetSongs.currentIndex == null ? SizedBox():Container(
+        return MozController.currentIndex == null ? SizedBox():Container(
           decoration: BoxDecoration(color: Theme.of(context).focusColor),
           child: Stack(
             fit: StackFit.loose,
@@ -48,7 +48,7 @@ class MiniPlayer extends StatelessWidget {
                   Navigator.push(
                       context,
                       Uptransition(NowPlaying(
-                        songModelList: GetSongs.playingSongs,
+                        songModelList: MozController.playingSongs,
                       )));
                 },
                 textColor: Theme.of(context).cardColor,
@@ -62,8 +62,8 @@ class MiniPlayer extends StatelessWidget {
                         shadowVisibility: false,
                         child: AudioArtworkDefinerForOthers(
                           iconSize: 25,
-                          id: GetSongs
-                              .playingSongs[GetSongs.player.currentIndex!].id,
+                          id: MozController
+                              .playingSongs[MozController.player.currentIndex!].id,
                           imgRadius: 8,
                         ),
                       ),
@@ -73,7 +73,7 @@ class MiniPlayer extends StatelessWidget {
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                 title: Text(
-                  GetSongs.playingSongs[GetSongs.player.currentIndex!].title
+                  MozController.playingSongs[MozController.player.currentIndex!].title
                       .toUpperCase(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -92,12 +92,12 @@ class MiniPlayer extends StatelessWidget {
                       color: Theme.of(context).cardColor),
                 ),
                 subtitle: Text(
-                  GetSongs.playingSongs[GetSongs.player.currentIndex!].artist
+                  MozController.playingSongs[MozController.player.currentIndex!].artist
                               .toString() ==
                           '<unknown>'
                       ? 'No Artist'
-                      : GetSongs
-                          .playingSongs[GetSongs.player.currentIndex!].artist
+                      : MozController
+                          .playingSongs[MozController.player.currentIndex!].artist
                           .toString(),
                           maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -122,11 +122,11 @@ class MiniPlayer extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () {
-                          RecentlyPlayedDB.addRecentlyPlayed(GetSongs
-                              .playingSongs[GetSongs.player.currentIndex!]);
+                          // RecentlyPlayedDB.addRecentlyPlayed(MozController
+                          //     .playingSongs[MozController.player.currentIndex!]);
                           miniProvider.previousButton(context);
-                        MostlyPlayedDB.incrementPlayCount(GetSongs
-                              .playingSongs[GetSongs.player.currentIndex!]);
+                        // MostlyPlayedDB.incrementPlayCount(MozController
+                        //       .playingSongs[MozController.player.currentIndex!]);
                         },
                         child: Icon(
                           FontAwesomeIcons.backward,
@@ -139,7 +139,7 @@ class MiniPlayer extends StatelessWidget {
                           miniProvider.playPauseButton(context);
                         },
                         child: StreamBuilder<bool>(
-                          stream: GetSongs.player.playingStream,
+                          stream: MozController.player.playingStream,
                           builder: (context, snapshot) {
                             bool? playingStage = snapshot.data;
                             if (playingStage != null && playingStage) {
@@ -162,11 +162,11 @@ class MiniPlayer extends StatelessWidget {
                       ),
                       InkWell(
                           onTap: () {
-                            RecentlyPlayedDB.addRecentlyPlayed(GetSongs
-                                .playingSongs[GetSongs.player.currentIndex!]);
+                            // RecentlyPlayedDB.addRecentlyPlayed(MozController
+                            //     .playingSongs[MozController.player.currentIndex!]);
                             miniProvider.nextButton(context);
-                           MostlyPlayedDB.incrementPlayCount(GetSongs
-                                .playingSongs[GetSongs.player.currentIndex!]);
+                          //  MostlyPlayedDB.incrementPlayCount(MozController
+                          //       .playingSongs[MozController.player.currentIndex!]);
                           },
                           child: Icon(
                             FontAwesomeIcons.forward,
@@ -198,7 +198,7 @@ class MiniPlayer extends StatelessWidget {
                     total: total,
                     timeLabelLocation: TimeLabelLocation.none,
                     onSeek: (duration) {
-                      GetSongs.player.seek(duration);
+                      MozController.player.seek(duration);
                     },
                   );
                 },

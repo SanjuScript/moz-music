@@ -1,21 +1,20 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:music_player/PROVIDER/bottom_nav_provider.dart';
-import 'package:music_player/SCREENS/home_page.dart';
+import 'package:music_player/SCREENS/mainUI/home_page.dart';
+import 'package:music_player/SCREENS/mainUI/most_played_songs.dart';
 import 'package:music_player/SCREENS/playlist/playlist_screen.dart';
 import 'package:music_player/PROVIDER/sleep_timer_provider.dart';
-import 'package:music_player/SCREENS/recently_played.dart';
-import 'package:music_player/SCREENS/setting.dart';
-import 'package:music_player/screens/most_played_songs.dart';
+import 'package:music_player/SCREENS/mainUI/recently_played.dart';
+import 'package:music_player/SCREENS/settings/setting.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import '../DATABASE/favorite_db.dart';
 import '../CONTROLLER/song_controllers.dart';
 import '../WIDGETS/bottomsheet/sleep_timer_sheet.dart';
 import 'favoritepage/favoriteSongLists.dart';
-import 'song_listing_page.dart';
+import 'mainUI/song_listing_page.dart';
 import 'mini_player.dart';
 
 class BottomNav extends StatefulWidget {
@@ -51,7 +50,6 @@ class _BottomNavState extends State<BottomNav> {
       const PlaylistScreen(),
       const RecentlyPlayed(),
       const MostlyPlayed(),
-      const Settings(),
     ];
   }
 
@@ -157,7 +155,7 @@ class _BottomNavState extends State<BottomNav> {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                GetSongs.player.currentIndex != null
+                MozController.player.currentIndex != null
                     ? SizedBox(
                         height: MediaQuery.of(context).size.height * 0.098,
                         child: const MiniPlayer(),
@@ -215,10 +213,7 @@ class _BottomNavState extends State<BottomNav> {
                           bottomNavBarIcon: Icons.play_lesson_rounded,
                           bottomNavBarLabel: 'Most played',
                         ),
-                        bottomNavBarMethod(
-                          bottomNavBarIcon: Icons.settings,
-                          bottomNavBarLabel: 'Settings',
-                        ),
+                       
                       ],
                     ),
                   ),

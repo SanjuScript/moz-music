@@ -1,11 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:music_player/COLORS/colors.dart';
 import 'package:music_player/CONTROLLER/song_controllers.dart';
-import 'package:music_player/PROVIDER/theme_class_provider.dart';
 import 'package:music_player/WIDGETS/bottomsheet/sleep_timer_sheet.dart';
-import 'package:music_player/WIDGETS/buttons/theme_button_widget.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
 import 'package:music_player/WIDGETS/main_container_for_settings.dart';
 import 'package:music_player/WIDGETS/settings_widget/about_showing.dart';
@@ -14,8 +9,7 @@ import 'package:music_player/WIDGETS/settings_widget/single_items/single_text.da
 import 'package:music_player/WIDGETS/settings_widget/single_items/single_version.dart';
 import 'package:music_player/WIDGETS/settings_widget/sleep_timer_showing.dart';
 import 'package:music_player/WIDGETS/settings_widget/theme_changing.dart';
-import 'package:provider/provider.dart';
-import '../DATABASE/playlistDb.dart';
+import '../../DATABASE/playlistDb.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -85,7 +79,7 @@ class _SettingsState extends State<Settings> {
                   text1: "Do you really want to Reset Moz Music ?",
                   onPress: () {
                     PlayListDB.resetAPP(context);
-                    GetSongs.player.stop();
+                    MozController.player.stop();
                   });
             },
             child: Padding(

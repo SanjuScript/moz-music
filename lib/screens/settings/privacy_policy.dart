@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/PROVIDER/theme_class_provider.dart';
 import 'package:provider/provider.dart';
-import '../COLORS/colors.dart';
+import '../../COLORS/colors.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({Key? key}) : super(key: key);
@@ -44,7 +44,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                     'The following terminology applies to these Terms and Conditions, Privacy Statement and Disclaimer Notice and all Agreements:',
                     style: TextStyle(
                       fontSize: MediaQuery.of(context).size.width * 0.040,
-                      color: themeProvider.gettheme() == CustomThemes.darkThemeMode
+                      color: themeProvider.getTheme() == CustomThemes.darkThemeMode
                           ? Colors.white
                           : Colors.black,
                     ),

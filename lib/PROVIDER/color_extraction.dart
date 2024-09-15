@@ -7,10 +7,14 @@ class ArtworkColorProvider extends ChangeNotifier {
   PaletteGenerator? _paletteGenerator;
   PaletteGenerator? get paletteGenerator => _paletteGenerator;
 
-  Color  _dominantColor = Colors.black;
+  List<Color> _imageColors = [];
+  List<Color> get imageColors => _imageColors;
+
+  Color _dominantColor = Colors.black;
   Color? get dominantColor => _dominantColor;
 
-  Future<void> extractArtworkColors(Uint8List? artworkData, bool isDarkMode) async {
+  Future<void> extractArtworkColors(
+      Uint8List? artworkData, bool isDarkMode) async {
     if (artworkData == null) {
       _dominantColor = isDarkMode ? Colors.black : Colors.grey.withOpacity(0.5);
       notifyListeners();
@@ -35,12 +39,28 @@ class ArtworkColorProvider extends ChangeNotifier {
         // Apply opacity to the color
         _dominantColor = dominantColor.withOpacity(opacity);
       } else {
-        _dominantColor = isDarkMode ? Colors.black : Colors.grey.withOpacity(0.5);
+        _dominantColor =
+            isDarkMode ? Colors.black : Colors.grey.withOpacity(0.5);
       }
     } else {
       _dominantColor = isDarkMode ? Colors.black : Colors.grey.withOpacity(0.5);
     }
 
     notifyListeners();
+  }
+
+  Future<List<Color>> extractImageColors(List<Uint8List?> imageList) async {
+    // List<Color> colors = [];
+    for (Uint8List? imageData in imageList) {
+      if (imageData != null) {
+        PaletteGenerator palette = await PaletteGenerator.fromImageProvider(
+          MemoryImage(imageData),
+          size: const Size(250, 250),
+          maximumColorCount: 20,
+        );
+        _imageColors.addAll(palette.colors);
+      }
+    }
+    return _imageColors;
   }
 }

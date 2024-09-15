@@ -17,7 +17,7 @@ class SettingsThememodeChanging extends StatefulWidget {
 class _SettingsThememodeChangingState extends State<SettingsThememodeChanging> {
   @override
   Widget build(BuildContext context) {
-    bool darkMode = Provider.of<ThemeProvider>(context).theme == CustomThemes.darkThemeMode;
+    bool darkMode = Provider.of<ThemeProvider>(context).getTheme() == CustomThemes.darkThemeMode;
     return SettingsContainer(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,

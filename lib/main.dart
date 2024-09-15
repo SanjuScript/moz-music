@@ -1,14 +1,13 @@
 import 'dart:developer';
 
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:flutter/services.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
-import 'package:music_player/DATABASE/most_played.dart';
 import 'package:music_player/DATABASE/playlistDb.dart';
 import 'package:music_player/DATABASE/recently_played.dart';
+import 'package:music_player/MODEL/song_play_count.dart';
 // import 'package:music_player/HELPER/audio_handler.dart';
 import 'package:music_player/Model/music_model.dart';
 import 'package:music_player/PROVIDER/album_song_list_provider.dart';
@@ -18,15 +17,16 @@ import 'package:music_player/PROVIDER/bottom_nav_provider.dart';
 import 'package:music_player/PROVIDER/color_extraction.dart';
 import 'package:music_player/PROVIDER/device_info_provider.dart';
 import 'package:music_player/PROVIDER/homepage_provider.dart';
+import 'package:music_player/PROVIDER/id_saver.dart';
 import 'package:music_player/PROVIDER/miniplayer_provider.dart';
 import 'package:music_player/PROVIDER/now_playing_provider.dart';
 import 'package:music_player/PROVIDER/sleep_timer_provider.dart';
 import 'package:music_player/PROVIDER/theme_class_provider.dart';
-import 'package:music_player/SCREENS/about.dart';
+import 'package:music_player/SCREENS/settings/about.dart';
 import 'package:music_player/SCREENS/const_splashScreen.dart';
 import 'package:music_player/SCREENS/playlist/playList_song_listpage.dart';
 import 'package:music_player/SCREENS/playlist/playlistSong_display_screen.dart';
-import 'package:music_player/SCREENS/privacy_policy.dart';
+import 'package:music_player/SCREENS/settings/privacy_policy.dart';
 import 'package:music_player/SCREENS/song_info.dart';
 import 'package:music_player/SCREENS/splash_screen.dart';
 import 'package:provider/provider.dart';
@@ -42,17 +42,19 @@ Future<void> main() async {
 
   isViewed = prefs.getInt('onBoard');
   await Hive.initFlutter();
+  Hive.registerAdapter(SongPlayCountAdapter());
+  await Hive.openBox<SongPlayCount>('play_counts');
   if (!Hive.isAdapterRegistered(MusicModelAdapter().typeId)) {
     Hive.registerAdapter(MusicModelAdapter());
   }
-  await Hive.openBox('recentlyPlayed');
-  await Hive.openBox('mostlyPlayed');
+  await Hive.openBox<int>('RecentDB');
+  await Hive.openBox('MostPlayedDB');
   await Hive.openBox<int>('FavoriteDB');
   await Hive.openBox('songsBox');
   await Hive.openBox<MusicModel>('playlistDB');
-  await RecentlyPlayedDB.getRecentlyPlayedSongs();
-  await MostlyPlayedDB.getMostlyPlayedSongs();
+
   FavoriteDb.favoriteSongs;
+  RecentDb.recentSongs;
   await PlayListDB.getAllPlaylist();
 
   SystemChrome.setSystemUIOverlayStyle(
@@ -62,6 +64,8 @@ Future<void> main() async {
   );
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+  // await initAudioService();
   await JustAudioBackground.init(
       androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
       androidNotificationChannelName: 'Moz Audio playback',
@@ -72,66 +76,28 @@ Future<void> main() async {
       artDownscaleWidth: 100,
       notificationColor: const Color.fromARGB(255, 169, 142, 174));
 
-// mozMusicHandler =  await AudioService.init(
-//     builder: () => MozMusicHandler(),
-//     config: const AudioServiceConfig(
-//       // androidNotificationChannelId: 'com.musicapp.example',
-//       androidNotificationChannelName: 'Audio Playback',
-//       androidNotificationOngoing: true,
-//     ),
-//   );
-  SharedPreferences.getInstance().then(
-    (prefs) async {
-      var darkModeON = prefs.getBool('darkMode') ?? true;
-
-      runApp(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider(
-              create: ((context) => ThemeProvider(darkModeON
-                  ? CustomThemes.lightThemeMode
-                  : CustomThemes.darkThemeMode)),
-            ),
-            ChangeNotifierProvider(
-              create: ((context) => SleepTimeProvider()),
-            ),
-            ChangeNotifierProvider(
-              create: ((context) => MiniplayerProvider()),
-            ),
-            ChangeNotifierProvider(
-              create: ((context) => NowPlayingProvider()),
-            ),
-            ChangeNotifierProvider(
-              create: (context) => AlbumProvider(),
-            ),
-            ChangeNotifierProvider(
-              create: (context) => ArtistSongListProvider(),
-            ),
-            ChangeNotifierProvider(
-              create: (context) => ArtistProvider(),
-            ),
-            ChangeNotifierProvider(
-              create: (context) => HomePageSongProvider(),
-            ),
-            ChangeNotifierProvider(
-              create: (context) => DeviceInformationProvider(),
-            ),
-            ChangeNotifierProvider(
-              create: (context) => SongListProvider(),
-            ),
-            ChangeNotifierProvider(
-              create: ((context) => BottomNavProvider()),
-            ),
-            ChangeNotifierProvider(
-              create: ((context) => ArtworkColorProvider()),
-            ),
-          ],
-          child: const MyApp(),
-        ),
-      );
-      // SystemChrome.setEnabledSystemUIMode(SystemUiMode.);
-    },
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: ((context) => ThemeProvider())),
+        ChangeNotifierProvider(create: ((context) => SleepTimeProvider())),
+        ChangeNotifierProvider(create: ((context) => MiniplayerProvider())),
+        ChangeNotifierProvider(create: ((context) => NowPlayingProvider())),
+        ChangeNotifierProvider(create: (context) => AlbumProvider()),
+        ChangeNotifierProvider(create: (context) => ArtistSongListProvider()),
+        ChangeNotifierProvider(create: (context) => ArtistProvider()),
+        ChangeNotifierProvider(create: (context) => HomePageSongProvider()),
+        ChangeNotifierProvider(
+            create: (context) => DeviceInformationProvider()),
+        ChangeNotifierProvider(create: (context) => SongListProvider()),
+        ChangeNotifierProvider(create: ((context) => BottomNavProvider())),
+        ChangeNotifierProvider(create: ((context) => ArtworkColorProvider())),
+        ChangeNotifierProvider(create: ((context) => PlaylistExporter())),
+      ],
+      child: const MyApp(),
+    ),
   );
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.);
 }
 
 class MyApp extends StatelessWidget {
@@ -145,13 +111,13 @@ class MyApp extends StatelessWidget {
           home: isViewed != 0
               ? const OneTimeSplashScreen()
               : const SplashScreen(),
-          theme: themeProvider.gettheme(),
+          theme: themeProvider.getTheme(),
           debugShowCheckedModeBanner: false,
           builder: (context, child) {
             SystemChrome.setSystemUIOverlayStyle(
               SystemUiOverlayStyle(
                 statusBarIconBrightness:
-                    themeProvider.gettheme() == CustomThemes.darkThemeMode
+                    themeProvider.getTheme() == CustomThemes.darkThemeMode
                         ? Brightness.light
                         : Brightness.dark,
                 // ... other style configurations

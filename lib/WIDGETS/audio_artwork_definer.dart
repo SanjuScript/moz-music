@@ -33,10 +33,12 @@ class _AudioArtworkDefinerState extends State<AudioArtworkDefiner>
   late int _currentId;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  late ThemeProvider _themeProvider;
 
   @override
   void initState() {
     super.initState();
+    _themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     _currentId = widget.id;
     _loadArtwork();
     _animationController = AnimationController(
@@ -51,7 +53,9 @@ class _AudioArtworkDefinerState extends State<AudioArtworkDefiner>
     if (widget.enableAnimation) {
       _animationController.forward();
     }
-    extractArtworkColors();
+    if (_themeProvider.getTheme() == CustomThemes.darkThemeMode) {
+      extractArtworkColors();
+    }
   }
 
   @override
@@ -63,7 +67,9 @@ class _AudioArtworkDefinerState extends State<AudioArtworkDefiner>
       if (widget.enableAnimation) {
         _animationController.forward(from: 0.0);
       }
-      extractArtworkColors();
+      if (_themeProvider.getTheme() == CustomThemes.darkThemeMode) {
+        extractArtworkColors();
+      }
     }
   }
 
@@ -83,7 +89,7 @@ class _AudioArtworkDefinerState extends State<AudioArtworkDefiner>
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     _artworkFuture.then((artworkData) {
       colorProvider.extractArtworkColors(
-          artworkData, themeProvider.gettheme() == CustomThemes.darkThemeMode);
+          artworkData, themeProvider.getTheme() == CustomThemes.darkThemeMode);
     });
   }
 
@@ -144,6 +150,7 @@ class _AudioArtworkDefinerState extends State<AudioArtworkDefiner>
       );
     }
   }
+
   @override
   bool get wantKeepAlive => true;
 }

@@ -18,59 +18,59 @@ class NowPlayingProvider extends ChangeNotifier {
   }
 
   void playSong() {
-    GetSongs.player.durationStream.listen((d) {
+    MozController.player.durationStream.listen((d) {
       if (d != null) {
         duration = d;
         notifyListeners();
       }
     });
-    GetSongs.player.positionStream.listen((p) {
+    MozController.player.positionStream.listen((p) {
       position = p;
       notifyListeners();
     });
   }
 
   void initStateHere() {
-    GetSongs.player.currentIndexStream.listen((index) {
+    MozController.player.currentIndexStream.listen((index) {
       if (index != null) {
         currentIndex = index;
-        GetSongs.currentIndex = index;
+        MozController.currentIndex = index;
         notifyListeners();
       }
     });
   }
 
   Future<void> previousButtonHere() async {
-    if (GetSongs.player.hasPrevious) {
-      await GetSongs.player.seekToPrevious();
-      await GetSongs.player.play();
+    if (MozController.player.hasPrevious) {
+      await MozController.player.seekToPrevious();
+      await MozController.player.play();
     } else {
-      await GetSongs.player.play();
+      await MozController.player.play();
     }
   }
 
   Future<void> playPauseButtonHere() async {
-    if (GetSongs.player.playing) {
-      await GetSongs.player.pause();
+    if (MozController.player.playing) {
+      await MozController.player.pause();
       notifyListeners();
     } else {
-      await GetSongs.player.play();
+      await MozController.player.play();
       notifyListeners();
     }
   }
 
   Future<void> nextButtonHere() async {
-    if (GetSongs.player.hasNext) {
-      await GetSongs.player.seekToNext();
-      await GetSongs.player.play();
+    if (MozController.player.hasNext) {
+      await MozController.player.seekToNext();
+      await MozController.player.play();
     } else {
-      await GetSongs.player.play();
+      await MozController.player.play();
     }
   }
 
   void changeToSeconds(double seconds) {
     Duration duration = Duration(seconds: seconds.toInt());
-    GetSongs.player.seek(duration);
+    MozController.player.seek(duration);
     notifyListeners();
   }
 }

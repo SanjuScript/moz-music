@@ -13,7 +13,7 @@ class SongSuggestionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<SongModel> suggestedSongs = SongSuggestor.suggestSongs();
+    // List<SongModel> suggestedSongs = SongSuggestor.suggestSongs();
     return SizedBox();
     // return SizedBox(
     //   height: MediaQuery.sizeOf(context).height * 0.22,

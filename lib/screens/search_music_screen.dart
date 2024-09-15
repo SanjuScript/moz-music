@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:music_player/PROVIDER/homepage_provider.dart';
+import 'package:music_player/WIDGETS/song_list_maker.dart';
 import 'package:provider/provider.dart';
-import '../Widgets/song_list_maker.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -43,8 +43,7 @@ class _SearchPageState extends State<SearchPage>
                 curve: Curves.easeInOutBack,
               ),
             ),
-            child: songDisplay(
-              context,
+            child: SongDisplay(
               song: foundSongs[index],
               songs: foundSongs,
               index: index,

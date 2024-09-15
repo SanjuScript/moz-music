@@ -1,12 +1,10 @@
 // ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
 import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
-import 'package:music_player/Widgets/song_list_maker.dart';
+import 'package:music_player/WIDGETS/song_list_maker.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import '../../HELPER/get_audio_size_in_mb.dart';
 import '../../WIDGETS/dialogues/playlist_delete_dialogue.dart';
 import '../../Widgets/appbar.dart';
 import '../../CONTROLLER/song_controllers.dart';
@@ -21,10 +19,10 @@ class FavoriteScreen extends StatefulWidget {
 class _FavoriteScreenState extends State<FavoriteScreen>
     with AutomaticKeepAliveClientMixin {
       
-  void playSongsOnTap(List<SongModel> favoriteData, int index) {
+  Future<void> playSongsOnTap(List<SongModel> favoriteData, int index) async {
     List<SongModel> favoriteList = [...favoriteData];
 
-    if (GetSongs.player.playing != true) {
+    if (MozController.player.playing != true) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: ((context) {
@@ -32,15 +30,15 @@ class _FavoriteScreenState extends State<FavoriteScreen>
         })),
       );
     }
-    GetSongs.player.setAudioSource(GetSongs.createSongList(favoriteList),
+    MozController.player.setAudioSource(await MozController.createSongList(favoriteList),
         initialIndex: index);
-    GetSongs.player.play();
-    GetSongs.player.playerStateStream.listen((playerState) {
+    MozController.player.play();
+    MozController.player.playerStateStream.listen((playerState) {
       if (playerState.processingState == ProcessingState.completed) {
         // Check if the current song is the last song in the playlist
-        if (GetSongs.player.currentIndex == favoriteData.length - 1) {
+        if (MozController.player.currentIndex == favoriteData.length - 1) {
           // Rewind the playlist to the starting index
-          GetSongs.player.seek(Duration.zero, index: 0);
+          MozController.player.seek(Duration.zero, index: 0);
         }
       }
     });
@@ -129,7 +127,7 @@ class _FavoriteScreenState extends State<FavoriteScreen>
                           // String filePath = song.data;
                           // File file = File(filePath);
                           // double fileSizeInMB = getFileSizeInMB(file);
-                          return songDisplay(context,
+                          return SongDisplay(
                               song: song, songs: favoriteData, index: index);
                         },
                         itemCount: favoriteData.length,

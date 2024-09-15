@@ -1,4 +1,3 @@
-
 // ignore: must_be_immutable
 import 'package:flutter/material.dart';
 
@@ -9,6 +8,7 @@ class TopAppBar extends StatelessWidget {
   void Function() iconTap;
   void Function(String) onSelected;
   String firstString;
+   bool showImportButton;
   IconData icon;
   String secondString;
   String topString;
@@ -17,6 +17,7 @@ class TopAppBar extends StatelessWidget {
       {super.key,
       this.isPop = true,
       this.nxt = false,
+      this.showImportButton = false,
       required this.iconTap,
       required this.icon,
       required this.onSelected,
@@ -89,6 +90,20 @@ class TopAppBar extends StatelessWidget {
                               ),
                             ),
                           ),
+                          if(showImportButton)
+                          PopupMenuItem<String>(
+                            value: 'import',
+                            child: Text(
+                              "Import playlist",
+                              style: TextStyle(
+                                letterSpacing: 1,
+                                fontFamily: "appollo",
+                                fontSize: 15,
+                                color: Theme.of(context).cardColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ) 
                         ],
                     onSelected: onSelected)
                 : const SizedBox()

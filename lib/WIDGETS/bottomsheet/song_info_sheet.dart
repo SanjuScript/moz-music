@@ -28,14 +28,9 @@ Widget moreListTile({
 
 void bottomDetailsSheet({
   required BuildContext context,
-  required String artist,
-  required String title,
-  required String composer,
-  required SongModel song,
-  required String filePath,
-  required File file,
+  required int index,
+  required List<SongModel> song,
   required void Function() onTap,
-  required int id,
   void Function()? remove,
   bool enableRemoveButton = false,
   bool isPlaylistShown = false,
@@ -45,7 +40,6 @@ void bottomDetailsSheet({
     isDismissible: true,
     context: context,
     builder: (BuildContext context) {
-       
       return ClipRRect(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(30),
@@ -69,26 +63,28 @@ void bottomDetailsSheet({
                 children: [
                   moreListTile(
                     context: context,
-                    text: artistHelper(artist, 'null'),
+                    text: artistHelper(song[index].artist.toString(), 'null'),
                     icon: Icons.person_rounded,
                   ),
                   moreListTile(
                     context: context,
-                    text: title,
+                    text: song[index].title,
                     icon: Icons.album,
                   ),
                   moreListTile(
                     context: context,
-                    text: composer == 'null' ? 'unknown composer' : composer,
+                    text: song[index].composer.toString() == 'null'
+                        ? 'unknown composer'
+                        : song[index].composer.toString(),
                     icon: Icons.piano_rounded,
                   ),
                   InkWell(
                     onTap: () {
                       Navigator.pushNamed(context, '/songInfo', arguments: {
-                        'title': title,
-                        'artist': artist,
-                        'id': id,
-                        'songs': song
+                        'title': song[index].title,
+                        'artist': song[index].title.toString(),
+                        'id': song[index].id,
+                        'songs': song[index]
                       });
                     },
                     child: moreListTile(
@@ -117,7 +113,7 @@ void bottomDetailsSheet({
                     ),
                   InkWell(
                     onTap: () {
-                      Share.shareFiles([filePath]);
+                      Share.shareFiles([song[index].data]);
                     },
                     child: moreListTile(
                       context: context,
@@ -131,20 +127,20 @@ void bottomDetailsSheet({
                         Widget? child) {
                       return InkWell(
                         onTap: () {
-                          if (FavoriteDb.isFavor(song)) {
-                            FavoriteDb.delete(song.id);
+                          if (FavoriteDb.isFavor(song[index])) {
+                            FavoriteDb.delete(song[index].id);
                             Navigator.pop(context);
                           } else {
-                            FavoriteDb.add(song);
+                            FavoriteDb.add(song[index]);
                           }
                           FavoriteDb.favoriteSongs.notifyListeners();
                         },
                         child: moreListTile(
                           context: context,
-                          text: FavoriteDb.isFavor(song)
+                          text: FavoriteDb.isFavor(song[index])
                               ? 'Added to favorited'
                               : 'Add to favorites',
-                          icon: FavoriteDb.isFavor(song)
+                          icon: FavoriteDb.isFavor(song[index])
                               ? Icons.favorite_rounded
                               : Icons.favorite_border_rounded,
                         ),

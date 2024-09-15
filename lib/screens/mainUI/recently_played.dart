@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
 import 'package:music_player/DATABASE/recently_played.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
+import 'package:music_player/WIDGETS/song_list_maker.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import '../Widgets/appbar.dart';
-import '../Widgets/song_list_maker.dart';
+import '../../Widgets/appbar.dart';
 
 class RecentlyPlayed extends StatefulWidget {
   const RecentlyPlayed({super.key});
@@ -15,29 +15,29 @@ class RecentlyPlayed extends StatefulWidget {
 
 class _RecentlyPlayedState extends State<RecentlyPlayed>
     with AutomaticKeepAliveClientMixin {
-  List<SongModel> recentSong = [];
-  @override
-  void initState() {
-    super.initState();
-    RecentlyPlayedDB.getRecentlyPlayedSongs();
-  }
+  // List<SongModel> recentSong = [];
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // RecentDb.initialize();
+
+  // }
 
   @override
   bool get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
-    FavoriteDb.favoriteSongs;
+    RecentDb.recentSongs;
     super.build(context);
-    return ValueListenableBuilder(
-      valueListenable: RecentlyPlayedDB.recentlyplayedSongNotifier,
+    return ValueListenableBuilder<List<SongModel>>(
+      valueListenable: RecentDb.recentSongs,
       builder: (BuildContext context, List<SongModel> value, Widget? child) {
-        final temp = value.reversed.toList();
-        recentSong = temp.toSet().toList();
+        final recentSong = value.toSet().toList();
         if (recentSong == ConnectionState.waiting) {
-          return const Center(
-            child: Text("data")
-            );
+          return const Center(child: Text("Loading..."));
         }
+        // value.sort((a, b) =>
+        //     RecentDb.musicDb.get(b.id)!.compareTo(RecentDb.musicDb.get(a.id)!.toInt()));
         //data loading
         return Scaffold(
             extendBody: true,
@@ -56,7 +56,7 @@ class _RecentlyPlayedState extends State<RecentlyPlayed>
                             context: context,
                             text1: "Delete All From Recently Played",
                             onPress: () {
-                              RecentlyPlayedDB.deleteAll();
+                              RecentDb.deleteAll();
                               Navigator.pop(context);
                             });
                       }
@@ -85,7 +85,7 @@ class _RecentlyPlayedState extends State<RecentlyPlayed>
                               // File file = File(filePath);
                               // String filePath = recentSong[index].data;
                               // double fileSizeInMB = getFileSizeInMB(file);
-                              return songDisplay(context,
+                              return SongDisplay(
                                   song: recentSong[index],
                                   songs: recentSong,
                                   index: index);
