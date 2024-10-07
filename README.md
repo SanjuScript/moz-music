@@ -21,3 +21,7 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## License
+
+The source code for this project is licensed under the **SanjuScript License**. You are free to use this code for learning and reference, but you may not clone, copy, or use it for building competing applications. Please refer to the `LICENSE` file for more details.
