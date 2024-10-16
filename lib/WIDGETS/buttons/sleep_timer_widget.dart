@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SleepTimerForMoz extends StatefulWidget {
-  const SleepTimerForMoz({Key? key}) : super(key: key);
+  const SleepTimerForMoz({super.key});
 
   @override
   _SleepTimerForMozState createState() => _SleepTimerForMozState();
@@ -79,7 +79,9 @@ class _SleepTimerForMozState extends State<SleepTimerForMoz> {
                 style: TextStyle(
                   fontFamily: 'coolvetica',
                   fontSize: MediaQuery.of(context).size.height * 0.025,
-                  color: const Color.fromARGB(255, 132, 132, 132),
+                  color: sleepTimer.isStart
+                      ? Colors.deepPurple[400]
+                      : const Color.fromARGB(255, 132, 132, 132),
                 ),
               ),
               Text(
@@ -122,7 +124,9 @@ class _SleepTimerForMozState extends State<SleepTimerForMoz> {
               ),
               TextButton(
                 style: TextButton.styleFrom(
-                    backgroundColor: Colors.deepPurple.withOpacity(.8),
+                    backgroundColor: sleepTimer.isStart
+                        ? Colors.red.withOpacity(0.8)
+                        : Colors.deepPurple.withOpacity(.8),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20))),
                 onPressed: sleepTimer.isStart ? stopTimer : startTimer,

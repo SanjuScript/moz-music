@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player/HELPER/artist_helper.dart';
 import 'package:music_player/SCREENS/main_music_playing_screen.dart.dart';
@@ -64,11 +65,13 @@ class SongDisplay extends StatelessWidget {
   final bool disableOnTap;
   final Widget? trailing;
   final void Function()? remove;
+  final bool isSelecting;
   final int index;
 
   const SongDisplay({
     Key? key,
     required this.song,
+    this.isSelecting = false,
     required this.songs,
     this.isTrailingChange = false,
     this.disableOnTap = false,
@@ -94,9 +97,9 @@ class SongDisplay extends StatelessWidget {
         song.title,
         maxLines: 1,
         style: TextStyle(
-          fontWeight: FontWeight.w300,
+          fontWeight: FontWeight.w400,
           color: Theme.of(context).disabledColor,
-          letterSpacing: .6,
+          // letterSpacing: .6,
           fontFamily: 'rounder',
           overflow: TextOverflow.ellipsis,
         ),
@@ -130,21 +133,25 @@ class SongDisplay extends StatelessWidget {
       onTap: disableOnTap
           ? null
           : () async {
-              if (MozController.player.playing != true) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NowPlaying(
-                      songModelList: songs,
+              if (!isSelecting) {
+                if (MozController.player.playing != true) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NowPlaying(
+                        songModelList: songs,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
+
+                MozController.player.setAudioSource(
+                    await MozController.createSongList(songs),
+                    initialIndex: index);
+                // MostlyPlayedDB.incrementPlayCount(song);
+                MozController.player.play();
+                MozController.playingSongs = songs;
               }
-              MozController.player.setAudioSource(await MozController.createSongList(songs),
-                  initialIndex: index);
-              // MostlyPlayedDB.incrementPlayCount(song);
-              MozController.player.play();
-              MozController.playingSongs = songs;
             },
       trailing:
           isTrailingChange ? trailing : FavoriteButton(songFavorite: song),

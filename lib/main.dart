@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +21,7 @@ import 'package:music_player/PROVIDER/homepage_provider.dart';
 import 'package:music_player/PROVIDER/id_saver.dart';
 import 'package:music_player/PROVIDER/miniplayer_provider.dart';
 import 'package:music_player/PROVIDER/now_playing_provider.dart';
+import 'package:music_player/PROVIDER/remove_song_provider.dart';
 import 'package:music_player/PROVIDER/sleep_timer_provider.dart';
 import 'package:music_player/PROVIDER/theme_class_provider.dart';
 import 'package:music_player/SCREENS/settings/about.dart';
@@ -93,6 +95,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: ((context) => BottomNavProvider())),
         ChangeNotifierProvider(create: ((context) => ArtworkColorProvider())),
         ChangeNotifierProvider(create: ((context) => PlaylistExporter())),
+        ChangeNotifierProvider(create: ((context) => RemoveSongFromList())),
       ],
       child: const MyApp(),
     ),
@@ -123,6 +126,7 @@ class MyApp extends StatelessWidget {
                 // ... other style configurations
               ),
             );
+            SchedulerBinding.instance.window.platformBrightness;
             return child!;
           },
           routes: {

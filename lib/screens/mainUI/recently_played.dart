@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/DATABASE/favorite_db.dart';
 import 'package:music_player/DATABASE/recently_played.dart';
+import 'package:music_player/WIDGETS/dialogues/UTILS/dialogue_utils.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
 import 'package:music_player/WIDGETS/song_list_maker.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -52,13 +53,17 @@ class _RecentlyPlayedState extends State<RecentlyPlayed>
                     iconTap: () {},
                     onSelected: (p0) {
                       if (p0 == "ClearAll") {
-                        showPlaylistDeleteDialogue(
-                            context: context,
-                            text1: "Delete All From Recently Played",
-                            onPress: () {
+                        DialogueUtils.getDialogue(
+                          context,
+                          'pdelete',
+                          arguments: [
+                            "Delete All From Recently Played",
+                            () {
                               RecentDb.deleteAll();
                               Navigator.pop(context);
-                            });
+                            },null,null
+                          ],
+                        );
                       }
                     },
                     topString: "Recently",

@@ -53,9 +53,10 @@ class _AudioArtworkDefinerState extends State<AudioArtworkDefiner>
     if (widget.enableAnimation) {
       _animationController.forward();
     }
-    if (_themeProvider.getTheme() == CustomThemes.darkThemeMode) {
-      extractArtworkColors();
-    }
+    // if (_themeProvider.getTheme() == CustomThemes.darkThemeMode ) {
+    //   extractArtworkColors();
+    // }
+    extractArtworkColors();
   }
 
   @override
@@ -67,9 +68,10 @@ class _AudioArtworkDefinerState extends State<AudioArtworkDefiner>
       if (widget.enableAnimation) {
         _animationController.forward(from: 0.0);
       }
-      if (_themeProvider.getTheme() == CustomThemes.darkThemeMode) {
-        extractArtworkColors();
-      }
+      // if (_themeProvider.getTheme() == CustomThemes.darkThemeMode) {
+      //   extractArtworkColors();
+      // }
+      extractArtworkColors();
     }
   }
 

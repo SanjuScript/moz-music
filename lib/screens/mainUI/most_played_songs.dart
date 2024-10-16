@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:music_player/WIDGETS/dialogues/UTILS/dialogue_utils.dart';
+import 'package:music_player/WIDGETS/song_sections.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:music_player/DATABASE/most_played.dart';
 import 'package:music_player/HELPER/get_audio_size_in_mb.dart';
@@ -52,13 +54,17 @@ class _MostlyPlayedState extends State<MostlyPlayed> {
               iconTap: () {},
               onSelected: (p0) {
                 if (p0 == "ClearAll") {
-                  showPlaylistDeleteDialogue(
-                    context: context,
-                    text1: "Delete All From Mostly Played",
-                    onPress: () {
-                     
-                      Navigator.pop(context);
-                    },
+                  DialogueUtils.getDialogue(
+                    context,
+                    'pdelete',
+                    arguments: [
+                      "Delete All From Mostly Played",
+                      () {
+                        PlayCountService.clearPlayCountData();
+                        Navigator.pop(context);
+                      },
+                      null,null
+                    ],
                   );
                 }
               },
@@ -83,7 +89,8 @@ class _MostlyPlayedState extends State<MostlyPlayed> {
                       itemCount: _mostlyPlayedSongs.length,
                       itemBuilder: (context, index) {
                         final song = _mostlyPlayedSongs[index];
-                        final playCount = PlayCountService.getPlayCount(song.id.toString());
+                        final playCount =
+                            PlayCountService.getPlayCount(song.id.toString());
                         return SongDisplay(
                           song: song,
                           songs: _mostlyPlayedSongs,

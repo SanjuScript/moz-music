@@ -17,7 +17,6 @@ import 'bottomsheet/sleep_timer_sheet.dart';
 Widget drawerWidget(
     {required BuildContext context,
     required GlobalKey<ScaffoldState> scaffoldKey}) {
-
   return Drawer(
     child: Container(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -97,7 +96,6 @@ Widget drawerWidget(
                           const PrivacyPolicyPage(), context, scaffoldKey);
                     },
                     text: 'Privacy Policy'),
-             
               ],
             ),
           ),
@@ -132,12 +130,12 @@ Widget listDrawerItems(
     ),
     title: Text(
       text,
-      
-      style: TextStyle(color: Theme.of(context).cardColor,fontFamily: 'rounder'),
+      style: TextStyle(
+          color: Theme.of(context).cardColor,
+          fontFamily: 'optica',
+          fontWeight: FontWeight.w400),
     ),
-    trailing: isTrailingVisible
-        ? ChangeThemeButtonWidget()
-        : trailingIcon,
+    trailing: isTrailingVisible ? ChangeThemeButtonWidget() : trailingIcon,
   );
 }
 

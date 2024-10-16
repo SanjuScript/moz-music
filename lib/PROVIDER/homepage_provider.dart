@@ -11,6 +11,7 @@ class HomePageSongProvider extends ChangeNotifier {
   List<SongModel> foundSongs = [];
   late List<SongModel> allSongs;
   List<SongModel> recentSongs = [];
+  List<SongModel> removedSongsList = [];
   bool _permissionGranted = false;
   Future<List<SongModel>>? _songsFuture;
   SortOption _defaultSort = SortOption.adate;
@@ -29,18 +30,35 @@ class HomePageSongProvider extends ChangeNotifier {
 
   final OnAudioQuery _audioQuery = OnAudioQuery();
 
-  void removeSong(SongModel song) {
-    homePageSongs.remove(song);
-    _removedSongs.add(song.id);
-    saveRemovedSongs(); // Save the updated removed songs
+  void removeSongs(List<SongModel> songsToRemove) {
+    for (var song in songsToRemove) {
+      homePageSongs.remove(song);
+      _removedSongs.add(song.id);
+      removedSongsList.add(song); // Add to removed songs list
+    }
+    saveRemovedSongs(); // Save the updated removed songs list
+    notifyListeners(); // Notify listeners of the state change
+  }
+void restoreAllSongs() {
+  for (var song in removedSongsList) {
+    _removedSongs.remove(song.id);
+    homePageSongs.add(song);
+  }
+  removedSongsList.clear();
+  saveRemovedSongs();
+  notifyListeners();
+}
+
+    void restoreSong(SongModel song) {
+    removedSongsList.remove(song);
+    _removedSongs.remove(song.id);
+    homePageSongs.add(song);
+    saveRemovedSongs(); // Save the updated removed songs list
     notifyListeners();
   }
 
-  void removeSongs(List<SongModel> songs) {
-    homePageSongs.removeWhere((song) => songs.contains(song));
-    _removedSongs.addAll(songs.map((song) => song.id));
-    saveRemovedSongs(); // Save the updated removed songs
-    notifyListeners();
+  List<SongModel> getRemovedSongs() {
+    return removedSongsList;
   }
 
   void filterSongs(String enteredKeyword) {
@@ -77,12 +95,6 @@ class HomePageSongProvider extends ChangeNotifier {
     }
   }
 
-  void resetRemovedSongs() async {
-    _removedSongs.clear();
-    await saveRemovedSongs(); // Save the cleared removed songs
-    _songsFuture = querySongs(); // Update homePageSongs with filtered songs
-    notifyListeners();
-  }
 
   void fetchAllSongs() async {
     allSongs = await OnAudioQuery().querySongs(
@@ -121,13 +133,21 @@ class HomePageSongProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final removedSongIds = prefs.getStringList('removed_songs') ?? [];
     _removedSongs = removedSongIds.map(int.parse).toSet();
+
+    // Load the removed songs from the song query
+    removedSongsList =
+        allSongs.where((song) => _removedSongs.contains(song.id)).toList();
+    homePageSongs =
+        allSongs.where((song) => !_removedSongs.contains(song.id)).toList();
+
+    notifyListeners();
   }
 
   List<SongModel> getLastAddedSongs(int count) {
     final effectiveCount = count.clamp(0, homePageSongs.length);
     final sonrted = sortSongs(homePageSongs, SortOption.adate);
     return sonrted.take(effectiveCount).toList();
-  }  
+  }
 
   Future<List<SongModel>> querySongs() async {
     final sortType = getSortType(defaultSort);
@@ -188,8 +208,7 @@ class HomePageSongProvider extends ChangeNotifier {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await loadRemovedSongs();
       if (_permissionGranted) {
-        _songsFuture =
-            querySongs(); 
+        _songsFuture = querySongs();
         notifyListeners();
       } else {
         // log("message LLLLLL");

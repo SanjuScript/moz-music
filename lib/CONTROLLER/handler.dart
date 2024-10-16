@@ -4,8 +4,8 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MozAudioHandler extends BaseAudioHandler {
-  final AudioPlayer _player = AudioPlayer();
-  final ConcatenatingAudioSource _playlist =
+  final AudioPlayer mplayer = AudioPlayer();
+  final ConcatenatingAudioSource mplaylist =
       ConcatenatingAudioSource(children: []);
 
   MozAudioHandler() {
@@ -15,15 +15,15 @@ class MozAudioHandler extends BaseAudioHandler {
 
   void _loadEmptyPlaylist() async {
     try {
-      await _player.setAudioSource(_playlist);
+      await mplayer.setAudioSource(mplaylist);
     } catch (e) {
       print("Error loading playlist: $e");
     }
   }
 
   void _listenToPlayerStateChanges() {
-    _player.playbackEventStream.listen((event) {
-      final playing = _player.playing;
+    mplayer.playbackEventStream.listen((event) {
+      final playing = mplayer.playing;
       playbackState.add(playbackState.value.copyWith(
         controls: [
           MediaControl.skipToPrevious,
@@ -41,19 +41,19 @@ class MozAudioHandler extends BaseAudioHandler {
           ProcessingState.buffering: AudioProcessingState.buffering,
           ProcessingState.ready: AudioProcessingState.ready,
           ProcessingState.completed: AudioProcessingState.completed,
-        }[_player.processingState]!,
+        }[mplayer.processingState]!,
         repeatMode: const {
           LoopMode.off: AudioServiceRepeatMode.none,
           LoopMode.one: AudioServiceRepeatMode.one,
           LoopMode.all: AudioServiceRepeatMode.all,
-        }[_player.loopMode]!,
-        shuffleMode: (_player.shuffleModeEnabled)
+        }[mplayer.loopMode]!,
+        shuffleMode: (mplayer.shuffleModeEnabled)
             ? AudioServiceShuffleMode.all
             : AudioServiceShuffleMode.none,
         playing: playing,
-        updatePosition: _player.position,
-        bufferedPosition: _player.bufferedPosition,
-        speed: _player.speed,
+        updatePosition: mplayer.position,
+        bufferedPosition: mplayer.bufferedPosition,
+        speed: mplayer.speed,
         queueIndex: event.currentIndex,
       ));
     });
@@ -62,7 +62,7 @@ class MozAudioHandler extends BaseAudioHandler {
   @override
   Future<void> addQueueItems(List<MediaItem> mediaItems) async {
     final audioSources = mediaItems.map(_createAudioSource);
-    _playlist.addAll(audioSources.toList());
+    mplaylist.addAll(audioSources.toList());
     final newQueue = queue.value..addAll(mediaItems);
     queue.add(newQueue);
   }
@@ -70,29 +70,29 @@ class MozAudioHandler extends BaseAudioHandler {
   @override
   Future<void> skipToQueueItem(int index) async {
     if (index < 0 || index >= queue.value.length) return;
-    _player.seek(Duration.zero, index: index);
+    mplayer.seek(Duration.zero, index: index);
   }
 
   @override
-  Future<void> play() => _player.play();
+  Future<void> play() => mplayer.play();
 
   @override
-  Future<void> pause() => _player.pause();
+  Future<void> pause() => mplayer.pause();
 
   @override
   Future<void> stop() async {
-    await _player.stop();
+    await mplayer.stop();
     await super.stop();
   }
 
   @override
-  Future<void> seek(Duration position) => _player.seek(position);
+  Future<void> seek(Duration position) => mplayer.seek(position);
 
   @override
-  Future<void> skipToNext() => _player.seekToNext();
+  Future<void> skipToNext() => mplayer.seekToNext();
 
   @override
-  Future<void> skipToPrevious() => _player.seekToPrevious();
+  Future<void> skipToPrevious() => mplayer.seekToPrevious();
 
   UriAudioSource _createAudioSource(MediaItem mediaItem) {
     return AudioSource.uri(
@@ -105,25 +105,25 @@ class MozAudioHandler extends BaseAudioHandler {
   Future<void> setRepeatMode(AudioServiceRepeatMode repeatMode) async {
     switch (repeatMode) {
       case AudioServiceRepeatMode.none:
-        _player.setLoopMode(LoopMode.off);
+        mplayer.setLoopMode(LoopMode.off);
         break;
       case AudioServiceRepeatMode.one:
-        _player.setLoopMode(LoopMode.one);
+        mplayer.setLoopMode(LoopMode.one);
         break;
       case AudioServiceRepeatMode.all:
-        _player.setLoopMode(LoopMode.all);
+        mplayer.setLoopMode(LoopMode.all);
         break;
       case AudioServiceRepeatMode.group:
-        _player.setLoopMode(LoopMode.all);
+        mplayer.setLoopMode(LoopMode.all);
         break;
     }
   }
 
   @override
   Future<void> setShuffleMode(AudioServiceShuffleMode shuffleMode) async {
-    _player.setShuffleModeEnabled(shuffleMode != AudioServiceShuffleMode.none);
+    mplayer.setShuffleModeEnabled(shuffleMode != AudioServiceShuffleMode.none);
     if (shuffleMode == AudioServiceShuffleMode.all) {
-      await _player.shuffle();
+      await mplayer.shuffle();
     }
   }
 }
@@ -135,6 +135,14 @@ Future<void> initAudioService() async {
       androidNotificationChannelId: 'in.sanju.mozmusic.audio',
       androidNotificationChannelName: 'Audio Service',
       androidNotificationOngoing: true,
+      // androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+      // androidNotificationChannelName: 'Moz Audio playback',
+      // androidNotificationOngoing: true,
+      androidShowNotificationBadge: true,
+      preloadArtwork: true,
+      artDownscaleHeight: 100,
+      artDownscaleWidth: 100,
+      // notificationColor:  Color.fromARGB(255, 169, 142, 174),
       androidStopForegroundOnPause: true,
     ),
   );

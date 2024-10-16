@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ThemeStorageManager {
-  static void saveData(String key, dynamic value) async {
+class MozStorageManager {
+  static Future<void> saveData(String key, dynamic value) async {
     final prefs = await SharedPreferences.getInstance();
     if (value is int) {
       prefs.setInt(key, value);

@@ -34,7 +34,7 @@ class _SpeedDialogState extends State<SpeedDialog> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    double selectedSpeed = MozController.player.playing ? MozController.player.speed : 1.0;
+    double selectedSpeed = MozController.player.speed; // Reflect current speed
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -43,12 +43,11 @@ class _SpeedDialogState extends State<SpeedDialog> with TickerProviderStateMixin
         animation: _controller,
         builder: (context, child) {
           return ClipRRect(
-
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: _sigma, sigmaY: _sigma),
               child: Container(
                 decoration: BoxDecoration(
-                  color:Theme.of(context).dialogBackgroundColor,
+                  color: Theme.of(context).dialogBackgroundColor,
                   borderRadius: BorderRadius.circular(15),
                 ),
                 padding: const EdgeInsets.all(20),
@@ -79,8 +78,7 @@ class _SpeedDialogState extends State<SpeedDialog> with TickerProviderStateMixin
   }
 
   Widget _buildDialogTitle(BuildContext context) {
-
-    return  Text(
+    return Text(
       "Speed Controls",
       style: TextStyle(
         fontFamily: 'coolvetica',
@@ -112,7 +110,7 @@ class _SpeedDialogState extends State<SpeedDialog> with TickerProviderStateMixin
           style: TextStyle(
             fontFamily: 'coolvetica',
             fontSize: 18,
-            color: isSelected ? Colors.purple[300] :Theme.of(context).unselectedWidgetColor,
+            color: isSelected ? Colors.purple[300] : Theme.of(context).unselectedWidgetColor,
           ),
         ),
       ),
@@ -133,12 +131,12 @@ class _SpeedDialogState extends State<SpeedDialog> with TickerProviderStateMixin
           onPressed: () {
             Navigator.pop(context);
           },
-          child:  Text(
+          child: Text(
             "Close",
             style: TextStyle(
               fontFamily: 'coolvetica',
               fontSize: 16,
-              color:Theme.of(context).disabledColor,
+              color: Theme.of(context).disabledColor,
             ),
           ),
         ),

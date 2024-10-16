@@ -341,24 +341,27 @@ class _HomePageState extends State<HomePage>
                               context,
                               MaterialPageRoute(
                                   builder: (context) => NowPlaying(
-                                      songModelList: MozController.playingSongs)));
+                                      songModelList:
+                                          MozController.playingSongs)));
                         }
 
                         MozController.player.setAudioSource(
-                          await  MozController.createSongList(
+                            await MozController.createSongList(
                               lastAddedSong.getLastAddedSongs(
                                   lastAddedSong.homePageSongs.length),
                             ),
                             initialIndex: lastSongindex);
                         MozController.player.play();
-                        MozController.player.playerStateStream.listen((playerState) {
+                        MozController.player.playerStateStream
+                            .listen((playerState) {
                           if (playerState.processingState ==
                               ProcessingState.completed) {
                             // Check if the current song is the last song in the playlist
                             if (MozController.player.currentIndex ==
                                 currentSongDate.length - 1) {
                               // Rewind the playlist to the starting index
-                              MozController.player.seek(Duration.zero, index: 0);
+                              MozController.player
+                                  .seek(Duration.zero, index: 0);
                             }
                           }
                         });

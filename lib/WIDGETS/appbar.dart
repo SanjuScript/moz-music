@@ -59,7 +59,7 @@ class TopAppBar extends StatelessWidget {
               topString,
               style: TextStyle(
                 letterSpacing: 1,
-                fontFamily: "appollo",
+                fontFamily: "rounder",
                 fontSize: 23,
                 color: Theme.of(context).cardColor,
                 fontWeight: FontWeight.bold,

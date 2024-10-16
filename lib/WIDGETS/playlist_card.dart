@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:music_player/WIDGETS/dialogues/UTILS/dialogue_utils.dart';
 import 'dialogues/playlist_delete_dialogue.dart';
 
 Widget playListadded(
@@ -73,8 +74,11 @@ Widget playListadded(
                   color: Theme.of(context).canvasColor,
                 ),
           onLongPress: () {
-            showPlaylistDeleteDialogue(
-                context: context, text1: deleteText, onPress: delete);
+            DialogueUtils.getDialogue(
+              context,
+              'pdelete',
+              arguments: [deleteText, delete],
+            );
           },
           onTap: ontap),
     ),

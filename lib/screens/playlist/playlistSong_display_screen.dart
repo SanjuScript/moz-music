@@ -8,6 +8,7 @@ import 'package:music_player/COLORS/colors.dart';
 import 'package:music_player/DATABASE/playlistDb.dart';
 import 'package:music_player/Model/music_model.dart';
 import 'package:music_player/WIDGETS/audio_for_others.dart';
+import 'package:music_player/WIDGETS/dialogues/UTILS/dialogue_utils.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
 import 'package:music_player/WIDGETS/song_list_maker.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -194,14 +195,17 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
                                 //     MaterialPageRoute(
                                 //         builder: (context) => NewMozUI()));
                               } else {
-                                showPlaylistDeleteDialogue(
-                                    context: context,
-                                    text1:
-                                        "Remove all songs from ${playlist.name}",
-                                    onPress: () {
+                                DialogueUtils.getDialogue(
+                                  context,
+                                  'pdelete',
+                                  arguments: [
+                                    "Remove all songs from ${playlist.name}",
+                                    () async{
                                       playlist.deleteAll();
                                       Navigator.pop(context);
-                                    });
+                                    },null,null
+                                  ],
+                                );
                               }
                             },
                           ),
@@ -270,4 +274,3 @@ class _PlaylistSongDisplayScreenState extends State<PlaylistSongDisplayScreen>
     return plsongs;
   }
 }
-

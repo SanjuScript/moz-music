@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/CONTROLLER/song_controllers.dart';
+import 'package:music_player/DATABASE/storage.dart';
 
 Widget repeatButton(BuildContext context, LoopMode loopMode, double wt) {
   final icons = [
@@ -30,9 +31,10 @@ Widget repeatButton(BuildContext context, LoopMode loopMode, double wt) {
   return IconButton(
     splashRadius: 30,
     icon: icons[index],
-    onPressed: () {
-      MozController.player.setLoopMode(
-          cycleModes[(cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
+    onPressed: ()async {
+     final newLoopMode = cycleModes[(cycleModes.indexOf(loopMode) + 1) % cycleModes.length];
+      await MozController.player.setLoopMode(newLoopMode);
+      await MozStorageManager.saveData('repeatMode', newLoopMode.index.toString());
     },
   );
 }

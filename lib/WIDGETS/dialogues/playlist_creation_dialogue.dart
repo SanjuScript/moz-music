@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 void showPlaylistCreationDialogue({
@@ -24,70 +25,85 @@ void showPlaylistCreationDialogue({
             scale: value,
             child: Opacity(
               opacity: value,
-              child: AlertDialog(
-                title: Text(
-                  mainText,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                content: SingleChildScrollView(
-                  child: Form(
-                    key: formKey,
-                    child: TextFormField(
-                      autofocus: true,
+              child: Center(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Apply blur effect here
+                  child: AlertDialog(
+                    backgroundColor: Theme.of(context).splashColor, // Semi-transparent background
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    title: Text(
+                      mainText,
                       style: TextStyle(
-                        color: Theme.of(context).cardColor,
                         fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Theme.of(context).cardColor, // Match title color to theme
                       ),
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        hintText: hint,
-                        hintStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.indigo[500],
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return validator;
-                        } else {
-                          return null;
-                        }
-                      },
                     ),
+                    content: SingleChildScrollView(
+                      child: Form(
+                        key: formKey,
+                        child: TextFormField(
+                          autofocus: true,
+                          style: TextStyle(
+                            color: Theme.of(context).cardColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          controller: nameController,
+                          decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 2,
+                                color: Theme.of(context).cardColor, // Focused border color
+                              ),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 1,
+                                color: Theme.of(context).dividerColor, // Enabled border color
+                              ),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            hintText: hint,
+                            hintStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).hintColor, // Hint text color
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return validator;
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor, // Cancel button color
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: donePress,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).cardColor.withOpacity(.6), // Button color
+                        ),
+                        child:  Text('Done',style: TextStyle(color: Theme.of(context).cardColor),),
+                      ),
+                    ],
                   ),
                 ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: donePress,
-                    child: const Text('Done'),
-                  ),
-                ],
               ),
             ),
           );

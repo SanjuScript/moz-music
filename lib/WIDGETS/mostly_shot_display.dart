@@ -123,7 +123,7 @@ class _MostlyShotDisplayState extends State<MostlyShotDisplay> {
                                 offset: Offset(-2, 2),
                               ),
                             ],
-                            fontSize: 17,
+                            // fontSize: 17,
                             fontFamily: 'rounder',
                             overflow: TextOverflow.ellipsis,
                             fontWeight: FontWeight.w400,

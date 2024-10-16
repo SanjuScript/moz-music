@@ -29,10 +29,17 @@ class PlayCountService {
     log(mostPlayedSongIds.toString());
     return mostPlayedSongIds;
   }
-    static bool get isMostPlayedSongIdsEmpty {
+
+  static bool get isMostPlayedSongIdsEmpty {
     return _playCountBox.isEmpty;
   }
+
   static int get currentlength {
     return _playCountBox.length;
+  }
+
+  static Future<void> clearPlayCountData()async {
+    _playCountBox.clear();
+    log("All play count data deleted.");
   }
 }

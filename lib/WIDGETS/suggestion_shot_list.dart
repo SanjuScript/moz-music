@@ -3,7 +3,6 @@ import 'package:just_audio/just_audio.dart';
 import 'package:music_player/CONTROLLER/song_controllers.dart';
 import 'package:music_player/DATABASE/most_played.dart';
 import 'package:music_player/DATABASE/recently_played.dart';
-import 'package:music_player/DATABASE/song_suggestion.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
 import 'package:music_player/screens/main_music_playing_screen.dart.dart';
 import 'package:on_audio_query/on_audio_query.dart';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:music_player/CONTROLLER/song_controllers.dart';
+import 'package:music_player/DATABASE/storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Widget shuffleButton(BuildContext context, bool isEnabled, double wt) {
@@ -18,20 +19,9 @@ Widget shuffleButton(BuildContext context, bool isEnabled, double wt) {
             color: const Color(0xff333c67),
           ),
     onPressed: () async {
-      final enable = !isEnabled;
-      if (enable) {
-        await MozController.player.shuffle();
-      }
-      await MozController.player.setShuffleModeEnabled(enable);
-
-      // Save shuffle mode state in SharedPreferences
-      // await saveShuffleModeState(en);
+      final newShuffle = !isEnabled;
+      await MozController.player.setShuffleModeEnabled(newShuffle);
+      await MozStorageManager.saveData('shuffleMode', newShuffle.toString());
     },
   );
-}
-
-// Function to save shuffle mode state in SharedPreferences
-Future<void> saveShuffleModeState(bool enable) async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setBool('shuffleModeEnabled', enable);
 }

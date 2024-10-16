@@ -7,6 +7,8 @@ import 'package:music_player/DATABASE/playlistDb.dart';
 import 'package:music_player/SCREENS/playlist/playList_song_listpage.dart';
 import 'package:music_player/WIDGETS/audio_artwork_definer.dart';
 import 'package:music_player/WIDGETS/audio_for_others.dart';
+import 'package:music_player/WIDGETS/dialogues/UTILS/dialogue_utils.dart';
+import 'package:music_player/WIDGETS/dialogues/import_playlist_dialogue.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_creation_dialogue.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_delete_dialogue.dart';
 import 'package:music_player/WIDGETS/playlist_box.dart';
@@ -62,12 +64,18 @@ class _PlaylistScreenState extends State<PlaylistScreen>
               isPop: musicList.isEmpty ? false : true,
               onSelected: (p0) {
                 if (p0 == 'ClearAll') {
-                  showPlaylistDeleteDialogue(
-                      context: context,
-                      text1: "Delete All Playlists",
-                      onPress: deletePlaylistsOntap);
+                  DialogueUtils.getDialogue(
+                    context,
+                    'pdelete',
+                    arguments: [
+                      "Delete All Playlists",
+                      deletePlaylistsOntap,
+                      null,
+                      null
+                    ],
+                  );
                 } else if (p0 == 'import') {
-                  log("Import button pressed");
+                  DialogueUtils.getDialogue(context, 'pimport');
                 }
               },
               firstString: "Playlists",
@@ -98,18 +106,21 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                             overlayColor: MaterialStatePropertyAll(
                                 Theme.of(context).shadowColor.withOpacity(.2)),
                             onLongPress: () {
-                              showPlaylistDeleteDialogue(
-                                  context: context,
-                                  isPlaylistPage: true,
-                                  rename: () {
-                                    editPlaylist(context, index, data);
-                                  },
-                                  text1:
-                                      "Delete Playlist ${data.name.toUpperCase()}",
-                                  onPress: () {
+                              DialogueUtils.getDialogue(
+                                context,
+                                'pdelete',
+                                arguments: [
+                                  "Delete Playlist ${data.name.toUpperCase()}",
+                                  () {
                                     musicList.deleteAt(index);
                                     Navigator.pop(context);
-                                  });
+                                  },
+                                  true,
+                                  () {
+                                    editPlaylist(context, index, data);
+                                  },
+                                ],
+                              );
                             },
                             onTap: () {
                               if (data.songId.isEmpty) {
@@ -166,18 +177,22 @@ class _PlaylistScreenState extends State<PlaylistScreen>
                     ),
               icon: Icons.playlist_add_rounded,
               iconTap: () {
-                showPlaylistCreationDialogue(
-                    mainText: 'Create New Playlist',
-                    context: context,
-                    formKey: _formKey,
-                    nameController: nameController,
-                    hint: 'Enter playlist name',
-                    donePress: () {
+                DialogueUtils.getDialogue(
+                  context,
+                  'pcreate',
+                  arguments: [
+                    _formKey,
+                    nameController,
+                    'Enter playlist name',
+                    () {
                       if (_formKey.currentState!.validate()) {
                         whenButtonClicked();
                       }
                     },
-                    validator: "Please enter playlist name");
+                    'Create New Playlist',
+                    "Please enter playlist name",
+                  ],
+                );
               },
             ),
           ),
@@ -188,47 +203,47 @@ class _PlaylistScreenState extends State<PlaylistScreen>
 
   void editPlaylist(BuildContext context, int index, MusicModel data) {
     final TextEditingController newTextEditor = TextEditingController();
-    return showPlaylistCreationDialogue(
-        context: context,
-        mainText: 'Rename Playlist ${data.name}',
-        formKey: _formKey,
-        hint: 'Enter new name',
-        donePress: () async {
-          if (_formKey.currentState!.validate()) {
-            final newName = newTextEditor.text.trim();
-            final music = MusicModel(
-              songId: [],
-              name: newName,
+    return DialogueUtils.getDialogue(context, 'pcreate', arguments: [
+      _formKey,
+      newTextEditor,
+      'Enter new name',
+      () async {
+        if (_formKey.currentState!.validate()) {
+          final newName = newTextEditor.text.trim();
+          final music = MusicModel(
+            songId: [],
+            name: newName,
+          );
+          final data =
+              PlayListDB.playListDb.values.map((e) => e.name.trim()).toList();
+          if (newName.isEmpty) {
+            return;
+          } else if (data.contains(music.name)) {
+            SnackBar snackBar = SnackBar(
+              behavior: SnackBarBehavior.floating,
+              width: 200.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              content: const Text(
+                'Name Unavilable',
+                style: TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
+              ),
             );
-            final data =
-                PlayListDB.playListDb.values.map((e) => e.name.trim()).toList();
-            if (newName.isEmpty) {
-              return;
-            } else if (data.contains(music.name)) {
-              SnackBar snackBar = SnackBar(
-                behavior: SnackBarBehavior.floating,
-                width: 200.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                content: const Text(
-                  'Name Unavilable',
-                  style: TextStyle(color: Colors.red),
-                  textAlign: TextAlign.center,
-                ),
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            } else {
-              await PlayListDB.renamePlaylist(index, newName);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          } else {
+            await PlayListDB.renamePlaylist(index, newName);
 
-              newTextEditor.clear();
-              Navigator.pop(context);
-              Navigator.pop(context);
-            }
+            newTextEditor.clear();
+            Navigator.pop(context);
+            Navigator.pop(context);
           }
-        },
-        validator: "Please enter new playlist name",
-        nameController: newTextEditor);
+        }
+      },
+      'Rename Playlist ${data.name}',
+      "Please enter new playlist name",
+    ]);
   }
 
   Future<void> whenButtonClicked() async {

@@ -37,14 +37,14 @@ class CustomThemes {
     unselectedWidgetColor: const Color.fromARGB(255, 166, 166, 166),
     indicatorColor: const Color(0xff343434),
     scaffoldBackgroundColor: const Color.fromARGB(255, 0, 0, 0),
-    hintColor: Color.fromARGB(235, 244, 244, 244),
-    disabledColor: Color.fromARGB(235, 244, 244, 244),
+    hintColor: const Color.fromARGB(235, 244, 244, 244),
+    disabledColor: const Color.fromARGB(235, 244, 244, 244),
     shadowColor: const Color.fromARGB(
         0, 0, 0, 0), // Use the dynamic shadow color variable
     dividerColor: const Color.fromARGB(41, 202, 202, 202),
-    cardColor: Color.fromARGB(255, 215, 215, 215),
+    cardColor: const Color.fromARGB(255, 215, 215, 215),
     hoverColor: const Color.fromARGB(146, 26, 15, 28),
-    splashColor: const Color.fromARGB(255, 39, 39, 39),
+    splashColor: const Color.fromARGB(255, 17, 17, 17),
     dialogTheme: const DialogTheme(
       backgroundColor: Color(0xFF1F1F1F),
       titleTextStyle: TextStyle(

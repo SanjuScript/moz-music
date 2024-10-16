@@ -17,6 +17,8 @@ import 'package:music_player/WIDGETS/buttons/play_pause_button.dart';
 import 'package:music_player/WIDGETS/buttons/repeat_button.dart';
 import 'package:music_player/WIDGETS/buttons/shuffle_button.dart';
 import 'package:music_player/WIDGETS/buttons/theme_button_widget.dart';
+import 'package:music_player/WIDGETS/custom_slider.dart';
+import 'package:music_player/WIDGETS/dialogues/UTILS/dialogue_utils.dart';
 import 'package:music_player/WIDGETS/dialogues/playlist_easy_access.dart';
 import 'package:music_player/screens/favoritepage/favorite_music_playing.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -30,9 +32,9 @@ import '../WIDGETS/nuemorphic_button.dart';
 class NowPlaying extends StatefulWidget {
   final List<SongModel> songModelList;
   const NowPlaying({
-    Key? key,
+    super.key,
     required this.songModelList,
-  }) : super(key: key);
+  });
 
   @override
   State<NowPlaying> createState() => _NowPlayingState();
@@ -92,7 +94,8 @@ class _NowPlayingState extends State<NowPlaying>
                 index: MozController.currentIndex,
                 isPlaylistShown: true,
                 onTap: () {
-                  showPlaylistdialog(context);
+                  DialogueUtils.getDialogue(context, 'peasy',
+                      arguments: widget.songModelList);
                 },
               );
             }
@@ -150,13 +153,25 @@ class _NowPlayingState extends State<NowPlaying>
                       ],
                     ),
                   ),
-                  Container(
+                  AnimatedContainer(
+                    duration: Duration(milliseconds: 500),
                     padding: const EdgeInsets.all(3),
                     width: wt * 0.87,
                     height: ht * 0.38,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: Colors.transparent,
                       borderRadius: BorderRadius.all(Radius.circular(15)),
+                      boxShadow: !isDark
+                          ? [
+                              BoxShadow(
+                                color: artworkColor!.withOpacity(.8),
+                                blurRadius: 20,
+                          
+                                spreadRadius: 1,
+                                offset:const Offset(0, 10),
+                              ),
+                            ]
+                          : [],
                     ),
                     child: Consumer<NowPlayingProvider>(
                       builder: (context, value, child) {
@@ -167,7 +182,7 @@ class _NowPlayingState extends State<NowPlaying>
                             id: widget.songModelList[value.currentIndex].id,
                             size: 500,
                             // enableAnimation: true,
-                          
+
                             imgRadius: 15,
                           ),
                         );
@@ -196,9 +211,7 @@ class _NowPlayingState extends State<NowPlaying>
                       },
                     ),
                   ),
-                  SizedBox(
-                    height: ht * 0.01,
-                  ),
+
                   SizedBox(
                     width: wt * 0.8,
                     height: ht * 0.02,
@@ -234,44 +247,21 @@ class _NowPlayingState extends State<NowPlaying>
                     ),
                     child: SizedBox(
                       width: wt * 0.9,
-                      height: ht * 0.020,
-                      child: Nuemorphic(
-                        shadowColorVisiblity: true,
-                        color: isDark
-                            ? Colors.transparent
-                            : Theme.of(context).scaffoldBackgroundColor,
-                        padding:
-                            const EdgeInsets.only(top: 4, left: 5, right: 5),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(20)),
-                        child: Consumer<NowPlayingProvider>(
-                          builder: (context, value, child) {
-                            return ProgressBar(
-                              barHeight: ht * 0.012,
-                              barCapShape: BarCapShape.round,
-                              progressBarColor: Colors.deepPurple[400],
-                              bufferedBarColor: Colors.deepPurple[400],
-                              thumbGlowColor: Colors.transparent,
-                              thumbColor: Colors.deepPurple[400],
-                              thumbRadius: ht * 0.005,
-                              thumbGlowRadius: wt * 0.07,
-                              baseBarColor: isDark
-                                  ? Colors.deepPurple[400]!.withOpacity(.1)
-                                  : Colors.transparent,
-                              progress: value.position,
-                              total: value.duration,
-                              timeLabelTextStyle: TextStyle(
-                                  fontSize: wt * 0.03,
-                                  fontWeight: FontWeight.normal,
-                                  color: const Color(0xff97A4B7)),
-                              timeLabelPadding: ht * 0.011,
-                              onSeek: (duration) {
+                      height: ht * 0.060,
+                      child: Consumer<NowPlayingProvider>(
+                        builder: (context, value, child) {
+                          return MozSlider(
+                              currentPosition: value.position,
+                              totalDuration: value.duration,
+                              onChanged: (newValue) {
                                 value.changeToSeconds(
-                                    duration.inSeconds.toDouble());
+                                    newValue * value.duration.inSeconds);
                               },
-                            );
-                          },
-                        ),
+                              sliderColor: Colors.deepPurple[400]!,
+                              thumbColor: Colors.deepPurple[400]!,
+                              backgroundColor:
+                                  Colors.deepPurple[400]!.withOpacity(.1));
+                        },
                       ),
                     ),
                   ),
@@ -295,7 +285,9 @@ class _NowPlayingState extends State<NowPlaying>
                                     index: value.currentIndex,
                                     isPlaylistShown: true,
                                     onTap: () {
-                                      showPlaylistdialog(context);
+                                      DialogueUtils.getDialogue(
+                                          context, 'peasy',
+                                          arguments: widget.songModelList);
                                     },
                                     context: context,
                                   );
@@ -326,11 +318,10 @@ class _NowPlayingState extends State<NowPlaying>
                           InkWell(
                             radius: 50,
                             overlayColor:
-                                MaterialStateProperty.all(Colors.transparent),
+                                WidgetStateProperty.all(Colors.transparent),
                             onTap: () {
-                              showSpeedDialogue(
-                                  context: context,
-                                  color: isDark
+                              DialogueUtils.getDialogue(context, 'speed',
+                                  arguments: isDark
                                       ? Colors.transparent
                                       : Colors.black.withOpacity(.3));
                             },
@@ -397,9 +388,5 @@ class _NowPlayingState extends State<NowPlaying>
         ),
       ),
     );
-  }
-
-  void showPlaylistdialog(BuildContext context) {
-    PlaylistEasyAccess.show(context: context, getList: widget.songModelList);
   }
 }

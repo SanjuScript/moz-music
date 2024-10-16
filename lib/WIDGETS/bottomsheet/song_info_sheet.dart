@@ -51,7 +51,7 @@ void bottomDetailsSheet({
             padding: const EdgeInsets.symmetric(vertical: 20),
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Theme.of(context).dialogBackgroundColor,
+              color: Theme.of(context).splashColor.withOpacity(.9),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(30),
                 topRight: Radius.circular(30),
@@ -80,12 +80,8 @@ void bottomDetailsSheet({
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.pushNamed(context, '/songInfo', arguments: {
-                        'title': song[index].title,
-                        'artist': song[index].title.toString(),
-                        'id': song[index].id,
-                        'songs': song[index]
-                      });
+                      Navigator.pushNamed(context, '/songInfo',
+                          arguments: {'songs': song[index]});
                     },
                     child: moreListTile(
                       context: context,
@@ -93,27 +89,20 @@ void bottomDetailsSheet({
                       icon: Icons.info_outline,
                     ),
                   ),
-                  if (enableRemoveButton)
-                    InkWell(
-                      onTap: enableRemoveButton ? remove : null,
-                      child: moreListTile(
-                        context: context,
-                        text: 'Remove from list',
-                        icon: Icons.remove_circle_outline_sharp,
-                      ),
+                  InkWell(
+                    onTap: onTap,
+                    child: moreListTile(
+                      context: context,
+                      text: 'Add to Playlist',
+                      icon: Icons.playlist_add_rounded,
                     ),
-                  if (isPlaylistShown)
-                    InkWell(
-                      onTap: onTap,
-                      child: moreListTile(
-                        context: context,
-                        text: 'Add to Playlist',
-                        icon: Icons.playlist_add_rounded,
-                      ),
-                    ),
+                  ),
                   InkWell(
                     onTap: () {
-                      Share.shareFiles([song[index].data]);
+                      final songPath = song[index].data;
+
+                      final xFile = XFile(songPath);
+                      Share.shareXFiles([xFile]);
                     },
                     child: moreListTile(
                       context: context,
